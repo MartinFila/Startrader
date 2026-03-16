@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan Estratégico — IG Faceless · Educación Financiera LATAM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root {
+  --bg: #111114;
+  --surface-1: #18181c;
+  --surface-2: #1f1f24;
+  --surface-3: #27272d;
+  --border: #2e2e36;
+  --border-bright: #3d3d48;
+  --text: #f2f2f6;
+  --text-2: #d8d8e4;
+  --text-3: #a0a0b4;
+  --lime: #b8f060;
+  --lime-dim: rgba(184,240,96,.08);
+  --lime-mid: rgba(184,240,96,.18);
+  --orange: #f0a050;
+  --orange-dim: rgba(240,160,80,.1);
+  --blue: #60a8f0;
+  --blue-dim: rgba(96,168,240,.1);
+  --red: #f06868;
+  --red-dim: rgba(240,104,104,.1);
+  --purple: #a078f0;
+  --purple-dim: rgba(160,120,240,.1);
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 16px;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--lime); color: var(--bg); }
+
+.page { max-width: 900px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 56px); }
+
+/* ─── NAV ─── */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(17,17,20,.85);
+  backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 1px solid var(--border);
+}
+nav .inner {
+  max-width: 900px; margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 56px);
+  display: flex; align-items: center; gap: 24px;
+  height: 48px; overflow-x: auto;
+}
+nav a {
+  color: var(--text-3); text-decoration: none;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: .06em; text-transform: uppercase;
+  white-space: nowrap; transition: color .2s;
+}
+nav a:hover { color: var(--text); }
+nav .brand {
+  color: var(--lime);
+  font-family: var(--font-display);
+  font-size: 16px; font-weight: 700;
+  letter-spacing: -.01em; text-transform: none;
+  margin-right: auto;
+}
+
+/* ─── HERO ─── */
+.hero {
+  padding: clamp(80px, 12vh, 140px) 0 clamp(48px, 6vh, 80px);
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--lime); margin-bottom: 20px;
+}
+.hero-tag::before { content: ''; width: 32px; height: 2px; background: var(--lime); }
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 6vw, 64px);
+  font-weight: 900; line-height: 1.05;
+  letter-spacing: -.03em; max-width: 14ch;
+}
+.hero h1 em { font-style: italic; color: var(--lime); }
+.hero-sub {
+  margin-top: 24px; font-size: 17px;
+  color: var(--text-2); max-width: 52ch; line-height: 1.65;
+}
+.hero-meta {
+  display: flex; gap: 32px; margin-top: 32px;
+  padding-top: 24px; border-top: 1px solid var(--border);
+}
+.hero-meta div { font-size: 12px; color: var(--text-3); }
+.hero-meta strong { display: block; color: var(--text); font-weight: 600; font-size: 13px; }
+
+/* ─── SECTIONS ─── */
+section { padding: clamp(48px, 7vh, 80px) 0; border-top: 1px solid var(--border); }
+.section-tag {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--lime); margin-bottom: 8px;
+}
+section > h2 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 900; line-height: 1.1;
+  letter-spacing: -.02em; margin-bottom: 32px;
+}
+h3 {
+  font-family: var(--font-body);
+  font-size: 20px; font-weight: 700;
+  margin: 40px 0 16px;
+}
+h4 {
+  font-size: 14px; font-weight: 600;
+  letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-2); margin: 28px 0 12px;
+}
+p { color: var(--text-2); margin-bottom: 16px; max-width: 65ch; }
+p strong { color: var(--text); font-weight: 500; }
+
+/* ─── CALLOUT ─── */
+.callout {
+  background: var(--lime-dim);
+  border-left: 3px solid var(--lime);
+  padding: 16px 20px;
+  margin: 20px 0;
+  border-radius: 0 8px 8px 0;
+}
+.callout p { color: var(--text); margin: 0; }
+
+/* ─── ACCOUNT CARDS ─── */
+.account-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px; margin: 24px 0;
+}
+.account-card {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+}
+.account-card .handle {
+  font-family: var(--font-mono);
+  font-size: 14px; font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+  display: inline-block;
+}
+a.handle:hover { color: var(--lime); }
+.account-card .followers {
+  font-family: var(--font-display);
+  font-size: 24px; font-weight: 900;
+  color: var(--lime); margin: 6px 0;
+}
+.account-card .model {
+  font-size: 14px; color: var(--text-2);
+  margin-bottom: 8px;
+}
+.account-card .insight {
+  font-size: 14px; color: var(--text-2);
+  border-top: 1px solid var(--border);
+  padding-top: 10px; margin-top: 10px;
+}
+.account-card.latam {
+  border-color: var(--orange);
+  background: var(--orange-dim);
+}
+.account-card.latam .followers { color: var(--orange); }
+
+/* ─── GAP VISUAL ─── */
+.gap-visual {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  margin: 32px 0;
+}
+.gap-col {
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+}
+.gap-label {
+  font-size: 12px; font-weight: 600;
+  letter-spacing: .04em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 8px;
+}
+.gap-info .num { font-family: var(--font-display); font-size: 36px; font-weight: 900; line-height: 1; }
+.gap-info .lab { font-size: 13px; color: var(--text-3); margin-top: 4px; font-family: var(--font-mono); }
+.gap-bar {
+  height: 8px; background: var(--surface-3);
+  border-radius: 4px; margin-top: 16px;
+  position: relative; overflow: hidden;
+}
+.gap-bar .fill {
+  position: absolute; left: 0; top: 0; height: 100%;
+  border-radius: 4px;
+}
+.gap-bar .fill.en { width: 100%; background: var(--lime); }
+.gap-bar .fill.es { width: 16%; background: var(--orange); }
+
+/* ─── SCORE TABLE ─── */
+.score-grid {
+  display: grid; gap: 8px; margin: 20px 0;
+}
+.score-row {
+  display: grid; grid-template-columns: auto 1fr auto;
+  gap: 12px; align-items: center;
+  background: var(--surface-1);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+.score-num {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 900;
+  color: var(--lime); min-width: 44px; text-align: center;
+}
+.score-name { font-size: 14px; color: var(--text); font-weight: 500; }
+.score-ref { font-size: 12px; color: var(--text-3); }
+
+/* ─── THESIS LIST ─── */
+.thesis {
+  list-style: none; counter-reset: thesis;
+  margin: 24px 0; display: flex; flex-direction: column; gap: 16px;
+}
+.thesis li {
+  counter-increment: thesis;
+  display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start;
+}
+.thesis li::before {
+  content: counter(thesis);
+  font-family: var(--font-display);
+  font-size: 28px; font-weight: 900;
+  color: var(--lime); line-height: 1; padding-top: 4px;
+}
+.thesis li strong { color: var(--text); }
+.thesis li span { color: var(--text-2); }
+
+/* ─── ALGO CARDS ─── */
+.algo-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+.algo-card {
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: 12px; padding: 24px;
+}
+.algo-card .tag {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--orange); margin-bottom: 8px;
+}
+.algo-card h4 { margin: 0 0 8px; text-transform: none; letter-spacing: 0; font-size: 16px; color: var(--text); }
+.algo-card p { font-size: 14px; margin: 0; }
+
+/* ─── COMPARE ─── */
+.compare {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; margin: 12px 0;
+}
+.compare-item {
+  padding: 12px 16px; background: var(--surface-1);
+  border: 1px solid var(--border); font-size: 14px; color: var(--text-2);
+}
+.compare-item:first-child { border-radius: 8px 0 0 8px; }
+.compare-item:last-child { border-radius: 0 8px 8px 0; color: var(--text-3); text-decoration: line-through; }
+.compare-vs {
+  background: var(--lime); color: var(--bg);
+  font-weight: 700; font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 10px; letter-spacing: .05em;
+}
+
+/* ─── WORKFLOW BLOCKS ─── */
+.wf-block {
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px 24px; margin: 12px 0;
+  display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: start;
+}
+.wf-block .dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; }
+.wf-dot-green { background: var(--lime); }
+.wf-dot-blue { background: var(--blue); }
+.wf-dot-red { background: var(--red); }
+.wf-block .wf-name { font-family: var(--font-mono); font-size: 14px; font-weight: 500; color: var(--text); }
+.wf-block .wf-tag { font-size: 11px; color: var(--text-2); margin-left: 8px; }
+.wf-block .wf-desc { font-size: 14px; color: var(--text-2); margin-top: 4px; line-height: 1.6; }
+.wf-arrow { text-align: center; color: var(--text-3); font-size: 18px; margin: 4px 0; padding-left: 20px; }
+
+/* ─── RATIO ─── */
+.ratio-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0; }
+.ratio-item {
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: 10px; padding: 20px; text-align: center;
+}
+.ratio-item .pct { font-family: var(--font-display); font-size: 32px; font-weight: 900; color: var(--lime); line-height: 1; }
+.ratio-item .name { font-size: 13px; font-weight: 600; color: var(--text); margin-top: 8px; }
+.ratio-item .desc { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+
+/* ─── TABLES ─── */
+.table-wrap { overflow-x: auto; margin: 16px 0; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th {
+  text-align: left; font-weight: 600; font-size: 11px;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--text-3); padding: 10px 16px;
+  border-bottom: 1px solid var(--border-bright);
+}
+td { padding: 12px 16px; color: var(--text-2); border-bottom: 1px solid var(--border); }
+
+/* ─── KPIs ─── */
+.kpis {
+  display: flex; gap: 0; margin: 24px 0;
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+}
+.kpis .kpi { flex: 1; padding: 20px; border-right: 1px solid var(--border); text-align: center; }
+.kpis .kpi:last-child { border-right: none; }
+.kpis .val { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--lime); line-height: 1.1; }
+.kpis .label { font-size: 11px; color: var(--text-3); margin-top: 4px; font-weight: 500; }
+
+/* ─── MONTH BLOCKS ─── */
+.month-block { border-left: 3px solid var(--border); padding-left: 24px; margin: 24px 0; }
+.month-block.active { border-left-color: var(--lime); }
+.month-block h3 { margin-top: 0; }
+.month-block ul { list-style: none; margin: 12px 0; }
+.month-block li { position: relative; padding: 4px 0 4px 20px; font-size: 15px; color: var(--text-2); }
+.month-block li::before {
+  content: ''; position: absolute; left: 0; top: 12px;
+  width: 6px; height: 6px; background: var(--text-3); border-radius: 50%;
+}
+.month-block li strong { color: var(--text); font-weight: 500; }
+
+/* ─── FUNNEL ─── */
+.funnel { margin: 24px 0; }
+.funnel-row {
+  display: grid; grid-template-columns: 180px 1fr;
+  gap: 12px; align-items: center; padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.funnel-row:last-child { border-bottom: none; }
+.funnel-stage { font-size: 13px; font-weight: 600; color: var(--text); }
+.funnel-skill { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); }
+
+/* ─── SKILL CARDS ─── */
+.skill-section { margin: 32px 0; }
+.skill-section-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px; font-weight: 700; margin-bottom: 16px;
+}
+.skill-section-title .dot { width: 8px; height: 8px; border-radius: 50%; }
+.skill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+.skill-card {
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px;
+  display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
+}
+.skill-card .sname { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--text); }
+.skill-card .sdesc { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.skill-card .sphase {
+  font-size: 10px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-3); white-space: nowrap;
+  background: var(--surface-3); padding: 3px 8px; border-radius: 4px;
+}
+
+/* ─── IMPLEMENTATION STEPS ─── */
+.step-grid { display: grid; gap: 8px; margin: 16px 0; }
+.step {
+  display: grid; grid-template-columns: 36px 1fr auto;
+  gap: 12px; align-items: center;
+  background: var(--surface-1); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px 16px;
+}
+.step-num { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--lime); text-align: center; }
+.step-text { font-size: 14px; color: var(--text-2); }
+.step-text strong { color: var(--text); font-weight: 500; }
+.step-who { font-size: 11px; color: var(--text-3); white-space: nowrap; }
+
+/* ─── PROJECTIONS TABLE ─── */
+.proj-grid {
+  display: grid; grid-template-columns: auto repeat(3, 1fr); gap: 1px;
+  background: var(--border); border-radius: 10px; overflow: hidden;
+  margin: 20px 0;
+}
+.proj-cell { background: var(--surface-1); padding: 14px 16px; font-size: 14px; }
+.proj-cell.header { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text-3); }
+.proj-cell.period { font-weight: 500; color: var(--text); }
+.proj-cell .num { font-family: var(--font-display); font-weight: 700; color: var(--lime); }
+
+/* ─── FOOTER ─── */
+footer {
+  padding: 48px 0; border-top: 1px solid var(--border); text-align: center;
+}
+footer p { font-size: 14px; color: var(--text-3); max-width: 70ch; margin: 0 auto; }
+footer strong { color: var(--lime); font-weight: 600; }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 680px) {
+  .algo-cards, .ratio-grid { grid-template-columns: 1fr 1fr; }
+  .compare { grid-template-columns: 1fr; }
+  .compare-item:first-child { border-radius: 8px 8px 0 0; }
+  .compare-item:last-child { border-radius: 0 0 8px 8px; }
+  .kpis { flex-wrap: wrap; }
+  .kpis .kpi { min-width: 45%; }
+  .funnel-row { grid-template-columns: 1fr; gap: 2px; }
+  .step { grid-template-columns: 30px 1fr; }
+  .step-who { display: none; }
+  .account-grid { grid-template-columns: 1fr; }
+  .gap-visual { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="#" class="brand">IG Faceless</a>
+    <a href="#investigacion">Investigación</a>
+    <a href="#estrategia">Estrategia</a>
+    <a href="#workflow">Workflow</a>
+    <a href="#plan">Plan</a>
+    <a href="#skills">Skills</a>
+  </div>
+</nav>
+
+<div class="page">
+
+<!-- ═══════ HERO ═══════ -->
+<header class="hero">
+  <div class="hero-tag">Plan Estratégico 2026</div>
+  <h1>Educación financiera <em>faceless</em> para LATAM</h1>
+  <p class="hero-sub">Un sistema automatizado con SanchoCMO que genera, publica y optimiza contenido de Instagram — operado con ~2 horas semanales de supervisión humana.</p>
+  <div class="hero-meta">
+    <div><strong>Motor</strong>SanchoCMO</div>
+    <div><strong>Monetización</strong>Affiliate en bio</div>
+    <div><strong>Meta 12 meses</strong>30–60K seguidores</div>
+    <div><strong>Revenue</strong>$2–5K+/mes</div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PARTE 1: INVESTIGACIÓN COMPETITIVA                      -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="investigacion">
+  <div class="section-tag">Parte 1</div>
+  <h2>La oportunidad: lo que descubrimos</h2>
+
+  <p>Analizamos 8+ cuentas faceless de finanzas en inglés y español para entender cómo crecieron, qué formatos funcionan, y dónde está la oportunidad real.</p>
+
+  <h3>Cuentas de referencia — inglés</h3>
+  <p>Estas cuentas demuestran que el modelo funciona a escala masiva:</p>
+
+  <div class="account-grid">
+    <div class="account-card">
+      <a class="handle" href="https://instagram.com/wealth" target="_blank">@wealth</a>
+      <div class="followers">14M</div>
+      <div class="model">Media brand: noticias curadas de negocios/tech/finanzas. 11,000+ posts en 10 años.</div>
+      <div class="insight">Formato de curación de noticias es 100% automatizable con Claude. Hook fórmula: dato polémico + contexto financiero = Reel de 15s.</div>
+    </div>
+    <div class="account-card">
+      <a class="handle" href="https://instagram.com/millionaire_mentor" target="_blank">@millionaire_mentor</a>
+      <div class="followers">10M</div>
+      <div class="model">Quotes motivacionales + lifestyle. Jason Stone. <strong style="color:var(--lime)">$7M en 18 meses.</strong></div>
+      <div class="insight">Red de 15 cuentas con shoutouts cruzados = 0 a 2M en &lt;2 años. Batches de 20-30 posts por sesión. Email list 650K+ leads. Revenue total: $15M+.</div>
+    </div>
+    <div class="account-card">
+      <a class="handle" href="https://instagram.com/thewealthdad" target="_blank">@thewealthdad</a>
+      <div class="followers">55K</div>
+      <div class="model">Infografías educativas sobre fondos indexados, inversión para principiantes.</div>
+      <div class="insight">Carruseles: <strong>1.05% engagement</strong> vs &lt;0.1% en Reels. Los carruseles monetizan — construyen la confianza que lleva al clic en el affiliate.</div>
+    </div>
+    <div class="account-card">
+      <a class="handle" href="https://instagram.com/facelesstraderss" target="_blank">@facelesstraderss</a>
+      <div class="followers">67K</div>
+      <div class="model">Charts de trading + señales + mentoría. Estética dark + neón. Comunidad Discord.</div>
+      <div class="insight">Funnel: Reels gratis → DM "trade" → Discord → Señales $40/sem → Clase $250 → Mentoría 1:1 $2,000. Ingreso estimado: $4K-12K/mes.</div>
+    </div>
+    <div class="account-card">
+      <a class="handle" href="https://instagram.com/wealth.ceo" target="_blank">@wealth.ceo</a>
+      <div class="followers">143K</div>
+      <div class="model">Quotes dark/luxury. <strong style="color:var(--lime)">Solo 134 posts</strong> para 143K seguidores.</div>
+      <div class="insight">El modelo más simple que funciona. 100% template-driven. Ratio seguidores/post extraordinario — prueba que la calidad del hook importa más que el volumen.</div>
+    </div>
+    <div class="account-card">
+      <a class="handle" href="https://instagram.com/fullystaked" target="_blank">@fullystaked</a>
+      <div class="followers">692K</div>
+      <div class="model">Red de múltiples páginas. 900K+ seguidores totales. 3,866 posts.</div>
+      <div class="insight">Modelo multi-cuenta con shoutouts cruzados entre cuentas propias. Monetiza vendiendo cursos sobre cómo replicar el modelo.</div>
+    </div>
+  </div>
+
+  <h3>Cuentas en español — la brecha</h3>
+  <div class="account-grid">
+    <div class="account-card latam">
+      <a class="handle" href="https://instagram.com/trading.latam_" target="_blank">@trading.latam_</a>
+      <div class="followers">~11K</div>
+      <div class="model">La cuenta faceless de trading más grande en español.</div>
+      <div class="insight">11K vs 67K del equivalente en inglés. Misma temática, mismos formatos posibles, pero ~6x menos seguidores.</div>
+    </div>
+    <div class="account-card latam">
+      <a class="handle" href="https://instagram.com/insider.arg" target="_blank">@insider.arg</a>
+      <div class="followers">27K</div>
+      <div class="model">Semi-faceless, argentino. Consulting via WhatsApp + cursos + broker referrals.</div>
+      <div class="insight">Prueba de concepto de que el modelo funciona en español. Monetiza con el mismo funnel que proponemos.</div>
+    </div>
+    <div class="account-card latam">
+      <div class="handle">Otras (LATAM)</div>
+      <div class="followers">1–3K</div>
+      <div class="model">@tradinglatampe, @trading_latam — cuentas pequeñas sin consistencia.</div>
+      <div class="insight">Publican de forma irregular, sin sistema, sin automatización. Ninguna ejecuta con herramientas sofisticadas.</div>
+    </div>
+  </div>
+
+  <h4>La brecha: inglés vs español</h4>
+  <div class="gap-visual">
+    <div class="gap-col">
+      <div class="gap-label">Cuenta más grande en inglés</div>
+      <div class="gap-info">
+        <div class="num" style="color:var(--lime)">67K</div>
+        <div class="lab">@facelesstraderss</div>
+      </div>
+      <div class="gap-bar"><div class="fill en"></div></div>
+    </div>
+    <div class="gap-col">
+      <div class="gap-label">Cuenta más grande en español</div>
+      <div class="gap-info">
+        <div class="num" style="color:var(--orange)">~11K</div>
+        <div class="lab">@trading.latam_</div>
+      </div>
+      <div class="gap-bar"><div class="fill es"></div></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p><strong>El nicho faceless de finanzas en español está prácticamente vacío.</strong> En inglés hay cuentas de millones de seguidores generando millones de dólares. En español, la más grande tiene 11K. La combinación de automatización (SanchoCMO) + nicho vacío + red de shoutouts es lo que puede hacer que lleguemos a 30-60K donde otros tardarían 3+ años.</p>
+  </div>
+
+  <h3>Qué formatos replicar — scoring de automatizabilidad</h3>
+  <p>No todos los formatos son igual de fáciles de producir con IA. Este es el ranking:</p>
+
+  <div class="score-grid">
+    <div class="score-row"><div class="score-num">10/10</div><div><div class="score-name">Quotes/Gráficos</div><div class="score-ref">Modelo @millionaire_mentor — texto sobre fondo, template + Claude = 100% automático</div></div></div>
+    <div class="score-row"><div class="score-num">9/10</div><div><div class="score-name">Screen Recordings</div><div class="score-ref">Modelo @ai.innovator — 82% watch time, el formato faceless con mayor retención</div></div></div>
+    <div class="score-row"><div class="score-num">8/10</div><div><div class="score-name">Carruseles educativos</div><div class="score-ref">Modelo @thewealthdad — 10 slides 1080x1080, generan saves (señal #1 del algoritmo)</div></div></div>
+    <div class="score-row"><div class="score-num">7/10</div><div><div class="score-name">Media brand / Noticias</div><div class="score-ref">Modelo @wealth — Claude cura noticias, requiere RSS/APIs</div></div></div>
+    <div class="score-row"><div class="score-num">6/10</div><div><div class="score-name">Reels stock + texto</div><div class="score-ref">Modelo @facelesstraderss — Fliki/Zebracat desde texto, requiere QA</div></div></div>
+  </div>
+
+  <p><strong>Ramp recomendado</strong>: Quotes (10/10) + Screen recordings (9/10) + Carruseles (8/10) desde semana 1 → Reels stock (6/10) en semana 2-3 → Noticias (7/10) en mes 2.</p>
+
+  <h3>Proyecciones de crecimiento</h3>
+  <div class="proj-grid">
+    <div class="proj-cell header">Período</div>
+    <div class="proj-cell header">Conservador</div>
+    <div class="proj-cell header">Probable</div>
+    <div class="proj-cell header">Optimista</div>
+    <div class="proj-cell period">Mes 1</div><div class="proj-cell"><span class="num">300</span></div><div class="proj-cell"><span class="num">800</span></div><div class="proj-cell"><span class="num">2,000</span></div>
+    <div class="proj-cell period">Mes 3</div><div class="proj-cell"><span class="num">1,500</span></div><div class="proj-cell"><span class="num">4,000</span></div><div class="proj-cell"><span class="num">10,000</span></div>
+    <div class="proj-cell period">Mes 6</div><div class="proj-cell"><span class="num">5,000</span></div><div class="proj-cell"><span class="num">12,000</span></div><div class="proj-cell"><span class="num">25,000</span></div>
+    <div class="proj-cell period">Mes 12</div><div class="proj-cell"><span class="num">12,000</span></div><div class="proj-cell"><span class="num">30,000</span></div><div class="proj-cell"><span class="num">60,000+</span></div>
+  </div>
+
+  <p>Casos documentados: Stan.store hizo 0→15K en 30 días (100% orgánico). "Rich Life Rulers" hizo 0→12K en pocos meses. Pero el 75% de las cuentas de IG nunca llegan a 10K — la diferencia es consistencia y red.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PARTE 2: ESTRATEGIA                                     -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="estrategia">
+  <div class="section-tag">Parte 2</div>
+  <h2>Estrategia</h2>
+
+  <h3>La tesis central</h3>
+  <p>El crecimiento en Instagram depende de 3 cosas, en este orden:</p>
+  <ol class="thesis">
+    <li><div><strong>La red</strong> <span>— Shoutouts cruzados entre cuentas del nicho. Jason Stone lo demostró: 15 cuentas haciendo cross-shoutouts = 0 a 2M en &lt;2 años. Es lo que separa crecimiento lineal de exponencial.</span></div></li>
+    <li><div><strong>El contenido correcto</strong> <span>— No el "mejor" contenido, sino el que genera saves y DM shares. Formatos que el algoritmo favorece + temas que la audiencia comparte.</span></div></li>
+    <li><div><strong>La consistencia</strong> <span>— 3-5 posts/semana mínimo, sin fallar nunca. Esto es lo que SanchoCMO resuelve: eliminamos el factor humano como cuello de botella.</span></div></li>
+  </ol>
+
+  <h3>Los dos multiplicadores del algoritmo 2026</h3>
+  <p>Adam Mosseri (CEO de Instagram) confirmó estas señales:</p>
+  <div class="algo-cards">
+    <div class="algo-card">
+      <div class="tag">Señal #1 — Reach nuevo</div>
+      <h4>DM Shares</h4>
+      <p>Cuando alguien envía tu post por DM, Instagram lo muestra a más gente que NO te sigue. Es la señal más fuerte para crecer con audiencia nueva.</p>
+    </div>
+    <div class="algo-card">
+      <div class="tag">Señal #1 — Reels</div>
+      <h4>Watch Time</h4>
+      <p>Completion rate y rewatches. Reels con &gt;60% de retención superan 5-10x a los que tienen &lt;40%. Los primeros 3 segundos son todo.</p>
+    </div>
+  </div>
+
+  <p>No optimizamos para likes (vanidad) sino para que la gente <strong>envíe</strong> nuestro contenido y <strong>termine</strong> de ver nuestros videos. Cada pieza pasa el test: "¿alguien enviaría esto a un amigo?"</p>
+
+  <h4>Cómo se traduce al contenido</h4>
+  <div class="compare">
+    <div class="compare-item"><strong>Datos sorprendentes</strong> "El 90% de los traders pierden dinero"</div>
+    <div class="compare-vs">vs</div>
+    <div class="compare-item">Tips genéricos "5 tips para invertir"</div>
+  </div>
+  <div class="compare">
+    <div class="compare-item"><strong>Comparativas polémicas</strong> "¿Forex o Crypto?"</div>
+    <div class="compare-vs">vs</div>
+    <div class="compare-item">Listas "Las mejores inversiones"</div>
+  </div>
+  <div class="compare">
+    <div class="compare-item"><strong>CTAs de envío</strong> "Envíale esto a alguien que necesita saberlo"</div>
+    <div class="compare-vs">vs</div>
+    <div class="compare-item">CTAs de like "Dale like"</div>
+  </div>
+  <div class="compare">
+    <div class="compare-item"><strong>Screen recordings reales</strong> 82% watch time</div>
+    <div class="compare-vs">vs</div>
+    <div class="compare-item">Stock footage — 60% promedio</div>
+  </div>
+
+  <h3>Ratio de contenido</h3>
+  <p>El mix correcto es deliberado. Reels traen gente nueva (30.8% reach, 55% de no-seguidores) pero carruseles construyen la confianza que monetiza.</p>
+  <div class="ratio-grid">
+    <div class="ratio-item"><div class="pct">40%</div><div class="name">Educativo</div><div class="desc">Carruseles, Screen recordings, Reels educativos</div></div>
+    <div class="ratio-item"><div class="pct">25%</div><div class="name">Relatable</div><div class="desc">Quotes, Memes financieros, Reels cortos</div></div>
+    <div class="ratio-item"><div class="pct">20%</div><div class="name">Behind the scenes</div><div class="desc">Stories, Reels de proceso, Cuenta demo</div></div>
+    <div class="ratio-item"><div class="pct">15%</div><div class="name">Promocional</div><div class="desc">CTAs a bio, Testimonios, Resultados</div></div>
+  </div>
+  <p><strong>Frecuencia</strong>: 5 posts/semana (mes 1), escalando a 7-10/semana (mes 2+). <strong>Horarios LATAM</strong>: Lun-Jue 7-9 AM, 12-2 PM, 5-9 PM (UTC-5).</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PARTE 3: WORKFLOW DIARIO                                -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="workflow">
+  <div class="section-tag">Parte 3</div>
+  <h2>Workflow diario</h2>
+  <p>Estos son los 6 pasos que el sistema ejecuta cada día, en orden. La mayoría son automáticos — la supervisión humana es mínima.</p>
+
+  <h3>Paso 1 — Inteligencia</h3>
+  <p>¿De qué hablamos hoy? Todos los días a las 6 AM, el sistema escanea noticias de mercados LATAM y contenido viral del nicho.</p>
+  <div class="wf-block"><div class="dot wf-dot-green"></div><div><div class="wf-name">daily-pulse <span class="wf-tag">SanchoCMO</span></div><div class="wf-desc">Noticias de mercados financieros → filtra relevantes para LATAM → 3-5 temas del día</div></div></div>
+  <div class="wf-block"><div class="dot wf-dot-green"></div><div><div class="wf-name">apify + social-media-extractor <span class="wf-tag">SanchoCMO</span></div><div class="wf-desc">Hashtags trending en IG (#trading #inversiones) → detecta outliers con 3x+ views → influencers del nicho</div></div></div>
+  <div class="wf-block"><div class="dot wf-dot-green"></div><div><div class="wf-name">thief-marketers + social-media-extractor <span class="wf-tag">SanchoCMO</span></div><div class="wf-desc">Monitorea competidores → qué publicaron, qué formato, qué les funcionó</div></div></div>
+
+  <h3>Paso 2 — Planificación</h3>
+  <p>¿Qué publicamos, en qué formato, a qué hora? El planner combina la inteligencia del día con el ratio de contenido y el historial de qué funcionó.</p>
+  <div class="wf-block"><div class="dot wf-dot-red"></div><div><div class="wf-name">ig-content-planner <span class="wf-tag" style="color:var(--red)">CONSTRUIR</span></div><div class="wf-desc">Lee: daily-pulse + trends + learnings.md + ratio 40/25/20/15 → Decide: tema, formato, hora, hook, CTA → Output: brief del día</div></div></div>
+
+  <h3>Paso 3 — Creación</h3>
+  <p>Generar el contenido con reglas regulatorias integradas. NUNCA mencionar broker, NUNCA prometer rendimientos, disclaimer obligatorio.</p>
+  <div class="wf-block"><div class="dot wf-dot-red"></div><div><div class="wf-name">ig-faceless-content <span class="wf-tag" style="color:var(--red)">CONSTRUIR</span></div><div class="wf-desc">Genera por formato: Carrusel (10 slides) · Reel (hook 3s + script) · Quote (dato + fuente) · Screen recording (narración + marcadores). CTAs binarios, alt text con keywords.</div></div></div>
+  <div class="wf-arrow">↓</div>
+  <div class="wf-block"><div class="dot wf-dot-green"></div><div><div class="wf-name">visual-identity <span class="wf-tag">SanchoCMO</span></div><div class="wf-desc">Genera imágenes con brand templates via Nanobanana → PNGs 1080x1080. Para video: Fliki/Zebracat ($20/mes).</div></div></div>
+  <div class="wf-arrow">↓</div>
+  <div class="wf-block"><div class="dot wf-dot-green"></div><div><div class="wf-name">content-atomizer <span class="wf-tag">SanchoCMO</span></div><div class="wf-desc">Opcional: carrusel top → 2-3 quotes + 1 Story. Multiplica contenido sin esfuerzo.</div></div></div>
+
+  <h3>Paso 4 — Publicación</h3>
+  <p>Publicar automáticamente. El 75% de cuentas faceless mueren por inconsistencia — la automatización elimina ese riesgo.</p>
+  <div class="wf-block"><div class="dot wf-dot-blue"></div><div><div class="wf-name">instagram <span class="wf-tag">antigravity — única skill externa</span></div><div class="wf-desc">Graph API completa: publish, schedule, comments, messages, insights, governance. 200 calls/hora, 100 posts/24h.</div></div></div>
+
+  <h3>Paso 5 — Comunidad</h3>
+  <p>DM automation para capturar leads en el momento de máximo interés.</p>
+  <div class="wf-block"><div class="dot wf-dot-blue"></div><div><div class="wf-name">instagram → messages.py <span class="wf-tag">antigravity</span></div><div class="wf-desc">Keywords: "TRADING", "INICIO", "GUÍA" → respuesta automática con lead magnet + link affiliate. Responder comentarios en &lt;60 min.</div></div></div>
+
+  <h3>Paso 6 — Análisis</h3>
+  <p>Loop de mejora continua. Cada semana el planner aprende qué hooks funcionaron, qué formatos generaron más saves, qué horarios tuvieron más reach.</p>
+  <div class="wf-block"><div class="dot wf-dot-green"></div><div><div class="wf-name">apify + instagram insights <span class="wf-tag">SanchoCMO + antigravity</span></div><div class="wf-desc">Métricas: (1) DM Sends/Reach (2) Watch Time (3) Saves/Reach (4) Profile visits → Link clicks. Output: learnings.md → loop al planner.</div></div></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PARTE 4: PLAN MES A MES + IMPLEMENTACIÓN                -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="plan">
+  <div class="section-tag">Parte 4</div>
+  <h2>Plan de ejecución</h2>
+
+  <!-- MES 1 -->
+  <div class="month-block active">
+    <h3>Mes 1 — Setup + Buffer + Lanzamiento</h3>
+    <p><strong>Meta</strong>: 500-1K seguidores. Validar que el contenido funciona.</p>
+    <ul>
+      <li><strong>Semana 1 — Setup técnico</strong>: Definir nombre/branding, crear cuenta IG Business + FB Page, Meta App + tokens, Apify account, brand context en SanchoCMO, instalar skills de antigravity, construir las 2 skills nuevas</li>
+      <li><strong>Semana 2 — Buffer de contenido</strong>: Generar 40 piezas (10 quotes + 10 carruseles + 10 Reels + 5 screen recordings + 5 educativos) para tener 2-3 semanas de contenido listo antes de publicar. Revisar calidad del batch entero. Test end-to-end: generar → publicar → verificar.</li>
+      <li><strong>Semana 3 — Lanzamiento</strong>: Publicar 5 posts/semana del buffer. Engagement activo: 20-30 cuentas del nicho por día. Responder TODO en &lt;60 min. Identificar 30 cuentas para shoutouts.</li>
+      <li><strong>Semana 4 — Iterar</strong>: Primer análisis de métricas. Qué hooks funcionaron, qué formatos tuvieron más saves. Actualizar learnings.md. Contactar 10-15 cuentas para proponer shoutouts.</li>
+    </ul>
+    <div class="kpis">
+      <div class="kpi"><div class="val">20+</div><div class="label">Posts</div></div>
+      <div class="kpi"><div class="val">500–1K</div><div class="label">Seguidores</div></div>
+      <div class="kpi"><div class="val">&gt;3%</div><div class="label">Engagement</div></div>
+      <div class="kpi"><div class="val">15</div><div class="label">Contactos shoutout</div></div>
+    </div>
+  </div>
+
+  <!-- MES 2 -->
+  <div class="month-block active">
+    <h3>Mes 2 — Red de Shoutouts</h3>
+    <p><strong>Meta</strong>: 1.5-3K seguidores. Construir la red que acelera todo.</p>
+    <p>Shoutouts recíprocos = intercambios gratuitos entre cuentas de tamaño similar. Nosotros los mencionamos en Stories, ellos nos mencionan. Las audiencias son del mismo nicho, así que los seguidores nuevos son relevantes.</p>
+    <ul>
+      <li><strong>Encontrar</strong> — apify-influencer-discovery: busca por hashtags, filtra 1K-50K, engagement &gt;2%</li>
+      <li><strong>Contactar</strong> — Template de outreach via DM (manual, para evitar ban)</li>
+      <li><strong>Organizar</strong> — Grupo WhatsApp/Telegram, calendario 1-2 shoutouts/semana, engagement pod opcional</li>
+      <li><strong>Trackear</strong> — shoutout-tracker.md con métricas por intercambio</li>
+      <li>Subir frecuencia a 7 posts/semana</li>
+    </ul>
+    <div class="kpis">
+      <div class="kpi"><div class="val">1.5–3K</div><div class="label">Seguidores</div></div>
+      <div class="kpi"><div class="val">5–10</div><div class="label">Red shoutouts</div></div>
+      <div class="kpi"><div class="val">7</div><div class="label">Posts/semana</div></div>
+      <div class="kpi"><div class="val">50–100</div><div class="label">Email leads</div></div>
+      <div class="kpi"><div class="val">1–3</div><div class="label">Conversiones</div></div>
+    </div>
+  </div>
+
+  <!-- MES 3 -->
+  <div class="month-block">
+    <h3>Mes 3 — Primeros Ingresos</h3>
+    <p><strong>Meta</strong>: 3-5K seguidores. Primeros ingresos recurrentes del affiliate.</p>
+    <ul>
+      <li>Escalar formatos ganadores (si screen recordings tienen 82% watch time → más de eso)</li>
+      <li>content-atomizer a fondo: cada carrusel top → 2-3 quotes + 1 Story + 1 Reel</li>
+      <li>Red de shoutouts: 10-15 cuentas activas con calendario fijo</li>
+      <li>Empezar a medir impacto de cada shoutout (seguidores ganados por intercambio)</li>
+    </ul>
+    <div class="kpis">
+      <div class="kpi"><div class="val">3–5K</div><div class="label">Seguidores</div></div>
+      <div class="kpi"><div class="val">10–15</div><div class="label">Red shoutouts</div></div>
+      <div class="kpi"><div class="val">$100–500</div><div class="label">Revenue/mes</div></div>
+      <div class="kpi"><div class="val">200–500</div><div class="label">Email leads</div></div>
+    </div>
+  </div>
+
+  <!-- MES 4-6 -->
+  <div class="month-block">
+    <h3>Mes 4–6 — Paid Growth</h3>
+    <p><strong>Meta</strong>: 5-15K seguidores. Revenue estable $500-2K/mes.</p>
+    <p>Todo fue orgánico hasta ahora. SanchoCMO tiene la cadena completa de paid growth — no necesitamos construir nada:</p>
+
+    <h4>Pipeline de Ads — 3 skills encadenadas</h4>
+    <div class="wf-block"><div class="dot wf-dot-green"></div><div><div class="wf-name">paid-ads <span class="wf-tag">SanchoCMO</span></div><div class="wf-desc">Estrategia: audiencias, presupuesto, CPA target → decide qué Reels promover</div></div></div>
+    <div class="wf-arrow">↓</div>
+    <div class="wf-block"><div class="dot wf-dot-green"></div><div><div class="wf-name">ad-creative <span class="wf-tag">SanchoCMO</span></div><div class="wf-desc">5-10 variaciones de copy por ad para A/B testing</div></div></div>
+    <div class="wf-arrow">↓</div>
+    <div class="wf-block"><div class="dot wf-dot-green"></div><div><div class="wf-name">meta-ads <span class="wf-tag">SanchoCMO</span></div><div class="wf-desc">Ejecuta via Meta Ads API (token en .env) → campañas, monitorea performance</div></div></div>
+
+    <h4>Funnel completo — con skills en cada etapa</h4>
+    <div class="funnel">
+      <div class="funnel-row"><div class="funnel-stage">Contenido IG</div><div class="funnel-skill">ig-faceless-content + marketing-psychology</div></div>
+      <div class="funnel-row"><div class="funnel-stage">DM automation</div><div class="funnel-skill">instagram → messages.py</div></div>
+      <div class="funnel-row"><div class="funnel-stage">Lead magnet</div><div class="funnel-skill">direct-response-copy + copywriting</div></div>
+      <div class="funnel-row"><div class="funnel-stage">Email nurture</div><div class="funnel-skill">email-sequences (5 emails educativos)</div></div>
+      <div class="funnel-row"><div class="funnel-stage">Conversión</div><div class="funnel-skill">direct-response-copy → affiliate Star Trader</div></div>
+    </div>
+
+    <p><strong>Meta Ads</strong> ($200-300/mes): CPF en LATAM $0.50-1.50 → 200-600 seguidores pagos/mes. <strong>Shoutouts pagados</strong> ($100-200/mes): cuentas de 50K-100K. <strong>Segunda cuenta</strong> si primera &gt;5K.</p>
+
+    <div class="kpis">
+      <div class="kpi"><div class="val">5–15K</div><div class="label">Seguidores</div></div>
+      <div class="kpi"><div class="val">$500–2K</div><div class="label">Revenue/mes</div></div>
+      <div class="kpi"><div class="val">2</div><div class="label">Cuentas propias</div></div>
+      <div class="kpi"><div class="val">$300–500</div><div class="label">Inversión ads/mes</div></div>
+    </div>
+  </div>
+
+  <!-- MES 7-12 -->
+  <div class="month-block">
+    <h3>Mes 7–12 — Escala</h3>
+    <p><strong>Meta</strong>: 15-60K seguidores. Revenue $2-5K+/mes. SanchoCMO opera casi autónomo.</p>
+    <ul>
+      <li>Red de shoutouts madura: 15+ cuentas, calendario fijo</li>
+      <li>3-5 cuentas propias con shoutouts cruzados (modelo @fullystaked)</li>
+      <li>10+ posts/semana con ~2h de supervisión humana</li>
+    </ul>
+
+    <h4>Diversificación de ingresos</h4>
+    <div class="table-wrap"><table>
+      <thead><tr><th>Fuente</th><th>Revenue/mes</th><th>Cómo</th></tr></thead>
+      <tbody>
+        <tr><td>Affiliate Star Trader</td><td style="color:var(--lime);font-weight:600">$500–2K</td><td>$8/lote × clientes activos</td></tr>
+        <tr><td>Prop firms affiliate</td><td style="color:var(--lime);font-weight:600">$200–500</td><td>$50-100/evaluación (FTMO, FundedNext)</td></tr>
+        <tr><td>Shoutouts vendidos</td><td style="color:var(--lime);font-weight:600">$200–500</td><td>Cuando &gt;10K, vender menciones</td></tr>
+        <tr><td>Cursos (mes 9+)</td><td style="color:var(--lime);font-weight:600">$500–2K</td><td>Curso $50-200</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="val">15–60K</div><div class="label">Seguidores totales</div></div>
+      <div class="kpi"><div class="val">$2–5K+</div><div class="label">Revenue/mes</div></div>
+      <div class="kpi"><div class="val">2–5K</div><div class="label">Email leads</div></div>
+      <div class="kpi"><div class="val">3–5</div><div class="label">Cuentas propias</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- PARTE 5: SKILLS                                         -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<section id="skills">
+  <div class="section-tag">Parte 5</div>
+  <h2>Inventario de Skills</h2>
+
+  <div class="skill-section">
+    <div class="skill-section-title"><div class="dot" style="background:var(--lime)"></div> Ya existen en SanchoCMO — 15 skills</div>
+    <div class="skill-grid">
+      <div class="skill-card"><div><div class="sname">daily-pulse</div><div class="sdesc">Noticias trending de mercados</div></div><div class="sphase">Inteligencia</div></div>
+      <div class="skill-card"><div><div class="sname">content-calendar-planner</div><div class="sdesc">Calendario editorial</div></div><div class="sphase">Planificación</div></div>
+      <div class="skill-card"><div><div class="sname">social-content</div><div class="sdesc">Estrategia de contenido + copy</div></div><div class="sphase">Creación</div></div>
+      <div class="skill-card"><div><div class="sname">content-atomizer</div><div class="sdesc">1 pieza → múltiples formatos</div></div><div class="sphase">Creación</div></div>
+      <div class="skill-card"><div><div class="sname">thief-marketers</div><div class="sdesc">Espía competidores via Apify</div></div><div class="sphase">Inteligencia</div></div>
+      <div class="skill-card"><div><div class="sname">social-media-extractor</div><div class="sdesc">Scraping de perfiles IG</div></div><div class="sphase">Inteligencia</div></div>
+      <div class="skill-card"><div><div class="sname">brand-voice</div><div class="sdesc">Tono y personalidad</div></div><div class="sphase">Setup</div></div>
+      <div class="skill-card"><div><div class="sname">visual-identity</div><div class="sdesc">Paleta, tipografía, grid</div></div><div class="sphase">Setup</div></div>
+      <div class="skill-card"><div><div class="sname">ad-creative</div><div class="sdesc">Creativos de ads a escala</div></div><div class="sphase">Paid Growth</div></div>
+      <div class="skill-card"><div><div class="sname">paid-ads</div><div class="sdesc">Estrategia: targeting, ROAS</div></div><div class="sphase">Paid Growth</div></div>
+      <div class="skill-card"><div><div class="sname">meta-ads</div><div class="sdesc">Ejecución Meta Ads API</div></div><div class="sphase">Paid Growth</div></div>
+      <div class="skill-card"><div><div class="sname">direct-response-copy</div><div class="sdesc">Copy de conversión</div></div><div class="sphase">Monetización</div></div>
+      <div class="skill-card"><div><div class="sname">marketing-psychology</div><div class="sdesc">70+ modelos de persuasión</div></div><div class="sphase">Creación + Monetización</div></div>
+      <div class="skill-card"><div><div class="sname">copywriting</div><div class="sdesc">Landing pages del funnel</div></div><div class="sphase">Monetización</div></div>
+      <div class="skill-card"><div><div class="sname">email-sequences</div><div class="sdesc">Nurture → CTA affiliate</div></div><div class="sphase">Monetización</div></div>
+      <div class="skill-card"><div><div class="sname">apify</div><div class="sdesc">Ejecuta cualquier actor de Apify (reemplaza apify-influencer-discovery, apify-trend-analysis, apify-content-analytics)</div></div><div class="sphase">Inteligencia + Growth + Análisis</div></div>
+      <div class="skill-card"><div><div class="sname">seo-content</div><div class="sdesc">SEO para contenido (reemplaza content-creator de antigravity)</div></div><div class="sphase">Creación</div></div>
+    </div>
+  </div>
+
+  <div class="skill-section">
+    <div class="skill-section-title"><div class="dot" style="background:var(--blue)"></div> Instalar de antigravity — 1 skill</div>
+    <div class="skill-grid">
+      <div class="skill-card"><div><div class="sname">instagram</div><div class="sdesc">Publicar, DMs, comments, analytics via Graph API — la única skill externa que necesitamos porque SanchoCMO no puede publicar ni gestionar una cuenta de IG</div></div><div class="sphase">Publicación + Comunidad + Análisis</div></div>
+    </div>
+  </div>
+
+  <div class="skill-section">
+    <div class="skill-section-title"><div class="dot" style="background:var(--red)"></div> Construir nosotros — 2 skills</div>
+    <div class="skill-grid">
+      <div class="skill-card" style="border-left:3px solid var(--red)"><div><div class="sname">ig-content-planner</div><div class="sdesc">Ratio + horarios LATAM + inteligencia diaria + historial → decide qué publicar</div></div><div class="sphase">Planificación · ~4 hrs</div></div>
+      <div class="skill-card" style="border-left:3px solid var(--red)"><div><div class="sname">ig-faceless-content</div><div class="sdesc">Reglas regulatorias, CTAs binarios, hooks de 3s, formatos adaptados para LATAM</div></div><div class="sphase">Creación · ~4 hrs</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer>
+  <p><strong>17 skills de SanchoCMO</strong> + <strong>1 de antigravity</strong> (instagram) + <strong>2 nuevas</strong> que construimos — un motor que genera, publica y optimiza contenido de educación financiera en Instagram casi autónomo, mientras construimos una red de shoutouts recíprocos que es el verdadero multiplicador.</p>
+</footer>
+
+</div>
+</body>
+</html>
