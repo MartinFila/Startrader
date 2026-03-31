@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuesta Visual — finanzas.pop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,900;1,9..144,300&family=Space+Grotesk:wght@400;600;700&family=Nunito:wght@400;700;900&family=Outfit:wght@400;600;900&family=Plus+Jakarta+Sans:wght@400;600;800&family=Instrument+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+:root {
+  --page-bg: #f7f5f0;
+  --ink: #1a1815;
+  --ink-60: #6b6560;
+  --ink-30: #b0a99f;
+  --ink-15: #d6d0c8;
+  --red: #c0392b;
+  --page-max: 1200px;
+}
+
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--page-bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── PAGE LAYOUT ── */
+.container { max-width: var(--page-max); margin: 0 auto; padding: 0 clamp(20px, 4vw, 48px); }
+
+/* ── HEADER ── */
+.hero {
+  padding: clamp(60px, 10vw, 120px) 0 clamp(40px, 6vw, 80px);
+  text-align: left;
+}
+.hero-eyebrow {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-top: 16px;
+  color: var(--ink);
+}
+.hero h1 em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink-60);
+}
+.hero-sub {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--ink-60);
+  margin-top: 20px;
+  max-width: 500px;
+  line-height: 1.5;
+}
+.hero-cta {
+  display: inline-block;
+  margin-top: 28px;
+  padding: 14px 32px;
+  background: var(--ink);
+  color: var(--page-bg);
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+.divider {
+  height: 1px;
+  background: var(--ink-15);
+  margin: clamp(40px, 6vw, 80px) 0;
+}
+
+/* ── REEL SECTION ── */
+.reel-section {
+  display: flex;
+  gap: clamp(30px, 4vw, 60px);
+  align-items: center;
+}
+.reel-phone {
+  flex-shrink: 0;
+  width: clamp(180px, 22vw, 260px);
+  aspect-ratio: 9/16;
+  background: #1c1917;
+  border-radius: 28px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+.reel-phone::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(145deg, #faf6f1 0%, #faf6f1 60%, #1c1917 60%);
+  opacity: 0.15;
+}
+.play-btn {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1;
+}
+.play-btn::after {
+  content: '';
+  width: 0; height: 0;
+  border-left: 20px solid var(--ink);
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  margin-left: 4px;
+}
+.reel-info { flex: 1; }
+.reel-info h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(24px, 3.5vw, 40px);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.reel-info p {
+  font-size: clamp(15px, 1.8vw, 18px);
+  color: var(--ink-60);
+  margin-top: 16px;
+  line-height: 1.5;
+  max-width: 400px;
+}
+.reel-formats {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.reel-tag {
+  padding: 8px 16px;
+  border: 1px solid var(--ink-15);
+  border-radius: 100px;
+  font-size: 13px;
+  color: var(--ink-60);
+  font-weight: 600;
+}
+
+/* ── NAMES ── */
+.names-header {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(28px, 4vw, 48px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+.names-sub {
+  font-size: 16px;
+  color: var(--ink-60);
+  margin-top: 8px;
+}
+.names-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+.name-card {
+  padding: 24px;
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--ink-15);
+  transition: border-color 0.2s;
+}
+.name-card:hover { border-color: var(--red); }
+.name-num {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--red);
+  letter-spacing: 0.1em;
+}
+.name-handle {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  margin-top: 6px;
+  letter-spacing: -0.01em;
+}
+.name-desc {
+  font-size: 14px;
+  color: var(--ink-60);
+  margin-top: 4px;
+}
+
+/* ── STYLE SECTIONS ── */
+.style-section { margin-bottom: clamp(60px, 8vw, 100px); }
+.style-header-row {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.style-letter {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(48px, 7vw, 80px);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--ink);
+  letter-spacing: -0.04em;
+}
+.style-name {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(20px, 3vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.style-desc {
+  font-size: 15px;
+  color: var(--ink-60);
+  max-width: 500px;
+  margin-bottom: 28px;
+}
+.style-vote {
+  display: inline-block;
+  margin-bottom: 24px;
+  padding: 8px 20px;
+  border: 1.5px solid var(--ink);
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+.cards-row {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.cards-row::-webkit-scrollbar { height: 6px; }
+.cards-row::-webkit-scrollbar-track { background: transparent; }
+.cards-row::-webkit-scrollbar-thumb { background: var(--ink-15); border-radius: 3px; }
+
+/* ── CARD BASE ── */
+.card {
+  flex-shrink: 0;
+  width: 280px;
+  height: 350px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  scroll-snap-align: start;
+}
+.card-label {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  z-index: 2;
+  opacity: 0.5;
+}
+.card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  padding: 44px 24px 24px;
+}
+.card-foot {
+  padding: 0 24px 16px;
+  font-size: 10px;
+  opacity: 0.4;
+}
+
+/* ═══════════════════════════════════════════
+   STYLE A — EDITORIAL CÁLIDO
+   ═══════════════════════════════════════════ */
+.sa { background: #faf6f1; border: 1px solid #e0d6c8; }
+.sa .card-label { color: #6b5c4c; }
+.sa .card-foot { color: #a89880; }
+.sa .big-num { font-family: 'Fraunces', serif; font-size: 72px; font-weight: 900; color: #c0392b; line-height: 0.9; }
+.sa .headline { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; color: #3d3225; line-height: 1.2; }
+.sa .sub { font-size: 15px; color: #6b5c4c; margin-top: 10px; line-height: 1.4; }
+.sa .accent { color: #c0392b; }
+.sa .source { font-size: 11px; color: #a89880; margin-top: 12px; border-top: 1px solid #e0d6c8; padding-top: 10px; }
+.sa .data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e0d6c8; font-size: 14px; color: #3d3225; }
+.sa .data-val { font-family: 'Fraunces', serif; font-weight: 900; }
+.sa .tag { display: inline-block; padding: 4px 10px; border: 1px solid #c0392b; border-radius: 4px; font-size: 10px; color: #c0392b; font-weight: 700; letter-spacing: 0.08em; margin-bottom: 12px; }
+.sa .quote-mark { font-family: 'Fraunces', serif; font-size: 60px; color: #c0392b; line-height: 0.5; }
+
+/* ═══════════════════════════════════════════
+   STYLE B — NEON DATA
+   ═══════════════════════════════════════════ */
+.sb { background: #0a0a0a; }
+.sb .card-label { color: #84cc16; }
+.sb .card-foot { color: rgba(132,204,22,0.3); }
+.sb .big-num { font-family: 'Space Grotesk', sans-serif; font-size: 80px; font-weight: 700; color: #84cc16; line-height: 0.85; letter-spacing: -0.03em; }
+.sb .headline { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 700; color: rgba(255,255,255,0.85); line-height: 1.2; }
+.sb .sub { font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: rgba(255,255,255,0.45); margin-top: 10px; line-height: 1.4; }
+.sb .accent { color: #84cc16; }
+.sb .source { font-family: 'Space Grotesk', sans-serif; font-size: 10px; color: rgba(255,255,255,0.2); margin-top: 12px; letter-spacing: 0.1em; text-transform: uppercase; }
+.sb .data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-family: 'Space Grotesk', sans-serif; font-size: 13px; color: rgba(255,255,255,0.6); }
+.sb .data-val { font-weight: 700; color: #84cc16; }
+.sb .tag { display: inline-block; padding: 4px 10px; border: 1px solid #84cc16; border-radius: 2px; font-family: 'Space Grotesk', sans-serif; font-size: 10px; color: #84cc16; font-weight: 700; letter-spacing: 0.1em; margin-bottom: 10px; }
+.sb .quote-mark { font-size: 48px; color: #84cc16; line-height: 0.5; }
+.sb .bar { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; margin-top: 6px; }
+.sb .bar-fill { height: 100%; background: #84cc16; border-radius: 2px; }
+
+/* ═══════════════════════════════════════════
+   STYLE C — WARM GRADIENT
+   ═══════════════════════════════════════════ */
+.sc { border-radius: 12px; }
+.sc.grad1 { background: linear-gradient(145deg, #f97066, #e8590c); }
+.sc.grad2 { background: linear-gradient(145deg, #f59e0b, #ea580c); }
+.sc.grad3 { background: linear-gradient(145deg, #10b981, #059669); }
+.sc.grad4 { background: linear-gradient(145deg, #8b5cf6, #6d28d9); }
+.sc.grad5 { background: linear-gradient(145deg, #ec4899, #be185d); }
+.sc.grad6 { background: linear-gradient(145deg, #3b82f6, #1d4ed8); }
+.sc .card-label { color: rgba(255,255,255,0.5); }
+.sc .card-foot { color: rgba(255,255,255,0.3); }
+.sc .big-num { font-family: 'Nunito', sans-serif; font-size: 72px; font-weight: 900; color: #fff; line-height: 0.9; }
+.sc .headline { font-family: 'Nunito', sans-serif; font-size: 24px; font-weight: 900; color: #fff; line-height: 1.2; }
+.sc .sub { font-family: 'Nunito', sans-serif; font-size: 14px; color: rgba(255,255,255,0.75); margin-top: 10px; line-height: 1.4; }
+.sc .accent { color: #fef3c7; }
+.sc .source { font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 10px; }
+.sc .data-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.15); font-family: 'Nunito', sans-serif; font-size: 13px; color: rgba(255,255,255,0.85); }
+.sc .data-val { font-weight: 900; }
+.sc .tag { display: inline-block; padding: 5px 12px; background: rgba(255,255,255,0.2); border-radius: 100px; font-size: 10px; color: #fff; font-weight: 700; letter-spacing: 0.06em; margin-bottom: 10px; }
+.sc .quote-mark { font-size: 48px; color: rgba(255,255,255,0.4); line-height: 0.5; }
+
+/* ═══════════════════════════════════════════
+   STYLE D — BOLD MAGAZINE
+   ═══════════════════════════════════════════ */
+.sd.bg1 { background: #1e3a5f; }
+.sd.bg2 { background: #c2410c; }
+.sd.bg3 { background: #166534; }
+.sd.bg4 { background: #7f1d1d; }
+.sd.bg5 { background: #581c87; }
+.sd.bg6 { background: #1e3a5f; }
+.sd .card-label { color: rgba(255,255,255,0.25); }
+.sd .card-foot { color: rgba(255,255,255,0.2); }
+.sd .big-num { font-family: 'Outfit', sans-serif; font-size: 84px; font-weight: 900; color: #fff; line-height: 0.85; letter-spacing: -0.03em; }
+.sd .headline { font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 900; color: #fff; line-height: 1.1; }
+.sd .sub { font-family: 'Outfit', sans-serif; font-size: 14px; color: rgba(255,255,255,0.55); margin-top: 10px; line-height: 1.35; }
+.sd .accent { color: rgba(255,255,255,0.55); }
+.sd .source { font-family: 'Outfit', sans-serif; font-size: 10px; color: rgba(255,255,255,0.25); margin-top: 10px; }
+.sd .data-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-family: 'Outfit', sans-serif; font-size: 14px; color: rgba(255,255,255,0.7); }
+.sd .data-val { font-weight: 900; color: #fff; }
+.sd .tag { display: inline-block; padding: 4px 10px; border: 2px solid rgba(255,255,255,0.3); border-radius: 0; font-family: 'Outfit', sans-serif; font-size: 10px; color: rgba(255,255,255,0.6); font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+.sd .quote-mark { font-family: 'Outfit', sans-serif; font-size: 56px; color: rgba(255,255,255,0.2); line-height: 0.5; }
+
+/* ═══════════════════════════════════════════
+   STYLE E — MINIMAL SWISS
+   ═══════════════════════════════════════════ */
+.se { background: #fcfcfb; border: 2px solid #1a1a1a; position: relative; }
+.se::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: #dc2626; }
+.se .card-label { color: #1a1a1a; }
+.se .card-foot { color: #aaa; }
+.se .big-num { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 72px; font-weight: 800; color: #1a1a1a; line-height: 0.9; letter-spacing: -0.04em; }
+.se .headline { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 22px; font-weight: 800; color: #1a1a1a; line-height: 1.15; }
+.se .sub { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; color: #777; margin-top: 10px; line-height: 1.4; }
+.se .accent { color: #dc2626; }
+.se .source { font-size: 10px; color: #aaa; margin-top: 10px; letter-spacing: 0.08em; text-transform: uppercase; }
+.se .data-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 2px solid #1a1a1a; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; color: #1a1a1a; }
+.se .data-val { font-weight: 800; }
+.se .data-val.neg { color: #dc2626; }
+.se .tag { display: inline-block; padding: 4px 10px; background: #dc2626; border-radius: 0; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 10px; color: #fff; font-weight: 800; letter-spacing: 0.08em; margin-bottom: 10px; }
+.se .quote-mark { font-size: 48px; color: #dc2626; line-height: 0.5; }
+.se .geo {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: 2px solid #dc2626;
+  border-radius: 50%;
+}
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: clamp(40px, 6vw, 80px) 0;
+  border-top: 1px solid var(--ink-15);
+  margin-top: clamp(40px, 6vw, 80px);
+}
+.footer-big {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(22px, 3.5vw, 36px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+.footer-sub {
+  font-size: 16px;
+  color: var(--ink-60);
+  margin-top: 12px;
+}
+.footer-handle {
+  font-size: 14px;
+  color: var(--ink-30);
+  margin-top: 24px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  .reel-section { flex-direction: column; align-items: flex-start; }
+  .card { width: 260px; height: 325px; }
+  .names-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- ══════ HERO ══════ -->
+<div class="hero">
+  <div class="hero-eyebrow">Propuesta 2026</div>
+  <h1>finanzas.pop<br><em>Identidad visual y contenido</em></h1>
+  <p>Educación financiera para LATAM. Datos reales, explicados simple, con lo que pasa hoy. Sin gurus, sin humo.</p>
+  <a class="hero-cta" href="#vote">Vota por tu favorito ↓</a>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════ RESEARCH CONCLUSIONS ══════ -->
+<section>
+  <div class="names-header">Lo que encontramos: México y finanzas personales</div>
+  <div class="names-sub" style="max-width:700px">Investigamos 8+ cuentas exitosas, el mercado mexicano, el algoritmo 2026, y la reunión con Star Trader. Estas son las conclusiones que definen toda la estrategia.</div>
+
+  <!-- BLOCK 1: EL MERCADO -->
+  <div style="margin-top:40px">
+    <div style="font-family:'Fraunces',serif; font-size:clamp(20px,3vw,28px); font-weight:900; color:var(--red); letter-spacing:-0.02em">1. El mexicano no quiere invertir — quiere dejar de ahogarse</div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:16px; margin-top:20px">
+      <div style="background:#fff; padding:24px; border-radius:12px; border:1px solid var(--ink-15)">
+        <div style="font-family:'Fraunces',serif; font-size:48px; font-weight:900; color:var(--red)">62%</div>
+        <div style="font-size:14px; color:var(--ink-60); margin-top:4px">quiere salir de deudas como meta #1 de 2026</div>
+      </div>
+      <div style="background:#fff; padding:24px; border-radius:12px; border:1px solid var(--ink-15)">
+        <div style="font-family:'Fraunces',serif; font-size:48px; font-weight:900; color:var(--ink)">77%</div>
+        <div style="font-size:14px; color:var(--ink-60); margin-top:4px">vive al límite o más allá de su ingreso mensual</div>
+      </div>
+      <div style="background:#fff; padding:24px; border-radius:12px; border:1px solid var(--ink-15)">
+        <div style="font-family:'Fraunces',serif; font-size:48px; font-weight:900; color:var(--ink)">8.8%</div>
+        <div style="font-size:14px; color:var(--ink-60); margin-top:4px">invierte en acciones o crypto — el 91.2% no</div>
+      </div>
+      <div style="background:#fff; padding:24px; border-radius:12px; border:1px solid var(--ink-15)">
+        <div style="font-family:'Fraunces',serif; font-size:48px; font-weight:900; color:var(--ink)">2M</div>
+        <div style="font-size:14px; color:var(--ink-60); margin-top:4px">vaciaron su Afore en 2025 — la usan como caja chica</div>
+      </div>
+    </div>
+    <div style="background:#fff; padding:20px 24px; border-radius:12px; border-left:3px solid var(--red); margin-top:16px; max-width:700px">
+      <div style="font-size:15px; line-height:1.5; color:var(--ink)"><strong>Conclusión:</strong> Si empezamos hablando de inversiones o trading, nos ignoran. El 62% está pensando en cómo llegar a la quincena. <strong>Empezamos con deudas, ahorro, presupuesto</strong> — y subimos gradualmente hacia inversión cuando ya nos escuchan.</div>
+      <div style="font-size:13px; color:var(--ink-30); margin-top:8px">Fuentes: ENIF 2024 (INEGI), Banxico, CONDUSEF</div>
+    </div>
+  </div>
+
+  <!-- BLOCK 2: DESCONFIANZA -->
+  <div style="margin-top:40px">
+    <div style="font-family:'Fraunces',serif; font-size:clamp(20px,3vw,28px); font-weight:900; color:var(--red); letter-spacing:-0.02em">2. Hay desconfianza total hacia los "finfluencers"</div>
+    <div style="background:#fff; padding:20px 24px; border-radius:12px; border:1px solid var(--ink-15); margin-top:16px; max-width:700px">
+      <div style="font-size:15px; line-height:1.6; color:var(--ink)">
+        Los finfluencers mexicanos son vistos como vendedores de cursos de $497 USD con Lamborghinis de fondo. El 85% de los endeudados reporta estrés financiero — lo último que quieren es un guru diciéndoles que "inviertan en su libertad financiera".
+      </div>
+    </div>
+    <div style="background:#fff; padding:20px 24px; border-radius:12px; border-left:3px solid var(--red); margin-top:12px; max-width:700px">
+      <div style="font-size:15px; line-height:1.5; color:var(--ink)"><strong>Conclusión:</strong> Nuestro tono es anti-guru. Nunca vendemos, nunca prometemos. <strong>Cada post tiene una fuente verificable</strong> (INEGI, Banxico, CONDUSEF). La credibilidad se construye con datos, no con carisma.</div>
+    </div>
+  </div>
+
+  <!-- BLOCK 3: COMPETENCIA -->
+  <div style="margin-top:40px">
+    <div style="font-family:'Fraunces',serif; font-size:clamp(20px,3vw,28px); font-weight:900; color:var(--red); letter-spacing:-0.02em">3. No hay nadie haciendo esto en español</div>
+    <div style="overflow-x:auto; margin-top:20px">
+      <table style="border-collapse:collapse; width:100%; min-width:600px; font-size:14px">
+        <thead>
+          <tr style="border-bottom:2px solid var(--ink)">
+            <th style="text-align:left; padding:10px 12px; font-weight:700">Cuenta</th>
+            <th style="text-align:left; padding:10px 12px; font-weight:700">Seguidores</th>
+            <th style="text-align:left; padding:10px 12px; font-weight:700">Tipo</th>
+            <th style="text-align:left; padding:10px 12px; font-weight:700">Qué le falta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--ink-15)">
+            <td style="padding:10px 12px; font-weight:600">@finanzas.conproposito</td>
+            <td style="padding:10px 12px">1.6M</td>
+            <td style="padding:10px 12px">Marca personal (cara)</td>
+            <td style="padding:10px 12px; color:var(--ink-60)">No es faceless, no es replicable</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--ink-15)">
+            <td style="padding:10px 12px; font-weight:600">@el.inversor.eficiente</td>
+            <td style="padding:10px 12px">777K</td>
+            <td style="padding:10px 12px">Faceless, LATAM genérico</td>
+            <td style="padding:10px 12px; color:var(--ink-60)">No es México-específico, no usa datos locales</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--ink-15)">
+            <td style="padding:10px 12px; font-weight:600">@invierteconpepe_</td>
+            <td style="padding:10px 12px">398K</td>
+            <td style="padding:10px 12px">Marca personal (cara)</td>
+            <td style="padding:10px 12px; color:var(--ink-60)">No es faceless, no es replicable</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--ink-15)">
+            <td style="padding:10px 12px; font-weight:600">@trading.latam_</td>
+            <td style="padding:10px 12px">~11K</td>
+            <td style="padding:10px 12px">Faceless, trading</td>
+            <td style="padding:10px 12px; color:var(--ink-60)">Muy chica, solo trading, no educación amplia</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="background:#fff; padding:20px 24px; border-radius:12px; border-left:3px solid var(--red); margin-top:16px; max-width:700px">
+      <div style="font-size:15px; line-height:1.5; color:var(--ink)"><strong>Conclusión:</strong> Las cuentas grandes en México son todas marca personal (cara). La única faceless en español (777K) es genérica para todo LATAM. <strong>No existe una cuenta faceless que use datos financieros reales de México.</strong> Ese es nuestro hueco.</div>
+    </div>
+  </div>
+
+  <!-- BLOCK 4: ALGORITMO -->
+  <div style="margin-top:40px">
+    <div style="font-family:'Fraunces',serif; font-size:clamp(20px,3vw,28px); font-weight:900; color:var(--red); letter-spacing:-0.02em">4. El algoritmo 2026 premia compartir, no likear</div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px; margin-top:20px">
+      <div style="background:#fff; padding:20px 24px; border-radius:12px; border:1px solid var(--ink-15)">
+        <div style="font-size:13px; font-weight:700; color:var(--red); letter-spacing:0.1em">SEÑAL #1</div>
+        <div style="font-size:18px; font-weight:700; margin-top:6px">DM Shares</div>
+        <div style="font-size:14px; color:var(--ink-60); margin-top:4px">Cuando alguien envía tu post por DM, Instagram lo muestra a gente que NO te sigue. Pesan 3-5x más que un like.</div>
+      </div>
+      <div style="background:#fff; padding:20px 24px; border-radius:12px; border:1px solid var(--ink-15)">
+        <div style="font-size:13px; font-weight:700; color:var(--red); letter-spacing:0.1em">SEÑAL #2</div>
+        <div style="font-size:18px; font-weight:700; margin-top:6px">Watch Time</div>
+        <div style="font-size:14px; color:var(--ink-60); margin-top:4px">Reels con >60% retención explotan. Los de <40% mueren. El hook en los primeros 3 segundos es todo.</div>
+      </div>
+      <div style="background:#fff; padding:20px 24px; border-radius:12px; border:1px solid var(--ink-15)">
+        <div style="font-size:13px; font-weight:700; color:var(--red); letter-spacing:0.1em">SEÑAL #3</div>
+        <div style="font-size:18px; font-weight:700; margin-top:6px">Saves</div>
+        <div style="font-size:14px; color:var(--ink-60); margin-top:4px">Guardar un post = señal de autoridad. Los carruseles educativos generan 3x más saves que Reels. (Mosseri, CEO de IG)</div>
+      </div>
+    </div>
+    <div style="background:#fff; padding:20px 24px; border-radius:12px; border-left:3px solid var(--red); margin-top:16px; max-width:700px">
+      <div style="font-size:15px; line-height:1.5; color:var(--ink)"><strong>Conclusión:</strong> Antes de publicar cualquier post, la pregunta es: <strong>"¿alguien mandaría esto por DM?"</strong> Si no, no se publica. Datos concretos que sorprenden ("solo el 8.8% invierte") se envían. Frases genéricas ("cuida tu dinero") no.</div>
+    </div>
+  </div>
+
+  <!-- BLOCK 5: CRECIMIENTO -->
+  <div style="margin-top:40px">
+    <div style="font-family:'Fraunces',serif; font-size:clamp(20px,3vw,28px); font-weight:900; color:var(--red); letter-spacing:-0.02em">5. La red de shoutouts es lo que separa crecimiento lineal de exponencial</div>
+    <div style="background:#fff; padding:20px 24px; border-radius:12px; border:1px solid var(--ink-15); margin-top:16px; max-width:700px">
+      <div style="font-size:15px; line-height:1.6; color:var(--ink)">
+        <strong>Jason Stone (@millionaire_mentor, 10M seguidores):</strong> formó un grupo de 15 cuentas que se daban shoutouts cruzados coordinados. Resultado: $7M en revenue en 18 meses. La red fue el multiplicador, no el contenido.
+        <br><br>
+        <strong>@fullystaked (692K):</strong> red de múltiples cuentas propias con shoutouts cruzados. 900K+ seguidores totales.
+        <br><br>
+        <strong>Zac ($67K/mes):</strong> 14 páginas en 9 nichos. "Sequential not simultaneous — you're doing 1 this month, then 1 next month."
+      </div>
+    </div>
+    <div style="background:#fff; padding:20px 24px; border-radius:12px; border-left:3px solid var(--red); margin-top:12px; max-width:700px">
+      <div style="font-size:15px; line-height:1.5; color:var(--ink)"><strong>Conclusión:</strong> Empezamos a construir la red de shoutouts desde la semana 1, no la semana 3. Y a mediano plazo, creamos cuentas por país (México, Colombia, Argentina) que se alimentan entre sí.</div>
+    </div>
+  </div>
+
+  <!-- BLOCK 6: MONETIZACIÓN -->
+  <div style="margin-top:40px">
+    <div style="font-family:'Fraunces',serif; font-size:clamp(20px,3vw,28px); font-weight:900; color:var(--red); letter-spacing:-0.02em">6. Star Trader: la monetización ya está resuelta</div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px; margin-top:20px">
+      <div style="background:#fff; padding:20px 24px; border-radius:12px; border:1px solid var(--ink-15)">
+        <div style="font-size:13px; font-weight:700; color:var(--red); letter-spacing:0.1em">REBATE</div>
+        <div style="font-size:32px; font-weight:900; font-family:'Fraunces',serif; margin-top:6px">$8/lote</div>
+        <div style="font-size:14px; color:var(--ink-60); margin-top:4px">Pago inmediato. Sin requisitos mínimos. Revenue recurrente por trader activo.</div>
+      </div>
+      <div style="background:#fff; padding:20px 24px; border-radius:12px; border:1px solid var(--ink-15)">
+        <div style="font-size:13px; font-weight:700; color:var(--red); letter-spacing:0.1em">COPY TRADING</div>
+        <div style="font-size:32px; font-weight:900; font-family:'Fraunces',serif; margin-top:6px">20-50%</div>
+        <div style="font-size:14px; color:var(--ink-60); margin-top:4px">Performance fee. Un trader con 190 seguidores = $23K en 15 días.</div>
+      </div>
+      <div style="background:#fff; padding:20px 24px; border-radius:12px; border:1px solid var(--ink-15)">
+        <div style="font-size:13px; font-weight:700; color:var(--red); letter-spacing:0.1em">CONFIANZA</div>
+        <div style="font-size:18px; font-weight:700; margin-top:6px">NBA + Lloyd's + 6 regulaciones</div>
+        <div style="font-size:14px; color:var(--ink-60); margin-top:4px">Seguro hasta $1M. Esto es lo que ningún finfluencer LATAM menciona.</div>
+      </div>
+    </div>
+    <div style="background:#fff; padding:20px 24px; border-radius:12px; border-left:3px solid var(--red); margin-top:16px; max-width:700px">
+      <div style="font-size:15px; line-height:1.5; color:var(--ink)"><strong>Conclusión:</strong> El contenido NUNCA menciona a Star Trader. La monetización vive en el link de bio y es intercambiable. Pero el modelo de rebate + copy trading es lo que genera revenue real. El funnel: IG → DM keyword → Telegram → affiliate/copy trading.</div>
+      <div style="font-size:13px; color:var(--ink-30); margin-top:8px">Fuente: Reunión con Diana Córdoba (Star Trader) — 5 marzo 2026</div>
+    </div>
+  </div>
+
+  <!-- BLOCK 7: LA ESTRATEGIA -->
+  <div style="margin-top:40px; background:var(--ink); border-radius:16px; padding:clamp(30px,4vw,50px); color:var(--page-bg)">
+    <div style="font-family:'Fraunces',serif; font-size:clamp(22px,3.5vw,36px); font-weight:900; letter-spacing:-0.02em">Entonces, ¿qué hacemos con todo esto?</div>
+    <div style="margin-top:24px; display:grid; gap:16px; max-width:700px">
+      <div style="font-size:16px; line-height:1.5">
+        <strong style="color:var(--red)">El concepto:</strong> "Te explico cómo funciona el dinero, con lo que está pasando hoy." — No teoría, no motivación. Noticias + datos + explicación + qué hacer.
+      </div>
+      <div style="font-size:16px; line-height:1.5">
+        <strong style="color:var(--red)">El mix:</strong> 30% noticias explicadas · 25% cómo funciona el dinero · 20% tips prácticos · 15% quotes con contexto · 10% datos/comparativas
+      </div>
+      <div style="font-size:16px; line-height:1.5">
+        <strong style="color:var(--red)">El formato:</strong> 60-70% Reels (reach) + 20-30% Carruseles (saves) + 10% Quotes/datos (shares). Siempre con fuente visible.
+      </div>
+      <div style="font-size:16px; line-height:1.5">
+        <strong style="color:var(--red)">El tono:</strong> Anti-guru. Con datos. Sin promesas. Español neutro LATAM. Como un amigo inteligente, no como un profesor.
+      </div>
+      <div style="font-size:16px; line-height:1.5">
+        <strong style="color:var(--red)">El journey del seguidor:</strong> Mes 1-3 = deudas, ahorro, presupuesto (donde está el 62%) → Mes 3-5 = inversión, comparativas → Mes 5+ = trading educativo, copy trading para el que quiera.
+      </div>
+      <div style="font-size:16px; line-height:1.5">
+        <strong style="color:var(--red)">El crecimiento:</strong> Reels para traer gente + Carruseles para retener + Shoutouts desde semana 1 para multiplicar.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════ REEL SECTION ══════ -->
+<div class="reel-section">
+  <div class="reel-phone">
+    <div class="play-btn"></div>
+  </div>
+  <div class="reel-info">
+    <h2>Reels con datos reales animados</h2>
+    <p>Cada Reel toma un dato financiero real, lo explica simple, y te dice qué hacer. 15-30 segundos. Sin cara, sin voz de guru. Solo datos y claridad.</p>
+    <div class="reel-formats">
+      <span class="reel-tag">Datos impactantes</span>
+      <span class="reel-tag">Noticias explicadas</span>
+      <span class="reel-tag">Comparativas</span>
+      <span class="reel-tag">Quotes + contexto</span>
+      <span class="reel-tag">Tips prácticos</span>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════ NAMES ══════ -->
+<section id="names">
+  <div class="names-header">¿Cómo nos llamamos?</div>
+  <div class="names-sub">Vota por el nombre que más te guste. Responde con el número.</div>
+  <div class="names-grid">
+    <div class="name-card"><div class="name-num">01</div><div class="name-handle">finanzas.pop</div><div class="name-desc">Popular, cultura pop, accesible</div></div>
+    <div class="name-card"><div class="name-num">02</div><div class="name-handle">finanzas.daily</div><div class="name-desc">Todos los días, constancia</div></div>
+    <div class="name-card"><div class="name-num">03</div><div class="name-handle">dinero.lab</div><div class="name-desc">Laboratorio de dinero, experimental</div></div>
+    <div class="name-card"><div class="name-num">04</div><div class="name-handle">dinero.play</div><div class="name-desc">Dale play, aprende de dinero</div></div>
+    <div class="name-card"><div class="name-num">05</div><div class="name-handle">dinero.hacks</div><div class="name-desc">Trucos prácticos de dinero</div></div>
+    <div class="name-card"><div class="name-num">06</div><div class="name-handle">cash.latino</div><div class="name-desc">Bilingüe, moderno, LATAM</div></div>
+    <div class="name-card"><div class="name-num">07</div><div class="name-handle">plata.smart</div><div class="name-desc">Plata inteligente, aspiracional</div></div>
+    <div class="name-card"><div class="name-num">08</div><div class="name-handle">finanzasparati</div><div class="name-desc">Personal, directo, para ti</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════ DESIGN LOGIC ══════ -->
+<section>
+  <div class="names-header">La lógica detrás del diseño</div>
+  <div class="names-sub" style="max-width:700px">No es cuestión de gustos. Esto es lo que dice la evidencia sobre qué funciona en Instagram para finanzas:</div>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap:20px; margin-top:28px">
+
+    <div class="name-card" style="border-left: 3px solid var(--red)">
+      <div class="name-num">DATO 1</div>
+      <div class="name-handle" style="font-size:18px">Azul = confianza en finanzas</div>
+      <div class="name-desc">Colores fríos (azul, teal) generan 18% más engagement que tonos cálidos cuando el tema es confiabilidad. Azul oscuro/navy transmite autoridad financiera. (Fuente: Curalate + FlockSocial)</div>
+    </div>
+
+    <div class="name-card" style="border-left: 3px solid var(--red)">
+      <div class="name-num">DATO 2</div>
+      <div class="name-handle" style="font-size:18px">Color > B&N siempre</div>
+      <div class="name-desc">Fotos/diseños a color: +24% likes y +46% comentarios vs blanco y negro. Los filtros suben las views 21% y los comentarios 45%. (Fuente: Agorapulse Social Media Lab)</div>
+    </div>
+
+    <div class="name-card" style="border-left: 3px solid var(--red)">
+      <div class="name-num">DATO 3</div>
+      <div class="name-handle" style="font-size:18px">Fondos claros + acento fuerte</div>
+      <div class="name-desc">Los mejores posts de 2026 combinan "fondos neutros cálidos + UN color de acento consistente". Pantone 2026: Cloud Dancer (blanco cálido). WGSN: Teal + Amber. (Fuente: Colorkuler/WGSN)</div>
+    </div>
+
+    <div class="name-card" style="border-left: 3px solid var(--red)">
+      <div class="name-num">DATO 4</div>
+      <div class="name-handle" style="font-size:18px">Serif = autoridad educativa</div>
+      <div class="name-desc">Las tipografías serif (Garamond, Playfair) se asocian con educación y autoridad. Las sans-serif con modernidad y claridad. La combinación de ambas es lo que mejor funciona para finanzas educativas. (Fuente: Design Shack, Adobe)</div>
+    </div>
+
+    <div class="name-card" style="border-left: 3px solid var(--red)">
+      <div class="name-num">DATO 5</div>
+      <div class="name-handle" style="font-size:18px">Saves y shares > likes</div>
+      <div class="name-desc">En 2026, saves y shares pesan 3x más que likes en el algoritmo. El contenido tiene que ser "guardable" (referencia útil) y "enviable" (dato que querés compartir). Esto define el diseño: densidad de información > estética vacía. (Fuente: Buffer, Mosseri)</div>
+    </div>
+
+    <div class="name-card" style="border-left: 3px solid var(--red)">
+      <div class="name-num">DATO 6</div>
+      <div class="name-handle" style="font-size:18px">Las cuentas que funcionan</div>
+      <div class="name-desc">@el.inversor.eficiente (777K): equipo pro, Reels + carruseles, LATAM genérico. @wealth.ceo (143K con 134 posts): calidad extrema, dark luxury. @millionaire_mentor (10M): red de shoutouts. Ninguna usa fondos claros — oportunidad de diferenciación.</div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ══════ STYLES ══════ -->
+<section id="vote">
+
+<!-- ── STYLE A ── -->
+<div class="style-section">
+  <div class="style-header-row">
+    <div class="style-letter">A</div>
+    <div class="style-name">Editorial Cálido</div>
+  </div>
+  <div class="style-desc">Periódico financiero premium. Serif + crema + rojo. Elegante, confiable, intelectual. Como The Economist.</div>
+  <div class="style-desc" style="margin-top:4px; font-style:italic; color:var(--red)">✓ Fondo claro (tendencia 2026) · ✓ Serif = autoridad educativa · ✓ Rojo = urgencia en datos · ✗ Puede verse "viejo" para público joven LATAM · ✗ Ninguna cuenta exitosa usa este estilo</div>
+  <div class="style-vote">Votar por estilo A</div>
+  <div class="cards-row">
+    <!-- Dato -->
+    <div class="card sa">
+      <div class="card-label">DATO</div>
+      <div class="card-body">
+        <div class="big-num">8.8%</div>
+        <div class="sub">de los mexicanos invierte en acciones o crypto.</div>
+        <div class="source">Fuente: ENIF 2024 — INEGI</div>
+      </div>
+    </div>
+    <!-- Noticia -->
+    <div class="card sa">
+      <div class="card-label">NOTICIA</div>
+      <div class="card-body">
+        <div class="tag">ALERTA</div>
+        <div class="headline">Inflación en alimentos: <span class="accent">6.2%</span></div>
+        <div class="sub">Tu canasta del super cuesta $62 más por cada $1,000. Tu sueldo: igual.</div>
+        <div class="source">INEGI — Marzo 2026</div>
+      </div>
+    </div>
+    <!-- Comparativa -->
+    <div class="card sa">
+      <div class="card-label">COMPARATIVA</div>
+      <div class="card-body">
+        <div class="headline" style="font-size:20px; margin-bottom:14px">¿Dónde poner tu dinero?</div>
+        <div class="data-row"><span>Nu México</span><span class="data-val accent" style="color:#059669">14.5%</span></div>
+        <div class="data-row"><span>Hey Banco</span><span class="data-val" style="color:#059669">13.0%</span></div>
+        <div class="data-row"><span>Mercado Pago</span><span class="data-val" style="color:#d97706">11.8%</span></div>
+        <div class="data-row"><span>CETES 28d</span><span class="data-val" style="color:#2563eb">6.8%</span></div>
+        <div class="data-row"><span>Banco normal</span><span class="data-val accent">~1%</span></div>
+        <div class="source">Marzo 2026</div>
+      </div>
+    </div>
+    <!-- Quote -->
+    <div class="card sa">
+      <div class="card-label">QUOTE</div>
+      <div class="card-body">
+        <div class="quote-mark">"</div>
+        <div class="headline" style="font-size:20px; margin-top:8px">No ahorres lo que queda después de gastar.</div>
+        <div class="sub" style="color:#c0392b; font-weight:600">— Warren Buffett</div>
+        <div class="sub">Traducido: el día que te cae el sueldo, transfiere el 20% ANTES de gastar.</div>
+      </div>
+    </div>
+    <!-- Carrusel cover -->
+    <div class="card sa" style="background:#c0392b; border-color:#c0392b">
+      <div class="card-label" style="color:rgba(255,255,255,0.5)">CARRUSEL</div>
+      <div class="card-body">
+        <div style="font-size:13px; color:rgba(255,255,255,0.6); letter-spacing:0.1em; font-weight:600">DESLIZA →</div>
+        <div class="headline" style="color:#fff; font-size:30px; margin-top:12px">¿Qué es la inflación?</div>
+        <div class="sub" style="color:rgba(255,255,255,0.7)">Te lo explicamos en 7 slides con datos reales.</div>
+      </div>
+      <div class="card-foot" style="color:rgba(255,255,255,0.4)">@finanzas.pop</div>
+    </div>
+    <!-- Tip -->
+    <div class="card sa">
+      <div class="card-label">TIP</div>
+      <div class="card-body">
+        <div class="tag">PRÁCTICO</div>
+        <div class="headline" style="font-size:22px">La regla 50/30/20</div>
+        <div class="sub"><strong style="color:#c0392b">50%</strong> necesidades<br><strong style="color:#d97706">30%</strong> gustos<br><strong style="color:#059669">20%</strong> ahorro</div>
+        <div class="sub">Con $15,000/mes = $3,000 a ahorro automático.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── STYLE B ── -->
+<div class="style-section">
+  <div class="style-header-row">
+    <div class="style-letter">B</div>
+    <div class="style-name">Neon Data</div>
+  </div>
+  <div class="style-desc">Bloomberg terminal hecho hermoso. Negro, verde neón, números enormes. Tech-forward, datos primero.</div>
+  <div class="style-desc" style="margin-top:4px; font-style:italic; color:var(--red)">✓ Alto contraste (texto claro en oscuro = detiene el scroll) · ✓ Números protagonistas = más saves · ✓ Estilo trading/tech que atrae al público objetivo · ✗ Fondo oscuro = -24% likes vs claro · ✗ Parecido a @facelesstraderss — no diferencia</div>
+  <div class="style-vote">Votar por estilo B</div>
+  <div class="cards-row">
+    <div class="card sb">
+      <div class="card-label">DATO</div>
+      <div class="card-body">
+        <div class="big-num">8.8%</div>
+        <div class="sub">de los mexicanos invierte en acciones o crypto.</div>
+        <div class="bar"><div class="bar-fill" style="width:8.8%"></div></div>
+        <div class="source">ENIF 2024 — INEGI</div>
+      </div>
+    </div>
+    <div class="card sb">
+      <div class="card-label">NOTICIA</div>
+      <div class="card-body">
+        <div class="tag">&gt; ALERTA</div>
+        <div class="headline">Inflación alimentos: <span class="accent">6.2%</span></div>
+        <div class="sub">$1,000 → $1,062. Mismo super. Tu sueldo: sin cambios.</div>
+        <div class="source">INEGI — MAR 2026</div>
+      </div>
+    </div>
+    <div class="card sb">
+      <div class="card-label">COMPARATIVA</div>
+      <div class="card-body">
+        <div class="headline" style="font-size:18px; margin-bottom:12px">Rendimiento anual</div>
+        <div class="data-row"><span>Nu</span><span class="data-val">14.5%</span></div>
+        <div class="data-row"><span>Hey Banco</span><span class="data-val">13.0%</span></div>
+        <div class="data-row"><span>M. Pago</span><span class="data-val" style="color:#eab308">11.8%</span></div>
+        <div class="data-row"><span>CETES</span><span class="data-val" style="color:rgba(255,255,255,0.4)">6.8%</span></div>
+        <div class="data-row"><span>Banco</span><span class="data-val" style="color:#ef4444">~1%</span></div>
+      </div>
+    </div>
+    <div class="card sb">
+      <div class="card-label">QUOTE</div>
+      <div class="card-body">
+        <div class="quote-mark">"</div>
+        <div class="headline" style="font-size:20px; margin-top:8px">No ahorres lo que queda después de gastar.</div>
+        <div class="sub" style="color:#84cc16; font-weight:600">— Buffett</div>
+        <div class="sub">20% → ahorro. El resto → vivir. No al revés.</div>
+      </div>
+    </div>
+    <div class="card sb" style="border: 1px solid #84cc16">
+      <div class="card-label">CARRUSEL</div>
+      <div class="card-body">
+        <div style="font-family:'Space Grotesk'; font-size:12px; color:#84cc16; letter-spacing:0.15em; font-weight:700">&gt; DESLIZA</div>
+        <div class="headline" style="font-size:26px; margin-top:12px">¿Qué es la <span class="accent">inflación</span>?</div>
+        <div class="sub">7 slides. Datos reales. Sin humo.</div>
+      </div>
+      <div class="card-foot">@finanzas.pop</div>
+    </div>
+    <div class="card sb">
+      <div class="card-label">TIP</div>
+      <div class="card-body">
+        <div class="tag">&gt; TIP</div>
+        <div class="headline" style="font-size:22px">Regla <span class="accent">50/30/20</span></div>
+        <div class="sub" style="font-family:'Space Grotesk'"><span style="color:#84cc16">50%</span> → necesidades<br><span style="color:#eab308">30%</span> → gustos<br><span style="color:#22c55e">20%</span> → ahorro</div>
+        <div class="sub">$15K/mes = $3K automático a ahorro</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── STYLE C ── -->
+<div class="style-section">
+  <div class="style-header-row">
+    <div class="style-letter">C</div>
+    <div class="style-name">Warm Gradient</div>
+  </div>
+  <div class="style-desc">Fintech moderna, gradientes cálidos, amigable. Como una app que te cuida la plata. Accesible, joven.</div>
+  <div class="style-desc" style="margin-top:4px; font-style:italic; color:var(--red)">✓ Colores cálidos (Amber Haze = tendencia WGSN 2026) · ✓ Amigable para público que NO sabe de finanzas · ✓ Diferente a TODAS las cuentas de finanzas (nadie usa gradientes cálidos) · ✗ Puede verse "demasiado app" y menos serio · ✗ Menos contraste que B o D</div>
+  <div class="style-vote">Votar por estilo C</div>
+  <div class="cards-row">
+    <div class="card sc grad1">
+      <div class="card-label">DATO</div>
+      <div class="card-body">
+        <div class="big-num">8.8%</div>
+        <div class="sub">de los mexicanos invierte en acciones o crypto.</div>
+        <div class="source">ENIF 2024 — INEGI</div>
+      </div>
+    </div>
+    <div class="card sc grad2">
+      <div class="card-label">NOTICIA</div>
+      <div class="card-body">
+        <div class="tag">ALERTA</div>
+        <div class="headline">Inflación alimentos: <span class="accent">6.2%</span></div>
+        <div class="sub">$1,000 en el super → hoy $1,062. Tu sueldo sigue igual.</div>
+        <div class="source">INEGI — Marzo 2026</div>
+      </div>
+    </div>
+    <div class="card sc grad3">
+      <div class="card-label">COMPARATIVA</div>
+      <div class="card-body">
+        <div class="headline" style="font-size:18px; margin-bottom:12px">¿Dónde poner tu dinero?</div>
+        <div class="data-row"><span>Nu</span><span class="data-val">14.5%</span></div>
+        <div class="data-row"><span>Hey Banco</span><span class="data-val">13.0%</span></div>
+        <div class="data-row"><span>M. Pago</span><span class="data-val">11.8%</span></div>
+        <div class="data-row"><span>CETES</span><span class="data-val">6.8%</span></div>
+        <div class="data-row"><span>Banco</span><span class="data-val">~1%</span></div>
+      </div>
+    </div>
+    <div class="card sc grad4">
+      <div class="card-label">QUOTE</div>
+      <div class="card-body">
+        <div class="quote-mark">"</div>
+        <div class="headline" style="font-size:20px; margin-top:8px">No ahorres lo que queda después de gastar.</div>
+        <div class="sub" style="color:#fef3c7; font-weight:700">— Warren Buffett</div>
+        <div class="sub">Tu sueldo cae → 20% a otra cuenta → el resto para vivir.</div>
+      </div>
+    </div>
+    <div class="card sc grad5">
+      <div class="card-label">CARRUSEL</div>
+      <div class="card-body">
+        <div class="tag">DESLIZA →</div>
+        <div class="headline" style="font-size:28px; margin-top:8px">¿Qué es la inflación?</div>
+        <div class="sub">7 slides con datos reales de México.</div>
+      </div>
+      <div class="card-foot">@finanzas.pop</div>
+    </div>
+    <div class="card sc grad6">
+      <div class="card-label">TIP</div>
+      <div class="card-body">
+        <div class="tag">PRÁCTICO</div>
+        <div class="headline" style="font-size:24px">Regla 50/30/20</div>
+        <div class="sub"><strong>50%</strong> necesidades · <strong>30%</strong> gustos · <strong>20%</strong> ahorro</div>
+        <div class="sub">$15K/mes = $3K a ahorro sin pensarlo</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── STYLE D ── -->
+<div class="style-section">
+  <div class="style-header-row">
+    <div class="style-letter">D</div>
+    <div class="style-name">Bold Magazine</div>
+  </div>
+  <div class="style-desc">Portada de revista. Colores sólidos, tipografía gigante, cero decoración. Impacto puro.</div>
+  <div class="style-desc" style="margin-top:4px; font-style:italic; color:var(--red)">✓ Navy = confianza financiera (+18% engagement en tonos fríos) · ✓ Tipografía grande = detiene el scroll · ✓ Colores variados = cada post se siente fresco · ✓ Alto impacto visual para Reels · ✗ Sin marca visual recurrente (cambia mucho entre posts)</div>
+  <div class="style-vote">Votar por estilo D</div>
+  <div class="cards-row">
+    <div class="card sd bg1">
+      <div class="card-label">DATO</div>
+      <div class="card-body">
+        <div class="big-num">8.8%</div>
+        <div class="sub">de los mexicanos invierte.</div>
+        <div class="source">ENIF 2024</div>
+      </div>
+    </div>
+    <div class="card sd bg2">
+      <div class="card-label">NOTICIA</div>
+      <div class="card-body">
+        <div class="headline" style="font-size:32px">Inflación en alimentos:</div>
+        <div class="big-num" style="margin-top:8px">6.2%</div>
+        <div class="sub">Tu sueldo: igual. Tu canasta: +$62.</div>
+      </div>
+    </div>
+    <div class="card sd bg3">
+      <div class="card-label">COMPARATIVA</div>
+      <div class="card-body">
+        <div class="headline" style="font-size:20px; margin-bottom:10px">¿Dónde va tu dinero?</div>
+        <div class="data-row"><span>Nu</span><span class="data-val">14.5%</span></div>
+        <div class="data-row"><span>Hey Banco</span><span class="data-val">13.0%</span></div>
+        <div class="data-row"><span>M. Pago</span><span class="data-val">11.8%</span></div>
+        <div class="data-row"><span>CETES</span><span class="data-val" style="color:rgba(255,255,255,0.4)">6.8%</span></div>
+        <div class="data-row"><span>Banco</span><span class="data-val" style="color:rgba(255,255,255,0.3)">~1%</span></div>
+      </div>
+    </div>
+    <div class="card sd bg4">
+      <div class="card-label">QUOTE</div>
+      <div class="card-body">
+        <div class="quote-mark">"</div>
+        <div class="headline" style="font-size:22px; margin-top:8px">No ahorres lo que queda después de gastar.</div>
+        <div class="sub" style="color:rgba(255,255,255,0.6); font-weight:900; margin-top:14px">— BUFFETT</div>
+      </div>
+    </div>
+    <div class="card sd bg5">
+      <div class="card-label">CARRUSEL</div>
+      <div class="card-body">
+        <div class="tag">DESLIZA →</div>
+        <div class="headline" style="font-size:32px; margin-top:8px">¿Qué es la inflación?</div>
+      </div>
+      <div class="card-foot">@finanzas.pop</div>
+    </div>
+    <div class="card sd bg6">
+      <div class="card-label">TIP</div>
+      <div class="card-body">
+        <div class="headline" style="font-size:36px">50<br>30<br>20</div>
+        <div class="sub" style="margin-top:14px">Necesidades. Gustos. Ahorro.<br>$15K → $3K automático.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── STYLE E ── -->
+<div class="style-section">
+  <div class="style-header-row">
+    <div class="style-letter">E</div>
+    <div class="style-name">Minimal Swiss</div>
+  </div>
+  <div class="style-desc">Diseño suizo. Blanco, negro, rojo. Grid fuerte, geometría, atemporal. Confianza absoluta.</div>
+  <div class="style-desc" style="margin-top:4px; font-style:italic; color:var(--red)">✓ Fondo claro (tendencia 2026) · ✓ Rojo = acento fuerte para datos · ✓ Grid = orden y confianza · ✓ Nadie en finanzas LATAM usa este estilo — diferenciación total · ✓ Serif + sans = autoridad + claridad · ✗ Puede verse "demasiado europeo" para LATAM</div>
+  <div class="style-vote">Votar por estilo E</div>
+  <div class="cards-row">
+    <div class="card se">
+      <div class="card-label">DATO</div>
+      <div class="card-body">
+        <div class="big-num">8.8%</div>
+        <div class="sub">de los mexicanos invierte en acciones o crypto.</div>
+        <div class="source">ENIF 2024 — INEGI</div>
+      </div>
+      <div class="geo"></div>
+    </div>
+    <div class="card se">
+      <div class="card-label">NOTICIA</div>
+      <div class="card-body">
+        <div class="tag">ALERTA</div>
+        <div class="headline">Inflación alimentos: <span class="accent">6.2%</span></div>
+        <div class="sub">$1,000 → $1,062. Misma canasta. Tu sueldo no subió.</div>
+        <div class="source">INEGI — MARZO 2026</div>
+      </div>
+    </div>
+    <div class="card se">
+      <div class="card-label">COMPARATIVA</div>
+      <div class="card-body">
+        <div class="headline" style="font-size:18px; margin-bottom:10px">Rendimiento anual</div>
+        <div class="data-row"><span>Nu México</span><span class="data-val" style="color:#059669">14.5%</span></div>
+        <div class="data-row"><span>Hey Banco</span><span class="data-val" style="color:#059669">13.0%</span></div>
+        <div class="data-row"><span>M. Pago</span><span class="data-val" style="color:#d97706">11.8%</span></div>
+        <div class="data-row"><span>CETES</span><span class="data-val">6.8%</span></div>
+        <div class="data-row"><span>Banco</span><span class="data-val neg">~1%</span></div>
+      </div>
+    </div>
+    <div class="card se">
+      <div class="card-label">QUOTE</div>
+      <div class="card-body">
+        <div class="quote-mark">"</div>
+        <div class="headline" style="font-size:19px; margin-top:8px">No ahorres lo que queda después de gastar.</div>
+        <div class="sub" style="color:#dc2626; font-weight:800">— Warren Buffett</div>
+        <div class="sub">20% a ahorro el día que cobras. El resto para vivir.</div>
+      </div>
+    </div>
+    <div class="card se" style="background:#dc2626; border-color:#dc2626">
+      <div class="card-label" style="color:rgba(255,255,255,0.5)">CARRUSEL</div>
+      <div style="display:flex;flex-direction:column;justify-content:center;flex:1;padding:44px 24px 24px">
+        <div style="font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:0.15em;font-weight:700">DESLIZA →</div>
+        <div style="font-family:'Plus Jakarta Sans';font-size:28px;font-weight:800;color:#fff;margin-top:12px;line-height:1.15">¿Qué es la inflación?</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.7);margin-top:10px">7 slides con datos de México.</div>
+      </div>
+      <div class="card-foot" style="color:rgba(255,255,255,0.4)">@finanzas.pop</div>
+    </div>
+    <div class="card se">
+      <div class="card-label">TIP</div>
+      <div class="card-body">
+        <div class="tag">PRÁCTICO</div>
+        <div class="headline" style="font-size:22px">Regla 50/30/20</div>
+        <div class="sub"><strong class="accent">50%</strong> necesidades<br><strong style="color:#d97706">30%</strong> gustos<br><strong style="color:#059669">20%</strong> ahorro</div>
+        <div class="sub">$15K → $3K al mes. Automático.</div>
+      </div>
+      <div class="geo"></div>
+    </div>
+  </div>
+</div>
+
+</section>
+
+<!-- ══════ RECOMENDACIÓN ══════ -->
+<div style="background:#fff; border-radius:16px; border:2px solid var(--ink); padding: clamp(30px,4vw,50px); margin-bottom:40px">
+  <div class="names-header" style="font-size:clamp(22px,3vw,32px)">Nuestra recomendación: D + elementos de A</div>
+  <div style="font-size:16px; color:var(--ink-60); margin-top:16px; max-width:700px; line-height:1.6">
+    Basándonos en la evidencia:
+  </div>
+  <div style="margin-top:20px; display:grid; gap:12px; max-width:700px">
+    <div style="font-size:15px; line-height:1.5; color:var(--ink)"><strong style="color:var(--red)">Bold Magazine (D)</strong> — los colores sólidos variados detienen el scroll, el navy transmite confianza financiera (+18% engagement), y la tipografía gigante funciona en Reels. Es el estilo con más impacto visual en un feed saturado.</div>
+    <div style="font-size:15px; line-height:1.5; color:var(--ink)"><strong style="color:var(--red)">+ Elementos de Editorial (A)</strong> — la tipografía serif para datos clave aporta autoridad educativa, y la fuente siempre visible (INEGI, Banxico) nos diferencia como "datos reales, no opinión".</div>
+    <div style="font-size:15px; line-height:1.5; color:var(--ink)"><strong style="color:var(--red)">¿Por qué no los otros?</strong> — B (Neon) es genérico para finanzas, todos lo hacen. C (Gradient) es amigable pero menos serio. E (Swiss) es hermoso pero puede sentirse frío para LATAM.</div>
+    <div style="font-size:15px; line-height:1.5; color:var(--ink)"><strong style="color:var(--red)">Lo que ninguna cuenta de finanzas en español hace:</strong> colores sólidos bold con tipografía de impacto + datos con fuente verificable. Esa combinación nos hace reconocibles al instante.</div>
+  </div>
+  <div style="font-size:14px; color:var(--ink-30); margin-top:20px; font-style:italic">Pero esto es una recomendación basada en datos — la decisión final es del equipo.</div>
+</div>
+
+<!-- ══════ FOOTER ══════ -->
+<div class="footer">
+  <div class="footer-big">Responde con la letra (A–E) y el número (1–8)</div>
+  <div class="footer-sub">Ejemplo: "C3" = Estilo Warm Gradient + nombre dinero.lab</div>
+  <div class="footer-handle">@finanzas.pop — 2026</div>
+</div>
+
+</div>
+</body>
+</html>
