@@ -623,19 +623,31 @@ body {
 <div class="divider"></div>
 
 <!-- ══════ REEL SECTION ══════ -->
-<div class="reel-section">
-  <div class="reel-phone">
-    <div class="play-btn"></div>
+<div class="reel-section" style="flex-direction:column; gap:32px; align-items:flex-start">
+  <div>
+    <h2 style="font-family:'Fraunces',serif; font-size:clamp(24px,3.5vw,40px); font-weight:900; letter-spacing:-0.02em">Reels con datos reales animados</h2>
+    <p style="font-size:clamp(15px,1.8vw,18px); color:var(--ink-60); margin-top:12px; max-width:600px; line-height:1.5">Cada Reel toma un dato financiero real, lo explica simple, y te dice qué hacer. 15-30 segundos. Sin cara, sin voz de guru. Solo datos y claridad. Todo generado con IA + datos reales.</p>
   </div>
-  <div class="reel-info">
-    <h2>Reels con datos reales animados</h2>
-    <p>Cada Reel toma un dato financiero real, lo explica simple, y te dice qué hacer. 15-30 segundos. Sin cara, sin voz de guru. Solo datos y claridad.</p>
-    <div class="reel-formats">
-      <span class="reel-tag">Datos impactantes</span>
-      <span class="reel-tag">Noticias explicadas</span>
-      <span class="reel-tag">Comparativas</span>
-      <span class="reel-tag">Quotes + contexto</span>
-      <span class="reel-tag">Tips prácticos</span>
+  <div style="display:flex; gap:20px; overflow-x:auto; width:100%; padding-bottom:16px; -webkit-overflow-scrolling:touch">
+    <div style="flex-shrink:0; width:200px; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.12); background:#000">
+      <video src="videos/reel-stock-8percent.mp4" style="width:100%; display:block" playsinline muted loop controls></video>
+      <div style="padding:10px 14px; font-size:12px; color:var(--ink-60)">Con stock footage</div>
+    </div>
+    <div style="flex-shrink:0; width:200px; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.12); background:#000">
+      <video src="videos/reel-8-percent.mp4" style="width:100%; display:block" playsinline muted loop controls></video>
+      <div style="padding:10px 14px; font-size:12px; color:var(--ink-60)">Solo el 8.8% invierte</div>
+    </div>
+    <div style="flex-shrink:0; width:200px; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.12); background:#000">
+      <video src="videos/reel-tasas.mp4" style="width:100%; display:block" playsinline muted loop controls></video>
+      <div style="padding:10px 14px; font-size:12px; color:var(--ink-60)">Comparativa de tasas</div>
+    </div>
+    <div style="flex-shrink:0; width:200px; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.12); background:#000">
+      <video src="videos/reel-inflacion.mp4" style="width:100%; display:block" playsinline muted loop controls></video>
+      <div style="padding:10px 14px; font-size:12px; color:var(--ink-60)">Inflación en alimentos</div>
+    </div>
+    <div style="flex-shrink:0; width:200px; border-radius:20px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,0.12); background:#000">
+      <video src="videos/reel-buffett.mp4" style="width:100%; display:block" playsinline muted loop controls></video>
+      <div style="padding:10px 14px; font-size:12px; color:var(--ink-60)">Quote de Buffett</div>
     </div>
   </div>
 </div>
