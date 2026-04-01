@@ -1,0 +1,36 @@
+{
+  "name": "startrader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "remotion:preview": "remotion preview remotion/index.tsx",
+    "remotion:render": "node remotion/render.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MartinFila/Startrader.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MartinFila/Startrader/issues"
+  },
+  "homepage": "https://github.com/MartinFila/Startrader#readme",
+  "dependencies": {
+    "@remotion/bundler": "^4.0.441",
+    "@remotion/cli": "^4.0.441",
+    "@remotion/renderer": "^4.0.441",
+    "@resvg/resvg-js": "^2.6.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "remotion": "^4.0.441",
+    "satori": "^0.26.0"
+  }
+}

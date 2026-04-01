@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faceless Finance LATAM — Documento de Trabajo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#FAF7F2;--warm:#FFFCF7;--ink:#1A1814;--ink2:#3D3830;--ink3:#6B6358;
+  --gold:#C8972E;--gold-l:#E8B84A;--gold-p:#FFF3D6;
+  --terra:#C45D3E;--sage:#5B7A5E;--sage-l:#E8F0E4;
+  --navy:#1B2838;--navy2:#2A3D52;--slate:#F0EDE8;
+}
+html{scroll-snap-type:y mandatory;scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;color:var(--ink);background:var(--cream);-webkit-font-smoothing:antialiased;line-height:1.6}
+
+section{min-height:100vh;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:clamp(2rem,5vw,4.5rem) clamp(1.5rem,8vw,8rem);position:relative;overflow:hidden}
+section.dark{background:var(--navy);color:var(--cream)}
+section.slate{background:var(--slate)}
+section.sage{background:var(--sage);color:var(--warm)}
+section.gold-left{background:var(--warm);border-left:5px solid var(--gold)}
+section.terra{background:var(--terra);color:var(--warm)}
+
+h1{font-family:'Inter Tight',sans-serif;font-weight:900;font-size:clamp(2.2rem,5.5vw,4rem);line-height:1.08;letter-spacing:-0.03em}
+h2{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:clamp(1.6rem,3.5vw,2.6rem);line-height:1.15;letter-spacing:-0.02em;margin-bottom:1.25rem}
+h3{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:clamp(1rem,1.8vw,1.25rem);line-height:1.3;letter-spacing:-0.01em;margin-bottom:0.5rem}
+p{font-size:clamp(0.95rem,1.4vw,1.1rem);max-width:62ch}
+a{color:inherit;text-decoration:underline;text-decoration-color:rgba(0,0,0,0.2);text-underline-offset:2px;transition:text-decoration-color .2s}
+a:hover{text-decoration-color:currentColor}
+section.dark a{text-decoration-color:rgba(255,255,255,0.3)}
+section.sage a{text-decoration-color:rgba(255,255,255,0.3)}
+
+.label{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem;display:block}
+section.dark .label{color:var(--gold-l)}
+section.sage .label{color:var(--gold-p)}
+section.terra .label{color:rgba(255,255,255,0.7)}
+
+.muted{color:var(--ink3)}
+section.dark .muted{color:#A8B5C4}
+section.sage .muted{color:#C8DEC6}
+
+.src{font-size:0.75rem;color:var(--ink3);margin-top:0.35rem;font-style:italic}
+section.dark .src{color:#7B8A9A}
+
+.mt-1{margin-top:0.75rem}.mt-2{margin-top:1.5rem}.mt-3{margin-top:2.5rem}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+@media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}section{padding:2rem 1.25rem}}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:0.9rem;margin-top:1rem}
+th{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;text-align:left;padding:0.6rem 0.75rem;border-bottom:2px solid var(--ink)}
+td{padding:0.6rem 0.75rem;border-bottom:1px solid #E0DCD5;color:var(--ink2);vertical-align:top}
+td:first-child{font-weight:600;color:var(--ink)}
+section.dark th{border-bottom-color:rgba(255,255,255,0.2);color:var(--cream)}
+section.dark td{border-bottom-color:rgba(255,255,255,0.07);color:#C8D0DA}
+section.dark td:first-child{color:var(--cream)}
+td.success{color:var(--sage);font-weight:700}
+td.warn{color:var(--gold);font-weight:600}
+td.danger{color:var(--terra);font-weight:700}
+
+/* Cards */
+.card{padding:1.5rem;border-radius:2px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08)}
+.card .handle{font-family:'Inter Tight',sans-serif;font-weight:600;font-size:0.9rem;color:var(--gold-l)}
+.card .num{font-family:'Inter Tight',sans-serif;font-weight:900;font-size:1.8rem;color:var(--cream);line-height:1.2;margin:0.15rem 0 0.5rem}
+.card .desc{font-size:0.85rem;color:#A8B5C4;line-height:1.5}
+.card .insight{margin-top:0.6rem;padding-top:0.6rem;border-top:1px solid rgba(255,255,255,0.08);font-size:0.82rem;color:#C8D0DA;font-style:italic}
+
+/* Decision boxes */
+.decision{padding:1.5rem;background:var(--warm);border-left:4px solid var(--gold)}
+.decision h3{margin-bottom:0.35rem}
+.decision p{font-size:0.9rem;color:var(--ink2)}
+.decision.alt{border-left-color:var(--ink3);background:var(--slate)}
+
+/* Compact lists */
+ul.cl{list-style:none;padding:0}
+ul.cl li{padding:0.35rem 0;font-size:0.92rem;color:var(--ink2);display:flex;align-items:baseline;gap:0.5rem}
+ul.cl li::before{content:'→';color:var(--gold);font-weight:700;flex-shrink:0}
+section.dark ul.cl li{color:#C8D0DA}
+section.sage ul.cl li{color:#E0F0DE}
+
+/* Funnel */
+.funnel-step{display:flex;align-items:center;gap:1rem;padding:0.75rem 0;border-bottom:1px solid #E0DCD5}
+.funnel-step:last-child{border-bottom:none}
+.funnel-pct{font-family:'Inter Tight',sans-serif;font-weight:800;font-size:1.1rem;min-width:4.5rem;text-align:right}
+.funnel-label{font-size:0.92rem}
+.funnel-note{font-size:0.8rem;color:var(--ink3);margin-left:auto}
+
+/* Risk rows */
+.risk{display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid #E0DCD5;align-items:flex-start}
+.risk:last-child{border-bottom:none}
+.risk-tag{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.05em;text-transform:uppercase;padding:0.25rem 0.5rem;border-radius:2px;white-space:nowrap;flex-shrink:0;min-width:3.5rem;text-align:center}
+.risk-tag.alta{background:#FDECEA;color:var(--terra)}
+.risk-tag.media{background:var(--gold-p);color:#8B6914}
+.risk-tag.baja{background:var(--sage-l);color:var(--sage)}
+.risk h4{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:0.95rem;margin-bottom:0.15rem}
+.risk p{font-size:0.85rem;color:var(--ink3)}
+
+/* Mix bar */
+.mix-bar{display:flex;height:2.5rem;border-radius:2px;overflow:hidden;margin:1rem 0}
+.mix-bar>div{display:flex;align-items:center;justify-content:center;font-family:'Inter Tight',sans-serif;font-weight:700;font-size:0.75rem;color:var(--warm)}
+.mix-bar .edu{background:var(--navy);flex:40}
+.mix-bar .rel{background:var(--gold);flex:25;color:var(--ink)}
+.mix-bar .bts{background:var(--sage);flex:20}
+.mix-bar .promo{background:var(--terra);flex:15}
+.mix-legend{display:flex;gap:1.25rem;flex-wrap:wrap;font-size:0.8rem}
+.mix-legend span{display:flex;align-items:center;gap:0.35rem}
+.mix-legend .dot{width:8px;height:8px;border-radius:2px;display:inline-block}
+
+/* Timeline */
+.tl{display:flex;flex-direction:column;position:relative;padding-left:1.75rem}
+.tl::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--gold),var(--sage))}
+.tl-item{position:relative;padding:1rem 0 1rem 1.25rem}
+.tl-item::before{content:'';position:absolute;left:-1.75rem;top:1.25rem;width:8px;height:8px;border-radius:50%;background:var(--gold);transform:translateX(-3px)}
+.tl-item .week{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold)}
+.tl-item h3{margin-top:0.15rem;font-size:1.05rem}
+.tl-item p{font-size:0.85rem;color:var(--ink3)}
+
+/* Skill pills */
+.pill{display:inline-block;padding:0.2rem 0.6rem;border-radius:100px;font-size:0.75rem;font-weight:600;font-family:'Inter Tight',sans-serif}
+.pill.exists{background:var(--sage-l);color:var(--sage)}
+.pill.install{background:#EDE7F3;color:#6B3FA0}
+.pill.build{background:#FFF0E6;color:var(--terra)}
+.skill-tag{display:inline-flex;align-items:center;padding:0.3rem 0.65rem;background:rgba(0,0,0,0.04);border-radius:2px;font-size:0.82rem;margin:0.2rem 0.2rem 0.2rem 0;gap:0.4rem}
+section.dark .skill-tag{background:rgba(255,255,255,0.07);color:#C8D0DA}
+.skill-tag .sn{font-family:'Inter Tight',sans-serif;font-weight:600;color:var(--ink)}
+section.dark .skill-tag .sn{color:var(--cream)}
+
+/* Animations */
+.rv{opacity:0;transform:translateY(25px);transition:opacity .6s ease,transform .6s ease}
+.rv.vis{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
+
+/* Nav */
+.nav{position:fixed;right:1.25rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:0.6rem;z-index:100}
+.nav button{width:7px;height:7px;border-radius:50%;background:var(--ink);opacity:.15;cursor:pointer;transition:opacity .3s,transform .3s;border:none}
+.nav button.on{opacity:.6;transform:scale(1.5)}
+@media(max-width:900px){.nav{display:none}}
+
+/* Big quote */
+.bq{border-left:3px solid var(--gold);padding:0.75rem 1.25rem;margin:1.25rem 0;font-size:1.05rem;font-style:italic;color:var(--ink2)}
+section.dark .bq{color:#C8D0DA;border-left-color:var(--gold-l)}
+
+/* Gap visual */
+.gap-v{display:flex;align-items:center;gap:2rem;justify-content:center;margin:2rem 0}
+.gap-side{text-align:center}
+.gap-num{font-family:'Inter Tight',sans-serif;font-weight:900;font-size:clamp(2rem,4.5vw,3.5rem);line-height:1}
+.gap-lbl{font-size:0.82rem;margin-top:0.2rem}
+.gap-x{font-family:'Inter Tight',sans-serif;font-weight:900;font-size:clamp(1.5rem,3vw,2.5rem);color:var(--terra);text-align:center;line-height:1}
+.gap-x small{display:block;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-top:0.2rem}
+
+/* Warning callout */
+.warn-box{background:#FFF8ED;border:1px solid #F0D9A8;padding:1.25rem 1.5rem;border-radius:2px;margin-top:1.5rem}
+.warn-box h4{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:0.9rem;color:#8B6914;margin-bottom:0.35rem}
+.warn-box p{font-size:0.88rem;color:var(--ink2)}
+
+section.dark .warn-box{background:rgba(200,151,46,0.1);border-color:rgba(200,151,46,0.2)}
+section.dark .warn-box h4{color:var(--gold-l)}
+section.dark .warn-box p{color:#A8B5C4}
+
+/* P&L highlight */
+.pnl-row{display:grid;grid-template-columns:1fr repeat(4,auto);gap:0.5rem 1.5rem;align-items:baseline;padding:0.5rem 0;border-bottom:1px solid #E0DCD5;font-size:0.88rem}
+.pnl-row.header{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.06em;text-transform:uppercase;border-bottom:2px solid var(--ink);color:var(--ink)}
+.pnl-row.total{font-weight:700;border-top:2px solid var(--ink);border-bottom:none;padding-top:0.75rem;margin-top:0.25rem}
+.pnl-row .neg{color:var(--terra)}
+.pnl-row .pos{color:var(--sage);font-weight:700}
+@media(max-width:900px){.pnl-row{grid-template-columns:1fr 1fr;gap:0.25rem 0.75rem}}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav"></nav>
+
+<!-- ===== 1. COVER ===== -->
+<section class="dark" data-s>
+  <div class="rv">
+    <span class="label">Documento de trabajo · Marzo 2026</span>
+    <h1 style="max-width:18ch">Cuentas Faceless<br>Educación Financiera<br>LATAM</h1>
+    <p class="muted" style="margin-top:1.25rem;font-size:1.1rem">
+      ¿Tiene sentido crear una cuenta de Instagram faceless de educación financiera en español, operada con IA?<br>
+      Este documento presenta la investigación, los números, los riesgos, y las decisiones que hay que tomar.
+    </p>
+    <div style="display:flex;gap:2rem;flex-wrap:wrap;margin-top:2.5rem;font-size:0.85rem;color:#7B8A9A">
+      <span><strong style="color:var(--cream)">Martín</strong> · Alfonso · Philippe</span>
+      <span>POC: 6 semanas · ~$34/mes</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 2. CONTEXTO: EL NICHO ===== -->
+<section data-s>
+  <span class="label rv">Contexto</span>
+  <h2 class="rv d1">El nicho de educación financiera en Instagram</h2>
+  <div class="grid-2 mt-2">
+    <div class="rv d2">
+      <p>Educación financiera es uno de los nichos más rentables en redes sociales. El RPM (revenue por mil views) en finanzas es <strong>5x mayor</strong> que en gaming o entretenimiento.</p>
+      <p class="mt-1">En inglés, el espacio faceless está activo: cuentas como @millionaire_mentor (14M), @wealth.ceo (143K), @fullystaked (692K) generan miles de dólares mensuales con contenido sin cara.</p>
+      <p class="src">Fuente: <a href="https://www.streamstoria.com/faceless/personal-finance-faceless-niche/" target="_blank">StreamStoria</a> · CPM finanzas: $15-40 vs $2-5 gaming</p>
+    </div>
+    <div class="rv d3">
+      <h3>Dato clave del algoritmo 2026</h3>
+      <p>Adam Mosseri (CEO de Instagram) confirmó que las <strong>dos señales más fuertes</strong> del algoritmo son:</p>
+      <div style="margin-top:0.75rem">
+        <div style="padding:0.6rem 0;border-bottom:1px solid #E0DCD5"><strong style="color:var(--gold)">DM Shares</strong> — si alguien envía tu post por DM, Instagram lo muestra a más gente nueva</div>
+        <div style="padding:0.6rem 0"><strong style="color:var(--sage)">Watch Time</strong> — Reels con >60% retención explotan, los de <40% mueren</div>
+      </div>
+      <p class="src">Fuente: <a href="https://buffer.com/resources/instagram-algorithms/" target="_blank">Buffer</a> (análisis de 4M+ posts)</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3. LAS CUENTAS QUE ANALIZAMOS ===== -->
+<section class="dark" data-s>
+  <span class="label rv">Investigación</span>
+  <h2 class="rv d1">Qué aprendimos de 8+ cuentas faceless</h2>
+  <div class="grid-2 mt-1" style="gap:1.25rem">
+    <div class="card rv d1">
+      <div class="handle">@millionaire_mentor</div>
+      <div class="num">14M+</div>
+      <div class="desc">Quotes + afiliados. El formato más simple generó el mayor revenue de la muestra.</div>
+      <div class="insight">$7M en ventas de afiliados en 18 meses. Clave: hook + frecuencia, no producción elaborada. Red de 15 cuentas para cross-promotion.</div>
+      <p class="src" style="color:#7B8A9A"><a href="https://www.hustleinspireshustle.com/blog/meet-the-millionaire-mentor-jason-stone" target="_blank">Hustle Inspires Hustle</a> · Nota: era 2014-2017, alcance orgánico era mayor</p>
+    </div>
+    <div class="card rv d2">
+      <div class="handle">@wealth.ceo</div>
+      <div class="num">143K</div>
+      <div class="desc">Quotes dark/luxury. Solo 134 posts.</div>
+      <div class="insight">Ratio seguidores/post extraordinario. Prueba: la calidad del hook importa más que el volumen. 100% template-driven.</div>
+    </div>
+    <div class="card rv d2">
+      <div class="handle">@facelesstraderss</div>
+      <div class="num">67K</div>
+      <div class="desc">Charts + señales + mentoría. Estética dark + neón.</div>
+      <div class="insight">Funnel: Reels → DM → Discord → Señales $40/sem → Clase $250 → Mentoría $2K. Revenue: $4K-12K/mes.</div>
+    </div>
+    <div class="card rv d3">
+      <div class="handle">@fullystaked</div>
+      <div class="num">692K</div>
+      <div class="desc">Red de múltiples páginas. 900K+ seguidores totales con 3,866 posts.</div>
+      <div class="insight">Modelo multi-cuenta con shoutouts cruzados entre cuentas propias. Monetiza vendiendo cursos sobre cómo replicar el modelo.</div>
+    </div>
+    <div class="card rv d3">
+      <div class="handle">@thewealthdad</div>
+      <div class="num">55K</div>
+      <div class="desc">Carruseles educativos sobre fondos indexados.</div>
+      <div class="insight">1.05% engagement en carruseles vs <0.1% en Reels. Los carruseles monetizan — construyen la confianza que lleva al clic en el affiliate.</div>
+    </div>
+    <div class="card rv d4">
+      <div class="handle">@trading.latam_</div>
+      <div class="num">~11K</div>
+      <div class="desc">La cuenta faceless de trading en español más grande que encontramos.</div>
+      <div class="insight">Referencia directa del gap. En inglés el techo es 67K (faceless trading). En español: ~11K. La diferencia es de ~6x.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 4. LA HIPÓTESIS + MATICES ===== -->
+<section data-s>
+  <span class="label rv">La hipótesis</span>
+  <h2 class="rv d1">¿Hay una oportunidad real en español?</h2>
+
+  <div class="gap-v rv d2">
+    <div class="gap-side">
+      <div class="gap-num" style="color:var(--navy)">67K</div>
+      <div class="gap-lbl muted">@facelesstraderss<br><strong>Inglés</strong></div>
+    </div>
+    <div class="gap-x">~6×<small>brecha</small></div>
+    <div class="gap-side">
+      <div class="gap-num" style="color:var(--terra)">~11K</div>
+      <div class="gap-lbl muted">@trading.latam_<br><strong>Español</strong></div>
+    </div>
+  </div>
+
+  <div class="grid-2 rv d3">
+    <div>
+      <h3 style="color:var(--sage)">Evidencia a favor</h3>
+      <ul class="cl">
+        <li>No encontramos ni una cuenta faceless de finanzas en español prominente en rankings ni artículos (<a href="https://hypeauditor.com/top-instagram-finance-economics-spain/" target="_blank">HypeAuditor España</a>, <a href="https://hypeauditor.com/top-instagram-finance-economics-mexico/" target="_blank">México</a>, <a href="https://hypeauditor.com/top-instagram-finance-economics-argentina/" target="_blank">Argentina</a>)</li>
+        <li>El nicho de finanzas en español está poblado pero 100% con marca personal (Vladi Mereniuc 500K+, Gossip Finance 200K+)</li>
+        <li>En inglés el modelo faceless sí funciona: múltiples casos documentados</li>
+        <li>38% de canales nuevos monetizados en 2026 son faceless (<a href="https://vytori.com/ai-workflow-for-faceless-youtube-channel-2026/" target="_blank">Vytori</a>)</li>
+      </ul>
+    </div>
+    <div>
+      <h3 style="color:var(--terra)">Evidencia en contra</h3>
+      <ul class="cl">
+        <li><strong>Riesgo cultural:</strong> en LATAM la confianza se construye con relación personal. Mostrar la cara genera más credibilidad</li>
+        <li><strong>Sesgo de supervivencia:</strong> hay gente vendiendo "método faceless" agresivamente (<a href="https://metodofacelesspro.com/" target="_blank">metodofacelesspro.com</a>). Muchos pueden haber intentado y fracasado — no los vemos porque murieron</li>
+        <li><strong>Que no haya competencia no significa que haya demanda.</strong> La ausencia puede ser oportunidad O señal de que no funciona en este mercado</li>
+        <li>Un <a href="https://www.tiktok.com/@guadaacomunicacion/video/7350692165397335302" target="_blank">creador argentino advierte</a> que faceless "no es estratégico" en LATAM</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="warn-box rv d4">
+    <h4>Conclusión honesta</h4>
+    <p>El gap existe. Pero no sabemos si es una oportunidad o una trampa. <strong>Por eso proponemos un POC barato ($34/mes, 6 semanas)</strong> para testear la hipótesis antes de invertir más.</p>
+  </div>
+</section>
+
+<!-- ===== 5. MODELO ECONÓMICO ===== -->
+<section class="slate" data-s>
+  <span class="label rv">Modelo Económico</span>
+  <h2 class="rv d1">¿Cuánto puede generar? (números realistas)</h2>
+
+  <div class="grid-2 mt-1">
+    <div class="rv d2">
+      <h3>Dos referencias creíbles</h3>
+      <div style="padding:1rem 0;border-bottom:1px solid #D8D3CC">
+        <strong>Vytori</strong> <span class="muted">(caso conservador, verificable)</span>
+        <p style="font-size:0.9rem;margin-top:0.3rem">28,400 subs en 14 meses. $2,800-$3,500/mes solo con AdSense. 2-4 hrs por video con IA. Costos: $67/mes en herramientas.</p>
+        <p class="src"><a href="https://vytori.com/ai-workflow-for-faceless-youtube-channel-2026/" target="_blank">Vytori — AI Workflow 2026</a> · Credibilidad: ALTA (muestra sus propios números)</p>
+      </div>
+      <div style="padding:1rem 0">
+        <strong>Chart Master Chad</strong> <span class="muted">(caso optimista)</span>
+        <p style="font-size:0.9rem;margin-top:0.3rem">$31,427/mes después de 8 meses. Inversión: micrófono de $20 + Canva Pro. CPM finanzas: $15-40.</p>
+        <p class="src"><a href="https://www.streamstoria.com/faceless/personal-finance-faceless-niche/" target="_blank">StreamStoria</a> · Credibilidad: MEDIA-ALTA (optimista pero plausible)</p>
+      </div>
+      <div class="warn-box" style="margin-top:1rem">
+        <h4>Nota de escepticismo</h4>
+        <p>Los casos de "$500K en 3 años" (<a href="https://juliansadur.medium.com/ive-made-500k-from-faceless-instagram-accounts-how-to-go-viral-and-make-passive-income-1b3e82908a92" target="_blank">Sadur</a>) y "$200K/año" (<a href="https://www.digitalempires.co/making-200000-from-a-faceless-instagram-account-case-study/" target="_blank">Digital Empires</a>) son clickbait o gente vendiendo cursos sobre cómo hacer cuentas faceless (meta-nicho).</p>
+      </div>
+    </div>
+
+    <div class="rv d3">
+      <h3>Proyección para nuestra cuenta (conservador)</h3>
+      <table>
+        <thead><tr><th>Mes</th><th>Seguidores</th><th>Revenue</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>500–1K</td><td>$0</td></tr>
+          <tr><td>2</td><td>1.5–3K</td><td>$0–50</td></tr>
+          <tr><td>3</td><td>3–5K</td><td>$50–200</td></tr>
+          <tr><td>4–6</td><td>5–15K</td><td>$200–800/mes</td></tr>
+          <tr><td>7–12</td><td>15–30K</td><td>$500–2,000/mes</td></tr>
+        </tbody>
+      </table>
+      <p class="src">Basado en <a href="https://vytori.com/ai-workflow-for-faceless-youtube-channel-2026/" target="_blank">Vytori timeline</a> + <a href="https://napolify.com/blogs/news/faceless-account-instagram-earnings" target="_blank">Napolify earnings</a></p>
+
+      <h3 class="mt-2">¿Por qué tan poco al principio?</h3>
+      <p style="font-size:0.9rem">Star Trader paga $8/lote. Un trader casual LATAM opera 5-15 lotes/mes = $40-120/mes por trader. Pero la mayoría de referidos son principiantes que dejan de operar en 1-3 meses. A 10K seguidores, estimamos ~2-4 traders activos = $120-240/mes en affiliate.</p>
+      <p class="src">Fuentes: <a href="https://forexaffiliate.net/" target="_blank">ForexAffiliate.net</a> · <a href="https://wrtrading.com/broker/forex-affiliate-programs/" target="_blank">WR Trading</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 6. EL EMBUDO (CONVERSIÓN) ===== -->
+<section data-s>
+  <span class="label rv">El embudo</span>
+  <h2 class="rv d1">De seguidores a dinero: los números reales</h2>
+
+  <div class="grid-2 mt-2">
+    <div class="rv d2">
+      <div class="funnel-step"><span class="funnel-pct" style="color:var(--ink)">100%</span><span class="funnel-label"><strong>Seguidores</strong></span></div>
+      <div class="funnel-step"><span class="funnel-pct" style="color:var(--navy)">10-15%</span><span class="funnel-label">Ven el post (reach)</span></div>
+      <div class="funnel-step"><span class="funnel-pct" style="color:var(--gold)">2-3%</span><span class="funnel-label">Click en bio link</span><span class="funnel-note">de visitantes del perfil</span></div>
+      <div class="funnel-step"><span class="funnel-pct" style="color:var(--terra)">1-2%</span><span class="funnel-label">Registro en broker</span><span class="funnel-note">de clicks</span></div>
+      <div class="funnel-step"><span class="funnel-pct" style="color:var(--sage)">20-30%</span><span class="funnel-label">Trader activo</span><span class="funnel-note">de registros</span></div>
+      <div class="funnel-step"><span class="funnel-pct">$8</span><span class="funnel-label">× lotes operados/mes</span><span class="funnel-note">comisión</span></div>
+      <p class="src mt-1">Fuentes: <a href="https://tapmy.store/blog/link-in-bio-click-through-rate-benchmarks-by-platform-2026-data" target="_blank">Tapmy CTR benchmarks</a> · <a href="https://wecantrack.com/insights/affiliate-conversion-statistics/" target="_blank">WeCanTrack</a> · <a href="https://mynameisbond.co/en/blog/instagram-conversion-rate-complete-guide-optimise-results" target="_blank">MyNameIsBond</a></p>
+    </div>
+
+    <div class="rv d3">
+      <h3>El multiplicador: DM Automation</h3>
+      <div style="padding:1rem;background:var(--gold-p);border-radius:2px">
+        <p style="font-size:0.95rem"><strong>Bio link CTR: 2-3%</strong><br>
+        <strong>DM automation CTR: 12-18%</strong> — <span style="color:var(--terra);font-weight:700">6x más</span></p>
+        <p style="font-size:0.85rem;margin-top:0.5rem;color:var(--ink2)">La DM automation (usuario escribe "TRADING" → respuesta automática con link) es el multiplicador más grande del funnel. Es la diferencia entre $120/mes y $400/mes con los mismos seguidores.</p>
+      </div>
+      <p class="src"><a href="https://creatorflow.so/blog/bio-link-vs-dm-automation-affiliate-clicks/" target="_blank">CreatorFlow — Bio Link vs DM Automation</a></p>
+
+      <h3 class="mt-2">Ejemplo concreto: 10K seguidores</h3>
+      <p style="font-size:0.9rem">Con 7 posts/semana, estimamos ~100 clicks/mes al affiliate. Con 2% conversión = 2 registros/mes. Con DM automation: +3 registros/mes adicionales. Acumulado en 6 meses: ~8-12 traders activos = <strong>$480-720/mes</strong> en affiliate de Star Trader.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 7. P&L PROYECTADO ===== -->
+<section class="slate" data-s>
+  <span class="label rv">P&L Año 1</span>
+  <h2 class="rv d1">Dos escenarios: orgánico vs con ads</h2>
+
+  <div class="grid-2 mt-2">
+    <div class="rv d2">
+      <h3>Escenario 1: Solo orgánico <span class="pill exists">Más seguro</span></h3>
+      <div class="pnl-row header"><span>Concepto</span><span>M1-3</span><span>M4-6</span><span>M7-9</span><span>M10-12</span></div>
+      <div class="pnl-row"><span>Ingresos</span><span>$0-100</span><span>$150-500</span><span>$400-1K</span><span>$800-1.8K</span></div>
+      <div class="pnl-row"><span>Costos</span><span>$108-123</span><span>$108-141</span><span>$108-141</span><span>$108-141</span></div>
+      <div class="pnl-row total"><span>Neto</span><span class="neg">-$108</span><span class="pos">+$42-359</span><span class="pos">+$292-859</span><span class="pos">+$692-1.6K</span></div>
+      <p style="font-size:0.85rem;margin-top:0.75rem"><strong>Break-even: mes 3-4.</strong> Total año 1: +$918 a +$2,854</p>
+    </div>
+
+    <div class="rv d3">
+      <h3>Escenario 2: Con paid growth <span class="pill build">Más riesgo</span></h3>
+      <div class="pnl-row header"><span>Concepto</span><span>M1-3</span><span>M4-6</span><span>M7-9</span><span>M10-12</span></div>
+      <div class="pnl-row"><span>Ingresos</span><span>$0-100</span><span>$350-1.1K</span><span>$850-2K</span><span>$1.4-3.1K</span></div>
+      <div class="pnl-row"><span>Costos</span><span>$108-123</span><span>$908-1.4K</span><span>$1-1.6K</span><span>$1-1.6K</span></div>
+      <div class="pnl-row total"><span>Neto</span><span class="neg">-$108</span><span class="neg">-$558</span><span class="neg">-$158 a <span class="pos">+$374</span></span><span class="pos">+$392-1.5K</span></div>
+      <p style="font-size:0.85rem;margin-top:0.75rem"><strong>Break-even: mes 7-9.</strong> Total año 1: -$432 a +$1,499</p>
+    </div>
+  </div>
+
+  <div class="warn-box rv d4">
+    <h4>¿Cuál elegir?</h4>
+    <p>El orgánico es rentable antes, más seguro, pero crece más lento. El paid growth tiene más upside pero puede terminar en negativo si no calibramos bien los ads. <strong>Recomendación: arrancar orgánico (POC), activar ads solo si el orgánico valida la hipótesis.</strong></p>
+  </div>
+  <p class="src rv d4">Fuentes de costos: <a href="https://www.canva.com/en/pricing/" target="_blank">Canva</a> · <a href="https://fliki.ai/pricing" target="_blank">Fliki</a> · <a href="https://www.zebracat.ai/pricing" target="_blank">Zebracat</a> · <a href="https://buffer.com/pricing" target="_blank">Buffer</a></p>
+</section>
+
+<!-- ===== 8. DECISIONES ABIERTAS ===== -->
+<section class="dark" data-s>
+  <span class="label rv">Decisiones</span>
+  <h2 class="rv d1">Qué necesitamos decidir juntos</h2>
+
+  <div class="grid-2 mt-2" style="gap:1.25rem">
+    <div class="rv d1">
+      <div class="decision" style="background:rgba(255,255,255,0.05);border-left-color:var(--gold-l)">
+        <h3 style="color:var(--gold-l)">1. ¿Qué formato priorizar?</h3>
+        <p style="color:#C8D0DA"><strong>Opción A:</strong> Quotes (lo más fácil de automatizar, modelo @wealth.ceo — 143K con 134 posts)<br>
+        <strong>Opción B:</strong> Carruseles educativos (más engagement, más trabajo, modelo @thewealthdad)<br>
+        <strong>Opción C:</strong> Mix desde el día 1 (40% educativo, 25% relatable, 20% BTS, 15% promo)</p>
+      </div>
+    </div>
+    <div class="rv d2">
+      <div class="decision" style="background:rgba(255,255,255,0.05);border-left-color:var(--gold-l)">
+        <h3 style="color:var(--gold-l)">2. ¿Solo Instagram o IG + TikTok?</h3>
+        <p style="color:#C8D0DA"><strong>Solo IG:</strong> Más foco, feedback más rápido, Graph API para automatizar<br>
+        <strong>IG + TikTok:</strong> Mismo contenido se adapta fácil, más alcance, pero más gestión<br>
+        <strong>Recomendación:</strong> Solo IG para el POC, TikTok después</p>
+      </div>
+    </div>
+    <div class="rv d2">
+      <div class="decision" style="background:rgba(255,255,255,0.05);border-left-color:var(--gold-l)">
+        <h3 style="color:var(--gold-l)">3. ¿Idioma?</h3>
+        <p style="color:#C8D0DA"><strong>Solo español:</strong> Nicho más vacío, menor monetización<br>
+        <strong>Solo inglés:</strong> Más competencia pero más revenue<br>
+        <strong>Bilingüe:</strong> Dos cuentas desde el día 1 = doble trabajo<br>
+        <strong>Recomendación:</strong> Español primero (validar hipótesis del gap), inglés si funciona</p>
+      </div>
+    </div>
+    <div class="rv d3">
+      <div class="decision" style="background:rgba(255,255,255,0.05);border-left-color:var(--gold-l)">
+        <h3 style="color:var(--gold-l)">4. ¿Cuánta automatización?</h3>
+        <p style="color:#C8D0DA"><strong>100% IA + revisión:</strong> SanchoCMO genera todo, Martín revisa antes de publicar<br>
+        <strong>50/50:</strong> IA genera copy, diseño manual en Canva, publicación manual<br>
+        <strong>Recomendación:</strong> 100% IA + revisión humana. Si no funciona automatizado, no escala</p>
+      </div>
+    </div>
+    <div class="rv d3">
+      <div class="decision" style="background:rgba(255,255,255,0.05);border-left-color:var(--gold-l)">
+        <h3 style="color:var(--gold-l)">5. ¿Duración del POC?</h3>
+        <p style="color:#C8D0DA"><strong>4 semanas:</strong> Rápido pero puede no ser suficiente para ver tracción<br>
+        <strong>6 semanas:</strong> Suficiente para 30+ posts y primeras métricas<br>
+        <strong>12 semanas:</strong> Más datos pero más inversión de tiempo<br>
+        <strong>Recomendación:</strong> 6 semanas con checkpoint en semana 3</p>
+      </div>
+    </div>
+    <div class="rv d4">
+      <div class="decision" style="background:rgba(255,255,255,0.05);border-left-color:var(--gold-l)">
+        <h3 style="color:var(--gold-l)">6. ¿Monetización en el POC?</h3>
+        <p style="color:#C8D0DA"><strong>Sí:</strong> Link de affiliate desde el día 1, medir conversiones<br>
+        <strong>No:</strong> Solo validar tracción del contenido, monetizar después<br>
+        <strong>Recomendación:</strong> Link en bio desde el día 1 (cuesta $0), pero no optimizar para conversión</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 9. CÓMO FUNCIONA TÉCNICAMENTE ===== -->
+<section data-s>
+  <span class="label rv">Técnico</span>
+  <h2 class="rv d1">El motor de ejecución: SanchoCMO</h2>
+
+  <p class="rv d1">SanchoCMO ya tiene 80+ skills de marketing. Para este proyecto necesitamos 14, de las cuales 12 ya existen.</p>
+
+  <div class="grid-3 mt-2">
+    <div class="rv d2">
+      <h3><span class="pill exists">Ya existen</span> en SanchoCMO</h3>
+      <div style="margin-top:0.5rem">
+        <div class="skill-tag"><span class="sn">daily-pulse</span></div>
+        <div class="skill-tag"><span class="sn">thief-marketers</span></div>
+        <div class="skill-tag"><span class="sn">social-media-extractor</span></div>
+        <div class="skill-tag"><span class="sn">content-atomizer</span></div>
+        <div class="skill-tag"><span class="sn">brand-voice</span></div>
+        <div class="skill-tag"><span class="sn">visual-identity</span></div>
+        <div class="skill-tag"><span class="sn">content-calendar</span></div>
+      </div>
+      <p class="src">0 horas de trabajo</p>
+    </div>
+    <div class="rv d3">
+      <h3><span class="pill install">Instalar</span> de Antigravity</h3>
+      <div style="margin-top:0.5rem">
+        <div class="skill-tag"><span class="sn">instagram</span> Graph API</div>
+        <div class="skill-tag"><span class="sn">canva-automation</span></div>
+        <div class="skill-tag"><span class="sn">apify-trend-analysis</span></div>
+        <div class="skill-tag"><span class="sn">apify-influencer</span></div>
+        <div class="skill-tag"><span class="sn">apify-analytics</span></div>
+      </div>
+      <p class="src">1-2 horas de setup</p>
+    </div>
+    <div class="rv d3">
+      <h3><span class="pill build">Construir</span> nuevas</h3>
+      <div style="margin-top:0.5rem">
+        <div class="skill-tag"><span class="sn">ig-content-planner</span></div>
+        <div class="skill-tag"><span class="sn">ig-faceless-content</span></div>
+      </div>
+      <p class="src">6-8 horas de desarrollo</p>
+    </div>
+  </div>
+
+  <div class="rv d4 mt-3">
+    <h3>Workflow diario (automatizado)</h3>
+    <p style="font-size:0.9rem;color:var(--ink2)">
+      <strong>6 AM:</strong> daily-pulse + apify escanean noticias y trends →
+      <strong>Auto:</strong> ig-content-planner decide qué publicar →
+      <strong>Auto:</strong> ig-faceless-content genera el copy →
+      <strong>Auto:</strong> canva-automation crea el diseño →
+      <strong>Martín revisa</strong> →
+      <strong>Auto:</strong> instagram publica a la hora programada →
+      <strong>Auto:</strong> DM automation responde keywords →
+      <strong>Lunes:</strong> analytics genera reporte semanal
+    </p>
+    <p style="font-size:0.9rem;margin-top:0.5rem"><strong>Supervisión humana estimada: 1-2 horas/semana</strong> (revisar contenido, engagement manual, networking para shoutouts)</p>
+  </div>
+</section>
+
+<!-- ===== 10. TIMELINE ===== -->
+<section class="gold-left" data-s>
+  <span class="label rv">Timeline</span>
+  <h2 class="rv d1">6 semanas para saber si funciona</h2>
+
+  <div class="grid-2 mt-2" style="gap:3rem">
+    <div class="tl rv d2">
+      <div class="tl-item">
+        <span class="week">Semana 0 · Setup</span>
+        <h3>Infraestructura</h3>
+        <p>Nombre, identidad visual, cuenta IG Business, Meta App + tokens, Apify, brand context, instalar 5 skills, construir 2 skills nuevas, test end-to-end. <strong>~15 hrs.</strong></p>
+      </div>
+      <div class="tl-item">
+        <span class="week">Semana 1 · Buffer</span>
+        <h3>Producir 30 piezas</h3>
+        <p>10 quotes, 8 carruseles, 8 Reels, 4 screen recordings. Martín revisa todo antes de publicar. <strong>~8 hrs.</strong></p>
+      </div>
+      <div class="tl-item">
+        <span class="week">Semanas 2-3 · Lanzamiento</span>
+        <h3>Publicar 5/semana</h3>
+        <p>DM automation activa. 20-30 interacciones diarias en cuentas del nicho. Compartir en Stories. <strong>~5 hrs/sem.</strong></p>
+      </div>
+      <div class="tl-item">
+        <span class="week">Semana 3 · Checkpoint</span>
+        <h3>Primera revisión</h3>
+        <p>¿Hay tracción? ¿El engagement pasa del 2%? Si no, ajustar antes de seguir.</p>
+      </div>
+      <div class="tl-item">
+        <span class="week">Semanas 3-4 · Growth</span>
+        <h3>Red de shoutouts</h3>
+        <p>Identificar 30 cuentas, contactar 15, organizar grupo, ejecutar 1-2 shoutouts/semana recíprocos.</p>
+      </div>
+      <div class="tl-item">
+        <span class="week">Semanas 4-6 · Iteración</span>
+        <h3>Analizar + ajustar</h3>
+        <p>Métricas cada lunes. Top/bottom 3 posts. A/B test hooks. Decisión final semana 6.</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="rv d3">
+        <h3>Criterios go/no-go (semana 6)</h3>
+        <table>
+          <thead><tr><th>Métrica</th><th style="color:var(--sage)">Éxito</th><th style="color:var(--gold)">OK</th><th style="color:var(--terra)">Fracaso</th></tr></thead>
+          <tbody>
+            <tr><td>Seguidores</td><td class="success">&gt;800</td><td class="warn">400-800</td><td class="danger">&lt;400</td></tr>
+            <tr><td>Engagement</td><td class="success">&gt;4%</td><td class="warn">2-4%</td><td class="danger">&lt;2%</td></tr>
+            <tr><td>Posts</td><td class="success">30+</td><td class="warn">20-30</td><td class="danger">&lt;20</td></tr>
+            <tr><td>Saves/carrusel</td><td class="success">&gt;20</td><td class="warn">10-20</td><td class="danger">&lt;10</td></tr>
+            <tr><td>Watch time</td><td class="success">&gt;50%</td><td class="warn">30-50%</td><td class="danger">&lt;30%</td></tr>
+            <tr><td>Shoutouts</td><td class="success">3+</td><td class="warn">1-3</td><td class="danger">0</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="rv d4 mt-3">
+        <h3>Qué hacemos según resultado</h3>
+        <div class="decision mt-1" style="border-left-color:var(--sage)"><h3 style="color:var(--sage)">Éxito →</h3><p>Escalar: más frecuencia, activar YouTube, construir funnel, segunda cuenta</p></div>
+        <div class="decision mt-1" style="border-left-color:var(--gold)"><h3 style="color:var(--gold)">Aceptable →</h3><p>Iterar: ajustar hooks, analizar formatos, dar 4 semanas más</p></div>
+        <div class="decision mt-1" style="border-left-color:var(--terra)"><h3 style="color:var(--terra)">Fracaso →</h3><p>Diagnosticar: ¿contenido, nicho, o ejecución? Pivotar o matar</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 11. RIESGOS ===== -->
+<section data-s>
+  <span class="label rv">Riesgos</span>
+  <h2 class="rv d1">Qué puede salir mal</h2>
+
+  <div style="max-width:48rem" class="rv d2">
+    <div class="risk">
+      <span class="risk-tag alta">Alta</span>
+      <div><h4>Contenido IA se siente genérico</h4><p>Hooks con datos reales (no frases motivacionales). Screen recordings como diferenciador. Revisión humana de cada batch antes de publicar.</p></div>
+    </div>
+    <div class="risk">
+      <span class="risk-tag alta">Alta</span>
+      <div><h4>El modelo faceless no funciona culturalmente en LATAM</h4><p>Esto es lo que el POC valida. Si engagement <2% después de 6 semanas de ejecución consistente, la hipótesis estaba equivocada y pivotamos.</p></div>
+    </div>
+    <div class="risk">
+      <span class="risk-tag media">Media</span>
+      <div><h4>Nadie acepta shoutouts</h4><p>Empezar con cuentas de 1-5K (más incentivo). Comentar en sus posts 2 semanas antes de pedir. Ofrecer valor primero.</p></div>
+    </div>
+    <div class="risk">
+      <span class="risk-tag media">Media</span>
+      <div><h4>Traders referidos dejan de operar rápido</h4><p>La mayoría de principiantes opera 1-3 meses. Contenido educativo que mejore la retención del trader. Diversificar ingresos (no depender solo de affiliate).</p></div>
+    </div>
+    <div class="risk">
+      <span class="risk-tag baja">Baja</span>
+      <div><h4>Instagram penaliza publicación vía API</h4><p>La Graph API es oficial de Meta. Rate limits respetados. <a href="https://elfsight.com/blog/instagram-graph-api-complete-developer-guide-for-2026/" target="_blank">Guía técnica</a></p></div>
+    </div>
+    <div class="risk">
+      <span class="risk-tag baja">Baja</span>
+      <div><h4>Star Trader cambia condiciones</h4><p>El contenido nunca menciona a Star Trader. El affiliate en bio es intercambiable. Otros brokers LATAM: <a href="https://www.starpeaktrade.com/en/news/exness-forex-broker-introducing-the-cpa-program-for-latam-affiliator-298209" target="_blank">Exness LATAM hasta $750 CPA</a>, Vantage $8/lote.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 12. CLAVES DE EJECUCIÓN ===== -->
+<section class="sage" data-s>
+  <span class="label rv">Claves</span>
+  <h2 class="rv d1">Lo que hace que esto funcione<br>o fracase</h2>
+
+  <div class="grid-2 mt-2">
+    <div class="rv d2">
+      <h3 style="color:var(--gold-p)">1. La red de shoutouts</h3>
+      <p>Jason Stone creció a 2M con 15 cuentas haciendo cross-promotion. Sin red, el crecimiento es lineal. Con red, es exponencial. Esta es la tarea más importante y la más manual.</p>
+      <p class="src" style="color:#C8DEC6"><a href="https://www.hustleinspireshustle.com/blog/meet-the-millionaire-mentor-jason-stone" target="_blank">Caso documentado</a></p>
+    </div>
+    <div class="rv d2">
+      <h3 style="color:var(--gold-p)">2. Consistencia > calidad</h3>
+      <p>5x más engagement para posters consistentes vs ocasionales. El 75% de cuentas faceless muere por inconsistencia. SanchoCMO resuelve esto — pero solo si lo configuramos bien.</p>
+      <p class="src" style="color:#C8DEC6"><a href="https://buffer.com/resources/instagram-algorithms/" target="_blank">Buffer — análisis de 4M+ posts</a></p>
+    </div>
+    <div class="rv d3">
+      <h3 style="color:var(--gold-p)">3. DM automation es el multiplicador</h3>
+      <p>12-18% CTR vs 2-3% del bio link pasivo. La diferencia entre $120/mes y $400/mes con los mismos seguidores. Es la pieza técnica más importante del funnel.</p>
+      <p class="src" style="color:#C8DEC6"><a href="https://creatorflow.so/blog/bio-link-vs-dm-automation-affiliate-clicks/" target="_blank">CreatorFlow data</a></p>
+    </div>
+    <div class="rv d3">
+      <h3 style="color:var(--gold-p)">4. Hooks con datos, no motivación</h3>
+      <p>"El 90% de los traders pierden dinero" funciona. "Cree en ti y lograrás tus metas" no. El contenido financiero faceless que funciona es concreto, polémico, y basado en datos verificables.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 13. INVERSIÓN DEL POC ===== -->
+<section class="slate" data-s>
+  <span class="label rv">Inversión</span>
+  <h2 class="rv d1">Lo que cuesta probar la hipótesis</h2>
+
+  <div class="grid-3 rv d2">
+    <div style="text-align:center;padding:2rem 1rem">
+      <div style="font-family:'Inter Tight',sans-serif;font-weight:900;font-size:3rem;color:var(--gold)">$34</div>
+      <div class="muted">/mes máximo</div>
+      <p class="src" style="text-align:center"><a href="https://www.canva.com/en/pricing/" target="_blank">Canva</a> $15 + <a href="https://fliki.ai/pricing" target="_blank">Fliki</a> $19</p>
+    </div>
+    <div style="text-align:center;padding:2rem 1rem">
+      <div style="font-family:'Inter Tight',sans-serif;font-weight:900;font-size:3rem;color:var(--gold)">~5h</div>
+      <div class="muted">/semana (después del setup)</div>
+    </div>
+    <div style="text-align:center;padding:2rem 1rem">
+      <div style="font-family:'Inter Tight',sans-serif;font-weight:900;font-size:3rem;color:var(--gold)">6</div>
+      <div class="muted">semanas para saber</div>
+    </div>
+  </div>
+
+  <p class="rv d3 mt-2" style="font-size:1.05rem;max-width:50ch;text-align:center;margin-left:auto;margin-right:auto">
+    <strong>Costo total del POC: ~$200 + ~48 horas.</strong><br>
+    Si no funciona, matamos y aprendimos.<br>
+    Si funciona, tenemos un activo que genera $500-2K/mes en 6-12 meses.
+  </p>
+</section>
+
+<!-- ===== 14. SIGUIENTE PASO ===== -->
+<section class="dark" data-s>
+  <div class="rv" style="text-align:center;max-width:40rem;margin:0 auto">
+    <span class="label">Siguiente paso</span>
+    <h1 style="font-size:clamp(1.8rem,4vw,3rem);margin-top:0.5rem">Aprobar la hipótesis<br>→ Ejecutar Semana 0</h1>
+    <p style="color:#A8B5C4;margin-top:1.5rem;font-size:1rem">
+      No estamos aprobando una inversión grande.<br>
+      Estamos aprobando <strong>6 semanas y $200</strong> para testear si el contenido financiero faceless en español tiene tracción.
+    </p>
+  </div>
+</section>
+
+<!-- ===== 15. FUENTES ===== -->
+<section class="slate" data-s style="min-height:auto;padding-top:3rem;padding-bottom:3rem">
+  <span class="label rv">Fuentes y referencias</span>
+  <div class="grid-2 rv d1" style="font-size:0.82rem;color:var(--ink3);gap:1rem">
+    <div>
+      <p style="margin-bottom:0.5rem"><strong style="color:var(--ink)">Algoritmo y estrategia IG</strong></p>
+      <p><a href="https://buffer.com/resources/instagram-algorithms/" target="_blank">Buffer — Instagram Algorithms 2026</a> (4M+ posts analizados)</p>
+      <p><a href="https://medium.com/@daniel.belhart/what-the-instagram-algorithm-in-2026-actually-prioritizes-and-how-creators-can-use-it-2a48b893e1c8" target="_blank">Belhart — What IG Algorithm Actually Prioritizes</a></p>
+      <p><a href="https://www.truefuturemedia.com/articles/instagram-reels-reach-2026-business-growth-guide" target="_blank">TrueFuture Media — Reels Reach 2026</a></p>
+      <p><a href="https://www.schedchie.com/blog/how-to-grow-a-faceless-instagram-account-in-2025" target="_blank">Schedchie — Grow Faceless Account</a></p>
+
+      <p style="margin-top:0.75rem;margin-bottom:0.5rem"><strong style="color:var(--ink)">Case studies faceless</strong></p>
+      <p><a href="https://www.streamstoria.com/faceless/personal-finance-faceless-niche/" target="_blank">StreamStoria — Personal Finance Faceless Niche</a></p>
+      <p><a href="https://vytori.com/ai-workflow-for-faceless-youtube-channel-2026/" target="_blank">Vytori — AI Workflow Faceless YouTube 2026</a></p>
+      <p><a href="https://www.hustleinspireshustle.com/blog/meet-the-millionaire-mentor-jason-stone" target="_blank">Hustle Inspires Hustle — Jason Stone</a></p>
+      <p><a href="https://napolify.com/blogs/news/faceless-account-instagram-earnings" target="_blank">Napolify — Faceless Account Earnings</a></p>
+    </div>
+    <div>
+      <p style="margin-bottom:0.5rem"><strong style="color:var(--ink)">Conversión y monetización</strong></p>
+      <p><a href="https://tapmy.store/blog/link-in-bio-click-through-rate-benchmarks-by-platform-2026-data" target="_blank">Tapmy — Bio Link CTR Benchmarks 2026</a></p>
+      <p><a href="https://creatorflow.so/blog/bio-link-vs-dm-automation-affiliate-clicks/" target="_blank">CreatorFlow — Bio Link vs DM Automation</a></p>
+      <p><a href="https://wecantrack.com/insights/affiliate-conversion-statistics/" target="_blank">WeCanTrack — Affiliate Conversion Stats</a></p>
+      <p><a href="https://mynameisbond.co/en/blog/instagram-conversion-rate-complete-guide-optimise-results" target="_blank">MyNameIsBond — IG Conversion Rate Guide</a></p>
+
+      <p style="margin-top:0.75rem;margin-bottom:0.5rem"><strong style="color:var(--ink)">Forex affiliate y brokers</strong></p>
+      <p><a href="https://wrtrading.com/broker/forex-affiliate-programs/" target="_blank">WR Trading — Forex Affiliate Programs</a></p>
+      <p><a href="https://www.starpeaktrade.com/en/news/exness-forex-broker-introducing-the-cpa-program-for-latam-affiliator-298209" target="_blank">StarPeakTrade — Exness CPA LATAM</a></p>
+      <p><a href="https://quadcode.com/blog/top-15-forex-affiliate-programs-with-best-offers" target="_blank">Quadcode — Top 15 Forex Affiliate Programs</a></p>
+
+      <p style="margin-top:0.75rem;margin-bottom:0.5rem"><strong style="color:var(--ink)">Competencia en español</strong></p>
+      <p><a href="https://hypeauditor.com/top-instagram-finance-economics-spain/" target="_blank">HypeAuditor — Top Finance IG Spain</a></p>
+      <p><a href="https://hypeauditor.com/top-instagram-finance-economics-mexico/" target="_blank">HypeAuditor — Top Finance IG Mexico</a></p>
+      <p><a href="https://flake-agency.com/influencers-financieros/21-mejores-influencers-financieros-instagram/" target="_blank">Flake Agency — 21 Mejores Influencers Financieros</a></p>
+    </div>
+  </div>
+</section>
+
+<script>
+const O=new IntersectionObserver(e=>{e.forEach(e=>{e.isIntersecting&&e.target.classList.add('vis')})},{threshold:.12});
+document.querySelectorAll('.rv').forEach(e=>O.observe(e));
+const S=document.querySelectorAll('section[data-s]'),N=document.getElementById('nav');
+S.forEach((_,i)=>{const b=document.createElement('button');b.addEventListener('click',()=>S[i].scrollIntoView({behavior:'smooth'}));N.appendChild(b)});
+const D=N.querySelectorAll('button');
+new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){const i=[...S].indexOf(e.target);D.forEach((d,j)=>d.classList.toggle('on',j===i))}})},{threshold:.5}).observe(document.querySelectorAll('section[data-s]')[0]);
+// Fix: observe all sections
+const NO=new IntersectionObserver(e=>{e.forEach(e=>{if(e.isIntersecting){const i=[...S].indexOf(e.target);D.forEach((d,j)=>d.classList.toggle('on',j===i))}})},{threshold:.5});
+S.forEach(s=>NO.observe(s));
+</script>
+</body>
+</html>
