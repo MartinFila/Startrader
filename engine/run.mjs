@@ -982,6 +982,72 @@ async function createContent(script) {
   return createReelVideo(script); // todos los reels usan Remotion (animado)
 }
 
+// ── Pexels video search ─────────────────────────────────────────────────────
+
+const PEXELS_KEY = process.env.PEXELS_API_KEY || readEnvKey('PEXELS_API_KEY');
+
+/**
+ * Search Pexels for portrait HD videos matching a query.
+ * Returns an array of video URLs (one per result).
+ */
+async function searchPexelsVideos(query, count = 5) {
+  if (!PEXELS_KEY) {
+    console.log('  ⚠ PEXELS_API_KEY no encontrada, sin videos de fondo');
+    return [];
+  }
+  try {
+    const res = await fetch(
+      `https://api.pexels.com/videos/search?query=${encodeURIComponent(query)}&per_page=${count}&orientation=portrait`,
+      { headers: { Authorization: PEXELS_KEY } }
+    );
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.videos || []).map(v => {
+      // Prefer HD portrait (1080x1920), fallback to any HD
+      const files = v.video_files || [];
+      const portrait = files.find(f => f.quality === 'hd' && f.height >= 1080);
+      const fallback = files.find(f => f.quality === 'hd') || files[0];
+      return (portrait || fallback)?.link || null;
+    }).filter(Boolean);
+  } catch (e) {
+    console.log(`  ⚠ Pexels error: ${e.message}`);
+    return [];
+  }
+}
+
+/**
+ * For each scene, pick a Pexels video based on keywords from the scene text.
+ * Last scene (CTA) keeps solid background — no video.
+ */
+async function addVideoBackgrounds(scenes) {
+  if (!PEXELS_KEY) return scenes;
+  console.log('  🎥 Buscando videos de fondo en Pexels...');
+
+  // Queries targeted: USD bills (aspirational) + Mexico City (local identity)
+  const queries = ['dollar bills cash', 'mexico city aerial', 'stock market screen trading'];
+  const pool = [];
+  for (const q of queries) {
+    const urls = await searchPexelsVideos(q, 3);
+    pool.push(...urls);
+  }
+
+  if (pool.length === 0) {
+    console.log('  ⚠ No se encontraron videos en Pexels');
+    return scenes;
+  }
+
+  console.log(`  ✓ ${pool.length} clips de video encontrados`);
+
+  // Assign videos to scenes (skip last scene = CTA with dark bg)
+  return scenes.map((scene, i) => {
+    if (i >= scenes.length - 1) return scene; // last scene: no video
+    return {
+      ...scene,
+      videoUrl: pool[i % pool.length],
+    };
+  });
+}
+
 async function createReelVideo(script) {
   console.log('\n🎬 PASO 4: Creando Reel...');
 
@@ -991,10 +1057,13 @@ async function createReelVideo(script) {
 
   // Convert scene durations from seconds to frames (24fps) — Claude returns seconds
   const FPS = 24;
-  const scenes = script.scenes.map(s => ({
+  let scenes = script.scenes.map(s => ({
     ...s,
     duration: s.duration <= 20 ? Math.round(s.duration * FPS) : s.duration, // if <=20 assume seconds
   }));
+
+  // Add Pexels video backgrounds
+  scenes = await addVideoBackgrounds(scenes);
 
   // Write temp JSON for Remotion
   const tmpJson = join(ROOT, 'content', `_tmp-reel-${Date.now()}.json`);

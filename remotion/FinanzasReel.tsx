@@ -5,6 +5,7 @@ import {
   useVideoConfig,
   spring,
 } from "remotion";
+import { Video } from "@remotion/media";
 import { TransitionSeries, springTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { loadFont } from "@remotion/google-fonts/Inter";
@@ -28,6 +29,8 @@ export interface Scene {
   text_line3: string;
   /** Duración en frames (a 24 fps) */
   duration: number;
+  /** URL de video de fondo (Pexels). Si no hay, usa fondo sólido. */
+  videoUrl?: string;
 }
 
 export type FinanzasReelProps = {
@@ -172,9 +175,11 @@ const SceneView: React.FC<{
   const { fps } = useVideoConfig();
   const isLastScene = index === totalScenes - 1;
 
-  const bg = isLastScene ? BRAND.dark : BRAND.cream;
-  const textColor = isLastScene ? BRAND.white : BRAND.dark;
-  const handleColor = isLastScene ? BRAND.white : BRAND.dark;
+  const hasVideo = !!scene.videoUrl;
+  const bg = hasVideo ? "#000" : isLastScene ? BRAND.dark : BRAND.cream;
+  // Con video de fondo, texto siempre blanco para contraste
+  const textColor = hasVideo || isLastScene ? BRAND.white : BRAND.dark;
+  const handleColor = textColor;
 
   /**
    * Para escenas 1+ los delays compensan TRANSITION_FRAMES para que
@@ -184,20 +189,42 @@ const SceneView: React.FC<{
   const offset = index === 0 ? 0 : TRANSITION_FRAMES;
 
   return (
-    <AbsoluteFill
-      style={{
-        backgroundColor: bg,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        fontFamily,
-        padding: 80,
-      }}
-    >
-      <Logo />
-      <Handle color={handleColor} />
-      <BottomBar />
+    <AbsoluteFill style={{ backgroundColor: bg }}>
+      {/* Video de fondo + overlay oscuro */}
+      {hasVideo && (
+        <>
+          <AbsoluteFill style={{ zIndex: 0 }}>
+            <Video
+              src={scene.videoUrl!}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              muted
+              loop
+            />
+          </AbsoluteFill>
+          <AbsoluteFill
+            style={{
+              zIndex: 1,
+              backgroundColor: "rgba(0, 0, 0, 0.55)",
+            }}
+          />
+        </>
+      )}
+
+      {/* Contenido (texto + chrome) */}
+      <AbsoluteFill
+        style={{
+          zIndex: 2,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          fontFamily,
+          padding: 80,
+        }}
+      >
+        <Logo />
+        <Handle color={handleColor} />
+        <BottomBar />
 
       {index === 0 ? (
         // HOOK (escena 0): línea 1 estática desde frame 0,
@@ -206,7 +233,7 @@ const SceneView: React.FC<{
           {scene.text_line1 ? (
             <div
               style={{
-                color: BRAND.red,
+                color: hasVideo ? BRAND.white : BRAND.red,
                 fontSize: 58,
                 fontWeight: 700,
                 textAlign: "center",
@@ -300,6 +327,7 @@ const SceneView: React.FC<{
           />
         </>
       )}
+      </AbsoluteFill>
     </AbsoluteFill>
   );
 };
