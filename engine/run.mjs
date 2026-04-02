@@ -613,19 +613,40 @@ async function selectTopic(news) {
     return 'otro';
   }
 
-  // Tag today's content by theme
+  // Tag themes from last 3 days (not just today) to avoid "always CETES" syndrome
+  let recentLines = [];
+  try {
+    const log = readFileSync(CONTENT_LOG, 'utf-8');
+    const d0 = TODAY;
+    const d1 = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+    const d2 = new Date(Date.now() - 2 * 86400000).toISOString().slice(0, 10);
+    recentLines = log.split('\n').filter(l => l.includes(d0) || l.includes(d1) || l.includes(d2)).map(l => l.toLowerCase());
+  } catch {}
+  const recentThemes = new Set(recentLines.map(h => getTheme(h)));
+  recentThemes.delete('otro'); // "otro" is always allowed
+  // Today's themes block completely, recent (yesterday/before) themes only block if >1 occurrence
   const todaysThemes = new Set(todaysHooks.map(h => getTheme(h)));
-  todaysThemes.delete('otro'); // "otro" is always allowed
+  todaysThemes.delete('otro');
+  const recentThemeCounts = {};
+  for (const h of recentLines) {
+    const t = getTheme(h);
+    if (t !== 'otro') recentThemeCounts[t] = (recentThemeCounts[t] || 0) + 1;
+  }
+  // Block themes used today OR used 2+ times in last 3 days
+  const blockedThemes = new Set([...todaysThemes]);
+  for (const [theme, count] of Object.entries(recentThemeCounts)) {
+    if (count >= 2) blockedThemes.add(theme);
+  }
 
-  if (todaysThemes.size > 0) {
+  if (blockedThemes.size > 0) {
     const beforeTheme = news.length;
     news = news.filter(n => {
       const theme = getTheme(n.titulo + ' ' + (n.dato || '') + ' ' + (n.relevancia || ''));
-      return !todaysThemes.has(theme);
+      return !blockedThemes.has(theme);
     });
     const themeFiltered = beforeTheme - news.length;
     if (themeFiltered > 0) {
-      console.log(`  🏷️  ${themeFiltered} temas descartados por categoría repetida (${[...todaysThemes].join(', ')})`);
+      console.log(`  🏷️  ${themeFiltered} temas descartados por categoría repetida en últimos 3 días (${[...blockedThemes].join(', ')})`);
     }
   }
 
