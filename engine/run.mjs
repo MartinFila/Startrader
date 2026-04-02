@@ -990,14 +990,14 @@ const PEXELS_KEY = process.env.PEXELS_API_KEY || readEnvKey('PEXELS_API_KEY');
  * Search Pexels for portrait HD videos matching a query.
  * Returns an array of video URLs (one per result).
  */
-async function searchPexelsVideos(query, count = 5) {
+async function searchPexelsVideos(query, count = 5, page = 1) {
   if (!PEXELS_KEY) {
     console.log('  ⚠ PEXELS_API_KEY no encontrada, sin videos de fondo');
     return [];
   }
   try {
     const res = await fetch(
-      `https://api.pexels.com/videos/search?query=${encodeURIComponent(query)}&per_page=${count}&orientation=portrait`,
+      `https://api.pexels.com/videos/search?query=${encodeURIComponent(query)}&per_page=${count}&orientation=portrait&page=${page}`,
       { headers: { Authorization: PEXELS_KEY } }
     );
     if (!res.ok) return [];
@@ -1023,11 +1023,21 @@ async function addVideoBackgrounds(scenes) {
   if (!PEXELS_KEY) return scenes;
   console.log('  🎥 Buscando videos de fondo en Pexels...');
 
-  // Queries targeted: USD bills (aspirational) + Mexico City (local identity)
-  const queries = ['dollar bills cash', 'mexico city aerial', 'stock market screen trading'];
+  // Varied query pool — pick 3 random ones each time so reels don't repeat clips
+  const allQueries = [
+    'dollar bills cash', 'mexico city aerial', 'stock market screen trading',
+    'counting money', 'city night lights', 'business people walking',
+    'coins savings jar', 'laptop finance charts', 'luxury car lifestyle',
+    'credit card payment', 'office desk work', 'gold bars investment',
+    'smartphone banking app', 'shopping grocery store', 'skyscraper downtown',
+  ];
+  const shuffled = allQueries.sort(() => Math.random() - 0.5);
+  const queries = shuffled.slice(0, 3);
+
   const pool = [];
   for (const q of queries) {
-    const urls = await searchPexelsVideos(q, 3);
+    const page = Math.floor(Math.random() * 3) + 1; // random page for variety
+    const urls = await searchPexelsVideos(q, 4, page);
     pool.push(...urls);
   }
 
@@ -1036,7 +1046,9 @@ async function addVideoBackgrounds(scenes) {
     return scenes;
   }
 
-  console.log(`  ✓ ${pool.length} clips de video encontrados`);
+  // Shuffle pool so scene order varies too
+  pool.sort(() => Math.random() - 0.5);
+  console.log(`  ✓ ${pool.length} clips encontrados (${queries.join(', ')})`);
 
   // Assign videos to scenes (skip last scene = CTA with dark bg)
   return scenes.map((scene, i) => {
@@ -1255,7 +1267,7 @@ async function createQuote(script) {
 
   // Quote text — never truncate. Font size adjusts to fit.
   const quoteText = sanitize(script.quote_text || script.hook || '');
-  const quoteFontSize = quoteText.length > 100 ? 44 : quoteText.length > 70 ? 50 : 58;
+  const quoteFontSize = quoteText.length > 120 ? 38 : quoteText.length > 100 ? 42 : quoteText.length > 70 ? 48 : 56;
   const contextText = sanitize(script.quote_context || '');
 
   console.log(`  🎨 Quote — estilo crema portada`);
@@ -1267,7 +1279,7 @@ async function createQuote(script) {
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       fontFamily: 'Inter', textAlign: 'center',
-      padding: '100px 120px',
+      padding: '100px 80px',
       position: 'relative',
     }, children: [
       // fp circle logo centered at top
