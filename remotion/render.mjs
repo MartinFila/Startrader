@@ -49,7 +49,7 @@ if (!jsonPath) {
 const scriptRaw = fs.readFileSync(path.resolve(jsonPath), "utf-8");
 const script = JSON.parse(scriptRaw);
 
-const { hook, scenes, slug } = script;
+const { hook, scenes, slug, musicUrl } = script;
 
 if (!scenes || !Array.isArray(scenes)) {
   console.error("El JSON debe tener un array 'scenes'.");
@@ -84,7 +84,7 @@ async function main() {
   const composition = await selectComposition({
     serveUrl: bundleLocation,
     id: "FinanzasReel",
-    inputProps: { hook, scenes },
+    inputProps: { hook, scenes, musicUrl },
   });
 
   // durationInFrames viene calculado por calculateMetadata en index.tsx
@@ -99,7 +99,7 @@ async function main() {
     serveUrl: bundleLocation,
     codec: "h264",
     outputLocation: outputPath,
-    inputProps: { hook, scenes },
+    inputProps: { hook, scenes, musicUrl },
   });
 
   // Render portada at frame 24 (1s in) — animations have fully settled by then
@@ -108,7 +108,7 @@ async function main() {
     composition,
     serveUrl: bundleLocation,
     output: coverPath,
-    inputProps: { hook, scenes },
+    inputProps: { hook, scenes, musicUrl },
     frame: 24,
     imageFormat: "png",
   });

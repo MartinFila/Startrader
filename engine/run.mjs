@@ -16,7 +16,7 @@
 
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
-import { readFileSync, writeFileSync, mkdirSync, existsSync, appendFileSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, appendFileSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
@@ -1065,9 +1065,27 @@ async function createReelVideo(script) {
   // Add Pexels video backgrounds
   scenes = await addVideoBackgrounds(scenes);
 
+  // Pick a random background music track
+  const MUSIC_DIR = join(ROOT, 'content', 'music');
+  let musicUrl = undefined;
+  try {
+    const tracks = readdirSync(MUSIC_DIR).filter(f => f.endsWith('.mp3'));
+    if (tracks.length > 0) {
+      const pick = tracks[Math.floor(Math.random() * tracks.length)];
+      // Copy to public/ for Remotion staticFile access
+      const publicDir = join(ROOT, 'public');
+      mkdirSync(publicDir, { recursive: true });
+      const src = join(MUSIC_DIR, pick);
+      const dst = join(publicDir, pick);
+      if (!existsSync(dst)) writeFileSync(dst, readFileSync(src));
+      musicUrl = pick; // just the filename — Remotion uses staticFile()
+      console.log(`  🎵 Música de fondo: ${pick}`);
+    }
+  } catch {}
+
   // Write temp JSON for Remotion
   const tmpJson = join(ROOT, 'content', `_tmp-reel-${Date.now()}.json`);
-  writeFileSync(tmpJson, JSON.stringify({ hook: script.hook, slug, scenes }));
+  writeFileSync(tmpJson, JSON.stringify({ hook: script.hook, slug, scenes, musicUrl }));
 
   console.log('  🎬 Renderizando con Remotion (puede tardar ~1 min)...');
   try {

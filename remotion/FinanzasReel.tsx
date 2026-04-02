@@ -4,8 +4,9 @@ import {
   useCurrentFrame,
   useVideoConfig,
   spring,
+  staticFile,
 } from "remotion";
-import { Video } from "@remotion/media";
+import { Video, Audio } from "@remotion/media";
 import { TransitionSeries, springTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { loadFont } from "@remotion/google-fonts/Inter";
@@ -36,6 +37,8 @@ export interface Scene {
 export type FinanzasReelProps = {
   scenes: Scene[];
   hook: string;
+  /** URL de música de fondo (royalty-free). Opcional. */
+  musicUrl?: string;
 };
 
 // ---------------------------------------------------------------------------
@@ -336,9 +339,18 @@ const SceneView: React.FC<{
 // Composition principal
 // ---------------------------------------------------------------------------
 
-export const FinanzasReel: React.FC<FinanzasReelProps> = ({ scenes, hook }) => {
+export const FinanzasReel: React.FC<FinanzasReelProps> = ({ scenes, hook, musicUrl }) => {
+  const { durationInFrames } = useVideoConfig();
   return (
     <AbsoluteFill>
+      {/* Música de fondo — loop, volumen bajo para no tapar texto */}
+      {musicUrl && (
+        <Audio
+          src={musicUrl.startsWith('http') ? musicUrl : staticFile(musicUrl)}
+          volume={0.15}
+          loop
+        />
+      )}
       <TransitionSeries>
         {scenes.map((scene, i) => (
           <React.Fragment key={i}>
