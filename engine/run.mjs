@@ -1023,40 +1023,56 @@ async function addVideoBackgrounds(scenes) {
   if (!PEXELS_KEY) return scenes;
   console.log('  🎥 Buscando videos de fondo en Pexels...');
 
-  // Varied query pool — pick 3 random ones each time so reels don't repeat clips
-  const allQueries = [
-    'dollar bills cash', 'mexico city aerial', 'stock market screen trading',
-    'counting money', 'city night lights', 'business people walking',
-    'coins savings jar', 'laptop finance charts', 'luxury car lifestyle',
-    'credit card payment', 'office desk work', 'gold bars investment',
-    'smartphone banking app', 'shopping grocery store', 'skyscraper downtown',
+  // Scene 1 (portada) needs a UNIQUE look each time — separate query pool
+  const portadaQueries = [
+    'mexico city aerial', 'city night lights neon', 'luxury car driving',
+    'ocean waves sunset', 'skyscraper glass building', 'neon signs city',
+    'people walking crowd', 'rain city street', 'mountain landscape aerial',
+    'highway traffic night', 'coffee shop morning', 'gym workout fitness',
+    'airplane flying clouds', 'market street food', 'train station commute',
   ];
-  const shuffled = allQueries.sort(() => Math.random() - 0.5);
-  const queries = shuffled.slice(0, 3);
+  // Scenes 2+ get finance-related clips
+  const contentQueries = [
+    'dollar bills cash', 'stock market screen trading', 'counting money',
+    'coins savings jar', 'laptop finance charts', 'credit card payment',
+    'gold bars investment', 'smartphone banking app', 'office desk work',
+    'shopping grocery store', 'calculator budget', 'piggy bank savings',
+  ];
 
-  const pool = [];
-  for (const q of queries) {
-    const page = Math.floor(Math.random() * 3) + 1; // random page for variety
+  // Pick 1 random portada query + 2 random content queries
+  const pQuery = portadaQueries[Math.floor(Math.random() * portadaQueries.length)];
+  const cShuffled = contentQueries.sort(() => Math.random() - 0.5);
+  const cQueries = cShuffled.slice(0, 2);
+
+  // Fetch portada clip (1 unique clip for scene 1)
+  const pPage = Math.floor(Math.random() * 5) + 1;
+  const portadaClips = await searchPexelsVideos(pQuery, 3, pPage);
+
+  // Fetch content clips for remaining scenes
+  const contentPool = [];
+  for (const q of cQueries) {
+    const page = Math.floor(Math.random() * 3) + 1;
     const urls = await searchPexelsVideos(q, 4, page);
-    pool.push(...urls);
+    contentPool.push(...urls);
   }
+  contentPool.sort(() => Math.random() - 0.5);
 
-  if (pool.length === 0) {
+  if (portadaClips.length === 0 && contentPool.length === 0) {
     console.log('  ⚠ No se encontraron videos en Pexels');
     return scenes;
   }
 
-  // Shuffle pool so scene order varies too
-  pool.sort(() => Math.random() - 0.5);
-  console.log(`  ✓ ${pool.length} clips encontrados (${queries.join(', ')})`);
+  console.log(`  ✓ Portada: "${pQuery}" | Contenido: ${cQueries.join(', ')} (${contentPool.length} clips)`);
 
-  // Assign videos to scenes (skip last scene = CTA with dark bg)
+  // Assign videos: scene 0 = portada clip, scenes 1-N = content clips, last = no video
   return scenes.map((scene, i) => {
-    if (i >= scenes.length - 1) return scene; // last scene: no video
-    return {
-      ...scene,
-      videoUrl: pool[i % pool.length],
-    };
+    if (i >= scenes.length - 1) return scene; // last scene (CTA): no video
+    if (i === 0) {
+      // Portada scene gets a unique visual clip
+      return { ...scene, videoUrl: portadaClips[0] || contentPool[0] };
+    }
+    // Content scenes get finance clips
+    return { ...scene, videoUrl: contentPool[(i - 1) % Math.max(contentPool.length, 1)] };
   });
 }
 
