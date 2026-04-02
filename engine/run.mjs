@@ -1044,13 +1044,13 @@ async function addVideoBackgrounds(scenes) {
   if (!PEXELS_KEY) return scenes;
   console.log('  🎥 Buscando videos de fondo en Pexels...');
 
-  // Scene 1 (portada) needs a UNIQUE look each time — separate query pool
+  // Scene 1 (portada) — aspirational visuals connected to money/business/success
   const portadaQueries = [
-    'mexico city aerial', 'city night lights neon', 'luxury car driving',
-    'ocean waves sunset', 'skyscraper glass building', 'neon signs city',
-    'people walking crowd', 'rain city street', 'mountain landscape aerial',
-    'highway traffic night', 'coffee shop morning', 'gym workout fitness',
-    'airplane flying clouds', 'market street food', 'train station commute',
+    'mexico city skyline night', 'luxury penthouse view', 'business suit walking',
+    'skyscraper glass building', 'sports car driving city', 'first class airplane',
+    'modern office workspace', 'rooftop city view night', 'wall street trading floor',
+    'private jet interior', 'expensive watch closeup', 'city downtown aerial',
+    'conference business meeting', 'startup office team', 'hotel lobby luxury',
   ];
   // Scenes 2+ get finance-related clips
   const contentQueries = [
