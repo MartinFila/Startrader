@@ -39,9 +39,24 @@ const fonts = [
   { name: 'Inter', data: fontRegular, weight: 400, style: 'normal' },
 ];
 
-const W = 1080, H = 1920, FPS = 24;
-const C = { bg: '#faf6f1', red: '#dc2626', dark: '#1c1917', muted: '#78716c', light: '#a89880', darkBg: '#1c1917',
+const C ={ bg: '#faf6f1', red: '#dc2626', dark: '#1c1917', muted: '#78716c', light: '#a89880', darkBg: '#1c1917',
   slate: '#1e293b', mint: '#d1fae5', amber: '#f59e0b', stone: '#e7e5e4', white: '#ffffff' };
+
+// Sanitize text for Satori — ONLY keep basic Latin, accented chars, punctuation, and numbers
+// Everything else gets stripped. This is aggressive but prevents ALL "NO GLYPH" issues.
+function sanitize(text) {
+  if (!text) return '';
+  // Keep only: basic ASCII, Latin Extended (accents), common punctuation, numbers, spaces
+  return text.replace(/[^\x20-\x7E\u00A0-\u024F\u1E00-\u1EFF]/g, '').trim();
+}
+
+// Truncate at word boundary — never cuts mid-word
+function truncateWords(text, maxLen) {
+  if (text.length <= maxLen) return text;
+  const cut = text.slice(0, maxLen);
+  const lastSpace = cut.lastIndexOf(' ');
+  return (lastSpace > 0 ? cut.slice(0, lastSpace) : cut) + '...';
+}
 
 // ═══════════════════════════════════════════
 // TEMPLATE SYSTEM (8 visual templates)
@@ -57,24 +72,12 @@ const TEMPLATE_MAP = {
   'pop-culture': { primary: 'pop-context',      alternate: 'editorial-quote' },
 };
 
-const TEMPLATE_BG = {
-  'daily-briefing':  '#faf6f1',  // light
-  'bold-data':       '#1e293b',  // dark
-  'comparison-grid': '#ffffff',  // white
-  'editorial-quote': '#1c1917',  // dark
-  'step-by-step':    '#faf6f1',  // light
-  'the-reveal':      '#1e293b',  // dark (split, top 60%)
-  'ranking-list':    '#ffffff',  // white
-  'pop-context':     '#1c1917',  // dark
-};
-
-const DARK_TEMPLATES = ['bold-data', 'editorial-quote', 'the-reveal', 'pop-context'];
 
 /**
  * Choose a visual template based on content type and recent history.
  * Reads content-log.md to avoid repeating the same template 2x in a row.
  */
-function chooseTemplate(topic, format) {
+function chooseTemplate(topic) {
   // Detect content type from topic metadata
   const titulo = (topic.titulo || '').toLowerCase();
   const dato = (topic.dato || '').toLowerCase();
@@ -312,16 +315,6 @@ function extractDato(title) {
   return '';
 }
 
-/**
- * Guess the source from the feed URL.
- */
-function feedToSource(feedUrl) {
-  if (feedUrl.includes('expansion')) return 'Expansión';
-  if (feedUrl.includes('jornada')) return 'La Jornada';
-  if (feedUrl.includes('eleconomista')) return 'El Economista';
-  if (feedUrl.includes('elfinanciero')) return 'El Financiero';
-  return 'RSS';
-}
 
 /**
  * Like fetchRSSNews but returns objects with {title, source} instead of plain strings.
@@ -578,7 +571,7 @@ async function selectTopic(news) {
     }
   }
 
-  // Filter out topics already used TODAY
+  // Filter out topics already used TODAY (exact title match)
   let todaysHooks = [];
   try {
     const log = readFileSync(CONTENT_LOG, 'utf-8');
@@ -595,6 +588,45 @@ async function selectTopic(news) {
     });
     const filtered = before - news.length;
     if (filtered > 0) console.log(`  🔄 ${filtered} temas descartados (ya usados hoy)`);
+  }
+
+  // Theme-level diversity: don't repeat the same CATEGORY in one day
+  const THEME_TAGS = {
+    cetes:      /cetes|cetesdirecto|tasa.*(inter[eé]s|referencia)|banxico.*(tasa|recort)/i,
+    inflacion:  /inflaci[oó]n|precios?.*(sub|baj|dispar)|canasta|jitomate|lim[oó]n|super.*caro/i,
+    afore:      /afore|pensi[oó]n|retiro|consar/i,
+    tarjetas:   /tarjeta.*(cr[eé]dito|d[eé]bito)|cashback|anualidad/i,
+    vivienda:   /hipoteca|vivienda|casa|infonavit|cr[eé]dito.*hipotecar/i,
+    inversiones:/invertir|inversi[oó]n|gbm|nu m[eé]xico|hey banco|rendimiento|portafolio/i,
+    impuestos:  /sat|impuesto|isr|factura|declaraci[oó]n/i,
+    ahorro:     /ahorr[ao]|presupuest|gasto hormiga|semana santa.*dinero|vacacion.*finanz/i,
+    empleo:     /sueldo|salario|empleo|desempleo|trabajo/i,
+    onlyfans:   /onlyfans/i,
+    noruega:    /noruega|petr[oó]leo.*fondo/i,
+  };
+
+  function getTheme(text) {
+    const t = (text || '').toLowerCase();
+    for (const [theme, rx] of Object.entries(THEME_TAGS)) {
+      if (rx.test(t)) return theme;
+    }
+    return 'otro';
+  }
+
+  // Tag today's content by theme
+  const todaysThemes = new Set(todaysHooks.map(h => getTheme(h)));
+  todaysThemes.delete('otro'); // "otro" is always allowed
+
+  if (todaysThemes.size > 0) {
+    const beforeTheme = news.length;
+    news = news.filter(n => {
+      const theme = getTheme(n.titulo + ' ' + (n.dato || '') + ' ' + (n.relevancia || ''));
+      return !todaysThemes.has(theme);
+    });
+    const themeFiltered = beforeTheme - news.length;
+    if (themeFiltered > 0) {
+      console.log(`  🏷️  ${themeFiltered} temas descartados por categoría repetida (${[...todaysThemes].join(', ')})`);
+    }
   }
 
   if (news.length === 0) {
@@ -679,11 +711,11 @@ Responde SOLO con el número del tema elegido (1, 2, 3...) y en la siguiente lí
   }
 
   // Choose format based on recent content history
-  const format = chooseFormat();
+  const format = process.env.FORCE_FORMAT || chooseFormat();
   console.log(`  🎨 Formato elegido: ${format}`);
 
   // Choose visual template based on content type
-  const { template, contentType } = chooseTemplate(selectedTopic, format);
+  const { template, contentType } = chooseTemplate(selectedTopic);
   return { ...selectedTopic, format, template, contentType };
 }
 
@@ -717,9 +749,10 @@ function chooseFormat() {
     return pick;
   }
 
-  // Otherwise follow mix target: 70/20/10
+  // Mix target: 55% reel estático, 15% reel-video, 20% carousel, 10% quote
   const r = Math.random();
-  if (r < 0.70) return 'reel';
+  if (r < 0.55) return 'reel';
+  if (r < 0.70) return 'reel-video';
   if (r < 0.90) return 'carousel';
   return 'quote';
 }
@@ -785,7 +818,9 @@ ${antiPatterns}` : ''}`;
   const rulesBlock = `REGLAS:
 - NUNCA uses: "libertad financiera", "ingreso pasivo", "mentalidad millonaria", "hazte rico"
 - SIEMPRE incluye la fuente del dato
-- El hook debe ser algo que alguien ENVIARÍA por DM a un amigo`;
+- El hook debe ser algo que alguien ENVIARÍA por DM a un amigo
+- ÁNGULO SIEMPRE DE INVERSIÓN/FINANZAS PERSONALES: el mensaje es "cómo hacer que tu dinero trabaje para ti" — NUNCA "cómo vender tus habilidades/tiempo/contenido". Emprendimiento NO es el tema de esta cuenta.
+- Si el tema es pop-culture (OnlyFans, Netflix, Apple), la lección debe ser sobre el MODELO FINANCIERO que puede aplicar el usuario con su dinero (CETES, inversión, diversificación) — no sobre cómo imitar el negocio o crear contenido.`;
 
   let formatInstructions;
   if (topic.format === 'carousel') {
@@ -798,7 +833,7 @@ ESTRUCTURA:
 
 Responde en JSON estricto:
 {
-  "hook": "texto del hook (slide 1)",
+  "hook": "FRASE COMPLETA, máximo 8 palabras, que funcione sola sin contexto adicional — NUNCA la dejes inconclusa",
   "format": "carousel",
   "slides": [
     {"id": 1, "title": "hook impactante", "body": "DESLIZA →"},
@@ -816,7 +851,7 @@ Responde en JSON estricto:
     formatInstructions = `GENERA un script para una QUOTE de Instagram (1 sola imagen).
 
 ESTRUCTURA:
-- Una frase poderosa relacionada con el tema (máximo 25 palabras). No es cita de famoso — es un insight propio de @finanzas.pop.
+- Una frase poderosa relacionada con el tema (máximo 20 palabras). No es cita de famoso — es un insight propio de @finanzas.pop. DEBE ser una frase COMPLETA que golpee emocionalmente: algo que el lector quiera mandar al grupo de WhatsApp porque le describe exactamente. NO trivia corporativa — verdad personal sobre su dinero.
 - Una línea de contexto/dato que sustenta la frase (máximo 15 palabras).
 - Atribución: "— @finanzas.pop"
 
@@ -910,7 +945,8 @@ Responde SOLO con el JSON.`;
       }
 
       // Validate script has required fields based on format
-      const fmt = script.format || topic.format || 'reel';
+      // topic.format is authoritative — Claude may return "reel" even for "reel-video"
+      const fmt = topic.format || script.format || 'reel';
       script.format = fmt;
       let valid = false;
       if (fmt === 'carousel' && script.slides && script.slides.length >= 5) {
@@ -943,158 +979,45 @@ Responde SOLO con el JSON.`;
 async function createContent(script) {
   if (script.format === 'carousel') return createCarousel(script);
   if (script.format === 'quote') return createQuote(script);
-  return createReelVideo(script);
+  return createReelVideo(script); // todos los reels usan Remotion (animado)
 }
 
 async function createReelVideo(script) {
   console.log('\n🎬 PASO 4: Creando Reel...');
 
-  const framesDir = join(__dirname, '..', 'content', 'frames-engine');
-  if (existsSync(framesDir)) execSync(`rm -rf ${framesDir}`);
-  mkdirSync(framesDir, { recursive: true });
-
-  const totalDuration = script.scenes.reduce((sum, s) => sum + s.duration, 0);
-  const totalFrames = Math.ceil(FPS * totalDuration);
-
-  function ease(t) { return 1 - Math.pow(1 - Math.min(Math.max(t,0),1), 4); }
-
-  // Build scene timing
-  let cumTime = 0;
-  const sceneTiming = script.scenes.map(s => {
-    const start = cumTime;
-    cumTime += s.duration;
-    return { ...s, start, end: cumTime };
-  });
-
-  function buildFrame(frame) {
-    const sec = frame / FPS;
-    const children = [];
-    const isLastScene = sec >= sceneTiming[sceneTiming.length - 1].start;
-    const bg = isLastScene ? C.darkBg : C.bg;
-    const textColor = isLastScene ? '#faf6f1' : C.dark;
-    const mutedColor = isLastScene ? 'rgba(250,246,241,0.5)' : C.muted;
-
-    // Logo — text only, no box (Satori has glyph rendering issues with boxed text)
-    children.push({ type:'div', props:{ style:{ position:'absolute', top:70, left:80, display:'flex', alignItems:'center', gap:8 }, children:[
-      { type:'div', props:{ style:{ fontSize:22, fontWeight:700, color: isLastScene ? 'rgba(250,246,241,0.6)' : C.red }, children:'finanzas.pop' }},
-    ]}});
-
-    // Find current scene
-    const currentScene = sceneTiming.find(s => sec >= s.start && sec < s.end) || sceneTiming[sceneTiming.length - 1];
-    const localT = (sec - currentScene.start) / currentScene.duration;
-    const fadeIn = ease(localT * 2.5);
-
-    const isFirstScene = currentScene.id === 1;
-    const contentAlign = isLastScene ? 'center' : 'flex-start';
-    const textAlign = isLastScene ? 'center' : 'left';
-
-    children.push({ type:'div', props:{ style:{
-      position:'absolute', left:80, right:80, top:'32%',
-      display:'flex', flexDirection:'column', alignItems: contentAlign,
-    }, children:[
-      { type:'div', props:{ style:{
-        fontSize: isFirstScene ? 58 : 44,
-        fontWeight:700,
-        color: isFirstScene ? C.red : textColor,
-        lineHeight:1.2,
-        opacity:fadeIn,
-        textAlign,
-      }, children: currentScene.text_line1 || '' }},
-      currentScene.text_line2 ? { type:'div', props:{ style:{
-        fontSize: isFirstScene ? 58 : 40,
-        fontWeight: isFirstScene ? 700 : 400,
-        color: isFirstScene ? textColor : mutedColor,
-        lineHeight:1.3,
-        marginTop:15,
-        opacity: ease(Math.max(0, (localT - 0.15) * 2.5)),
-        textAlign,
-      }, children: currentScene.text_line2 }} : null,
-      currentScene.text_line3 ? { type:'div', props:{ style:{
-        fontSize: isFirstScene ? 58 : 38,
-        fontWeight: isFirstScene ? 700 : 400,
-        color: isLastScene ? C.red : (isFirstScene ? textColor : mutedColor),
-        lineHeight:1.3,
-        marginTop:15,
-        opacity: ease(Math.max(0, (localT - 0.3) * 2.5)),
-        textAlign,
-      }, children: currentScene.text_line3 }} : null,
-    ].filter(Boolean) }});
-
-    // Source footer (not on last scene)
-    if (!isLastScene) {
-      children.push({ type:'div', props:{ style:{
-        position:'absolute', bottom:60, right:80,
-        fontSize:18, color:C.light,
-      }, children:'@finanzas.pop' }});
-    }
-
-    return { type:'div', props:{ style:{ width:W, height:H, background:bg, display:'flex', position:'relative', fontFamily:'Inter' }, children }};
-  }
-
-  // Generate frames
-  for (let f = 0; f < totalFrames; f++) {
-    const el = buildFrame(f);
-    const svg = await satori(el, { width: W, height: H, fonts });
-    const png = new Resvg(svg, { fitTo: { mode: 'width', value: W } }).render().asPng();
-    writeFileSync(join(framesDir, `f_${String(f).padStart(5,'0')}.png`), png);
-    if (f % 20 === 0) process.stdout.write(`\r  Frames: ${f}/${totalFrames}`);
-  }
-
-  // Assemble video
   const slug = script.hook.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40);
   const filename = `reel-${TODAY}-${slug}.mp4`;
   const outPath = join(OUTPUT_DIR, filename);
 
-  execSync(`ffmpeg -y -framerate ${FPS} -i "${framesDir}/f_%05d.png" -c:v libx264 -pix_fmt yuv420p -preset fast -crf 12 -b:v 8M "${outPath}" 2>&1`);
-  execSync(`rm -rf "${framesDir}"`);
+  // Convert scene durations from seconds to frames (24fps) — Claude returns seconds
+  const FPS = 24;
+  const scenes = script.scenes.map(s => ({
+    ...s,
+    duration: s.duration <= 20 ? Math.round(s.duration * FPS) : s.duration, // if <=20 assume seconds
+  }));
 
-  // Generate cover/thumbnail (portada)
-  // IG crops Reel covers to center square (1:1) so ALL content must be in the middle third
-  console.log('  Generating cover...');
+  // Write temp JSON for Remotion
+  const tmpJson = join(ROOT, 'content', `_tmp-reel-${Date.now()}.json`);
+  writeFileSync(tmpJson, JSON.stringify({ hook: script.hook, slug, scenes }));
+
+  console.log('  🎬 Renderizando con Remotion (puede tardar ~1 min)...');
+  try {
+    execSync(`node "${join(ROOT, 'remotion', 'render.mjs')}" "${tmpJson}" --output "${filename}"`, {
+      stdio: 'inherit',
+      cwd: ROOT,
+    });
+  } finally {
+    try { execSync(`rm -f "${tmpJson}"`); } catch {}
+  }
+
+  // Portada = frame 0 del video (generada por render.mjs con renderStill)
+  // Esto garantiza que portada y primer frame del video son idénticos
   const coverFilename = filename.replace('.mp4', '-portada.png');
-
-  const hookLine1 = script.scenes[0].text_line1 || '';
-  const hookLine2 = script.scenes[0].text_line2 || '';
-  const hookLine3 = script.scenes[0].text_line3 || '';
-
-  const coverEl = {
-    type: 'div', props: { style: {
-      width: W, height: H, background: C.bg,
-      display: 'flex', flexDirection: 'column',
-      alignItems: 'center', justifyContent: 'center',
-      fontFamily: 'Inter', textAlign: 'center',
-      // All content in center — safe zone for IG crop
-      padding: '400px 100px',
-    }, children: [
-      // Logo centered above content
-      { type: 'div', props: { style: {
-        width: 56, height: 56, borderRadius: 28, background: C.red,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 26, fontWeight: 700, color: '#fff', marginBottom: 30,
-      }, children: 'fp' } },
-      // Hook text — centered
-      { type: 'div', props: { style: {
-        fontSize: 52, fontWeight: 700, color: C.red, lineHeight: 1.15,
-      }, children: hookLine1 } },
-      hookLine2 ? { type: 'div', props: { style: {
-        fontSize: 44, fontWeight: 700, color: C.dark, lineHeight: 1.2, marginTop: 16,
-      }, children: hookLine2 } } : null,
-      hookLine3 ? { type: 'div', props: { style: {
-        fontSize: 38, fontWeight: 400, color: C.muted, lineHeight: 1.25, marginTop: 12,
-      }, children: hookLine3 } } : null,
-      // Handle
-      { type: 'div', props: { style: {
-        fontSize: 22, fontWeight: 600, color: C.red, marginTop: 30,
-      }, children: '@finanzas.pop' } },
-    ].filter(Boolean) } };
-
-  const coverSvg = await satori(coverEl, { width: W, height: H, fonts });
-  const coverPng = new Resvg(coverSvg, { fitTo: { mode: 'width', value: W } }).render().asPng();
-  writeFileSync(join(OUTPUT_DIR, coverFilename), coverPng);
+  const coverPath = join(OUTPUT_DIR, coverFilename);
 
   console.log(`  ✓ Video: ${filename}`);
-  console.log(`  ✓ Cover: ${coverFilename}`);
-  return { filename, outPath, coverFilename, format: 'reel', outputDir: OUTPUT_DIR };
+  console.log(`  ✓ Portada: ${coverFilename}`);
+  return { filename, outPath, coverFilename, coverPath, format: 'reel-video', outputDir: OUTPUT_DIR };
 }
 
 async function createCarousel(script) {
@@ -1107,10 +1030,14 @@ async function createCarousel(script) {
   mkdirSync(carouselDir, { recursive: true });
   const files = [];
 
-  for (let i = 0; i < script.slides.length; i++) {
-    const slide = script.slides[i];
-    const isFirst = i === 0;
-    const isLast = i === script.slides.length - 1;
+  // Skip slide 1 (hook) — that content goes in the portada instead
+  // Carousel slides start from slide 2
+  const contentSlides = script.slides.slice(1);
+
+  for (let i = 0; i < contentSlides.length; i++) {
+    const slide = contentSlides[i];
+    const isFirst = false; // no slide is "first" anymore — portada handles that
+    const isLast = i === contentSlides.length - 1;
     const bg = isLast ? C.darkBg : C.bg;
     const textColor = isLast ? '#faf6f1' : C.dark;
     const mutedColor = isLast ? 'rgba(250,246,241,0.5)' : C.muted;
@@ -1123,35 +1050,37 @@ async function createCarousel(script) {
       { type:'div', props:{ style:{ fontSize:18, fontWeight:500, color: isLast ? 'rgba(250,246,241,0.4)' : C.light }, children:'finanzas.pop' }},
     ]}});
 
-    // Slide number (except first and last)
-    if (!isFirst && !isLast) {
+    // Slide number (except last)
+    if (!isLast) {
       children.push({ type:'div', props:{ style:{
         position:'absolute', top:60, right:70,
         fontSize:16, fontWeight:500, color: mutedColor,
-      }, children:`${i}/${script.slides.length - 2}` }});
+      }, children:`${i + 1}/${contentSlides.length - 1}` }});
     }
 
-    // Main content
+    // Main content — CENTERED vertically, large text
+    // Carousel slides are 1080x1350. Content must fill the space, not huddle at the top.
     children.push({ type:'div', props:{ style:{
-      position:'absolute', left:70, right:70, top:'30%',
+      position:'absolute', left:70, right:70, top:'25%', bottom:'15%',
       display:'flex', flexDirection:'column',
+      justifyContent:'center',
       alignItems: isLast ? 'center' : 'flex-start',
     }, children:[
       { type:'div', props:{ style:{
-        fontSize: isFirst ? 42 : 36,
+        fontSize: 48,
         fontWeight:700,
-        color: isFirst ? C.red : textColor,
-        lineHeight:1.25,
+        color: textColor,
+        lineHeight:1.2,
         textAlign: isLast ? 'center' : 'left',
-      }, children: slide.title }},
+      }, children: sanitize(slide.title) }},
       { type:'div', props:{ style:{
-        fontSize: isFirst ? 30 : 26,
+        fontSize: 32,
         fontWeight:400,
-        color: isFirst ? textColor : mutedColor,
+        color: mutedColor,
         lineHeight:1.4,
-        marginTop:20,
+        marginTop:24,
         textAlign: isLast ? 'center' : 'left',
-      }, children: slide.body }},
+      }, children: sanitize(slide.body) }},
     ] }});
 
     // ── Brand Thread ──
@@ -1175,51 +1104,59 @@ async function createCarousel(script) {
       width:36, height:36, borderRadius:8, background:pillBgC,
       display:'flex', alignItems:'center', justifyContent:'center',
       fontSize:16, fontWeight:700, color:pillTextC,
-    }, children:'fp' }});
+    }, children:'FP' }});
 
     const el = { type:'div', props:{ style:{ width:CW, height:CH, background:bg, display:'flex', position:'relative', fontFamily:'Inter' }, children }};
 
     const svg = await satori(el, { width: CW, height: CH, fonts });
     const png = new Resvg(svg, { fitTo: { mode: 'width', value: CW } }).render().asPng();
-    const fname = `slide-${i + 1}.png`;
+    const fname = `slide-${i + 2}.png`; // starts at 2 because portada is the "first"
     writeFileSync(join(carouselDir, fname), png);
     files.push(fname);
-    console.log(`  ✓ Slide ${i + 1}/${script.slides.length}`);
+    console.log(`  ✓ Slide ${i + 2}/${contentSlides.length + 1}`);
   }
 
-  // Generate cover (1080x1080 square for IG grid)
-  // Cover is DIFFERENT from slide 1 — it's a teaser, not a copy
-  console.log('  Generating carousel cover...');
+  // Generate portada as slide-1 (same 1080x1350 as other slides)
+  // PORTADA RULES (hardcoded, never change):
+  // - IG grid crops to 1:1 (1080x1080) from CENTER of 1080x1350
+  // - Safe zone: center 800x800 of the image (140px margin each side)
+  // - Min font: 52px (readable in grid thumbnail)
+  // - Max 3 lines of text
+  // - ALWAYS centered horizontally and vertically
+  console.log('  Generating portada (slide-1)...');
+
+  // Truncate hook at word boundary for portada readability
+  const portadaHook = truncateWords(sanitize(script.hook), 60);
+
   const coverEl = {
     type: 'div', props: { style: {
-      width: 1080, height: 1080, background: C.bg,
+      width: CW, height: CH, background: C.bg,
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       fontFamily: 'Inter', textAlign: 'center',
-      padding: '100px',
+      padding: '175px 100px',
     }, children: [
+      // fp circle logo — text as direct children (not nested span, Satori renders correctly)
       { type: 'div', props: { style: {
-        width: 56, height: 56, borderRadius: 28, background: C.red,
+        width: 64, height: 64, borderRadius: '50%', background: C.red,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 26, fontWeight: 700, color: '#fff', marginBottom: 40,
+        marginBottom: 32, color: '#fff', fontSize: 26, fontWeight: 700,
       }, children: 'fp' } },
       { type: 'div', props: { style: {
-        fontSize: 42, fontWeight: 700, color: C.dark, lineHeight: 1.2,
-      }, children: script.hook } },
+        fontSize: 72, fontWeight: 700, color: C.red, lineHeight: 1.1,
+      }, children: portadaHook } },
       { type: 'div', props: { style: {
-        fontSize: 24, fontWeight: 700, color: C.red, marginTop: 30, letterSpacing: 3,
-      }, children: 'DESLIZA PARA APRENDER →' } },
-      { type: 'div', props: { style: {
-        fontSize: 18, fontWeight: 600, color: C.light, marginTop: 20,
+        fontSize: 22, fontWeight: 500, color: C.muted, marginTop: 24,
       }, children: '@finanzas.pop' } },
     ] },
   };
-  const coverSvg = await satori(coverEl, { width: 1080, height: 1080, fonts });
-  const coverPng = new Resvg(coverSvg, { fitTo: { mode: 'width', value: 1080 } }).render().asPng();
-  writeFileSync(join(carouselDir, 'portada.png'), coverPng);
-  console.log('  ✓ Portada generada');
+  const coverSvg = await satori(coverEl, { width: CW, height: CH, fonts });
+  const coverPng = new Resvg(coverSvg, { fitTo: { mode: 'width', value: CW } }).render().asPng();
+  writeFileSync(join(carouselDir, 'slide-1.png'), coverPng);
+  files.unshift('slide-1.png'); // portada is the first file
+  console.log('  ✓ Portada (slide-1) generada');
 
-  return { filename: files[0], files, format: 'carousel', outputDir: carouselDir, coverFilename: 'portada.png' };
+  return { filename: 'slide-1.png', files, format: 'carousel', outputDir: carouselDir };
 }
 
 async function createQuote(script) {
@@ -1228,66 +1165,48 @@ async function createQuote(script) {
 
   const QW = 1080, QH = 1080;
   const slug = (script.quote_text || script.hook).toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40);
-  const template = script.template || 'editorial-quote';
 
-  // Template-aware colors
-  const bg = TEMPLATE_BG[template] || C.bg;
-  const isDark = DARK_TEMPLATES.includes(template);
-  const textColor = isDark ? '#ffffff' : C.dark;
-  const mutedColor = isDark ? 'rgba(255,255,255,0.5)' : C.muted;
-  const sourceColor = isDark ? 'rgba(255,255,255,0.5)' : 'rgba(28,25,23,0.6)';
-  // Logo pill: inverted on dark backgrounds
-  const pillBg = isDark ? '#ffffff' : C.red;
-  const pillText = isDark ? C.red : '#ffffff';
+  // Quote text — never truncate. Font size adjusts to fit.
+  const quoteText = sanitize(script.quote_text || script.hook || '');
+  const quoteFontSize = quoteText.length > 100 ? 44 : quoteText.length > 70 ? 50 : 58;
+  const contextText = sanitize(script.quote_context || '');
 
-  console.log(`  🎨 Template: "${template}" (bg: ${bg}, ${isDark ? 'dark' : 'light'})`);
+  console.log(`  🎨 Quote — estilo crema portada`);
 
-  const children = [];
-
-  // Large open-quote mark (decorative)
-  children.push({ type:'div', props:{ style:{
-    position:'absolute', top:120, left:48,
-    fontSize:200, fontWeight:700, color:C.red, lineHeight:1, opacity: isDark ? 0.4 : 0.15,
-  }, children:'\u201C' }});
-
-  // Quote text — centered
-  children.push({ type:'div', props:{ style:{
-    position:'absolute', left:48, right:48, top:'28%',
-    display:'flex', flexDirection:'column', alignItems:'center',
-  }, children:[
-    { type:'div', props:{ style:{
-      fontSize:44, fontWeight:700, color:textColor, lineHeight:1.3, textAlign:'center',
-    }, children: script.quote_text }},
-    { type:'div', props:{ style:{
-      fontSize:22, fontWeight:400, color: C.red, lineHeight:1.4, marginTop:24, textAlign:'center',
-    }, children: script.quote_context }},
-    { type:'div', props:{ style:{
-      fontSize:20, fontWeight:500, color:mutedColor, marginTop:24,
-    }, children: script.quote_attribution || '\u2014 @finanzas.pop' }},
-  ] }});
-
-  // ── Brand Thread (on ALL posts) ──
-
-  // Source attribution line (above red bar)
-  children.push({ type:'div', props:{ style:{
-    position:'absolute', bottom:36, left:48,
-    fontSize:14, fontWeight:500, color:sourceColor,
-  }, children: `Fuente: ${script.source || 'finanzas.pop'}` }});
-
-  // Red bottom bar (8px, full width)
-  children.push({ type:'div', props:{ style:{
-    position:'absolute', bottom:0, left:0, width:QW, height:8, background:C.red,
-  }, children:'' }});
-
-  // "fp" logo pill (bottom-right, 24px from edges, above bar)
-  children.push({ type:'div', props:{ style:{
-    position:'absolute', bottom:24, right:24,
-    width:36, height:36, borderRadius:8, background:pillBg,
-    display:'flex', alignItems:'center', justifyContent:'center',
-    fontSize:16, fontWeight:700, color:pillText,
-  }, children:'fp' }});
-
-  const el = { type:'div', props:{ style:{ width:QW, height:QH, background:bg, display:'flex', position:'relative', fontFamily:'Inter' }, children }};
+  // Same layout as carousel portada: crema bg, fp circle logo centered above text, red text, handle below
+  const el = {
+    type: 'div', props: { style: {
+      width: QW, height: QH, background: C.bg,
+      display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center',
+      fontFamily: 'Inter', textAlign: 'center',
+      padding: '100px 120px',
+      position: 'relative',
+    }, children: [
+      // fp circle logo centered at top
+      { type: 'div', props: { style: {
+        width: 64, height: 64, borderRadius: '50%', background: C.red,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        marginBottom: 40, color: '#fff', fontSize: 26, fontWeight: 700,
+      }, children: 'fp' } },
+      // Quote text — font size adapts to length, no truncation
+      { type: 'div', props: { style: {
+        fontSize: quoteFontSize, fontWeight: 700, color: C.red, lineHeight: 1.2, textAlign: 'center',
+      }, children: quoteText } },
+      // Context line (source / stat)
+      ...(contextText ? [{ type: 'div', props: { style: {
+        fontSize: 22, fontWeight: 400, color: C.muted, lineHeight: 1.4, marginTop: 28, textAlign: 'center',
+      }, children: contextText } }] : []),
+      // Handle
+      { type: 'div', props: { style: {
+        fontSize: 22, fontWeight: 500, color: C.muted, marginTop: 32,
+      }, children: '@finanzas.pop' } },
+      // Red bottom bar
+      { type: 'div', props: { style: {
+        position: 'absolute', bottom: 0, left: 0, width: QW, height: 8, background: C.red,
+      }, children: '' } },
+    ] },
+  };
 
   const svg = await satori(el, { width: QW, height: QH, fonts });
   const png = new Resvg(svg, { fitTo: { mode: 'width', value: QW } }).render().asPng();
@@ -1308,13 +1227,13 @@ function saveOutput(script, output, topic) {
   const outDir = output.outputDir || OUTPUT_DIR;
 
   // Save caption
-  const ext = fmt === 'reel' ? '.mp4' : '.png';
+  const ext = (fmt === 'reel' || fmt === 'reel-video') ? '.mp4' : '.png';
   const captionFile = output.filename.replace(ext, '-caption.txt');
   writeFileSync(join(outDir, captionFile), script.caption);
   console.log(`  ✓ Caption: ${captionFile}`);
 
   // Format label for log
-  const formatLabel = fmt === 'carousel' ? 'Carousel' : fmt === 'quote' ? 'Quote' : 'Reel';
+  const formatLabel = fmt === 'carousel' ? 'Carousel' : fmt === 'quote' ? 'Quote' : fmt === 'reel-video' ? 'Reel-Video' : 'Reel';
   const templateLabel = script.template || 'daily-briefing';
 
   // Update content log (added template column)
@@ -1327,6 +1246,169 @@ function saveOutput(script, output, topic) {
   }
 
   return captionFile;
+}
+
+// ═══════════════════════════════════════════
+// PASO 6: PUBLICAR EN METRICOOL
+// ═══════════════════════════════════════════
+
+/**
+ * Returns the next optimal publish datetime (Mexico City CST/CDT) for the given format.
+ * Reels → 12:00, Carousels → 16:00. If that slot already passed today, schedules for tomorrow.
+ */
+function getOptimalPublishTime(fmt) {
+  // PUBLISH_NOW=1 → schedule 3 minutes from now in Mexico City wall-clock time
+  if (process.env.PUBLISH_NOW === '1') {
+    // Date.now() is always UTC epoch — shift by Mexico City offset to get local wall-clock
+    const mxNow = new Date(Date.now() + (-6 * 3600000));
+    mxNow.setMinutes(mxNow.getMinutes() + 3);
+    return mxNow; // toISOString() will output Mexico time as if it were UTC
+  }
+  const targetHour = (fmt === 'carousel' || fmt === 'quote') ? 16 : 12;
+  const now = new Date();
+  // Convert to Mexico City time (UTC-6)
+  const mxOffset = -6 * 60;
+  const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+  const mxNow = new Date(utcMs + mxOffset * 60000);
+
+  const target = new Date(mxNow);
+  target.setHours(targetHour, 0, 0, 0);
+  if (mxNow >= target) target.setDate(target.getDate() + 1); // already passed → tomorrow
+
+  // Skip weekend (Sat=6, Sun=0) — move to Monday
+  while (target.getDay() === 0 || target.getDay() === 6) {
+    target.setDate(target.getDate() + 1);
+  }
+
+  // Convert back to UTC for the API
+  return new Date(target.getTime() - mxOffset * 60000);
+}
+
+// Upload a single file to Metricool via S3 presigned URL (3-step flow)
+async function uploadFileToMetricool(filePath, TOKEN, USER_ID, BLOG_ID) {
+  const { createHash } = await import('crypto');
+  const BASE = 'https://app.metricool.com/api';
+  const auth = { 'X-Mc-Auth': TOKEN };
+  const qp = `userId=${USER_ID}&blogId=${BLOG_ID}`;
+
+  const fileBuffer = readFileSync(filePath);
+  const fileSize = fileBuffer.length;
+  const mimeType = filePath.endsWith('.mp4') ? 'video/mp4' : 'image/png';
+  const ext = filePath.endsWith('.mp4') ? 'mp4' : 'png';
+  const fileHash = createHash('sha256').update(fileBuffer).digest('base64');
+
+  // Step 1: Create upload transaction → get presigned URL
+  const txRes = await fetch(`${BASE}/v2/media/s3/upload-transactions?${qp}`, {
+    method: 'PUT',
+    headers: { ...auth, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      resourceType: 'planner',
+      contentType: mimeType,
+      fileExtension: ext,
+      parts: [{ size: fileSize, startByte: 0, endByte: fileSize, hash: fileHash }],
+    }),
+  });
+  if (!txRes.ok) throw new Error(`Upload tx failed (${txRes.status}): ${(await txRes.text()).slice(0, 200)}`);
+  const txData = (await txRes.json()).data;
+  const { presignedUrl, fileUrl } = txData;
+
+  // Step 2: Upload raw bytes to S3 presigned URL
+  const s3Res = await fetch(presignedUrl, {
+    method: 'PUT',
+    headers: { 'Content-Type': mimeType, 'Content-Length': String(fileSize), 'x-amz-checksum-sha256': fileHash },
+    body: fileBuffer,
+  });
+  if (!s3Res.ok) throw new Error(`S3 upload failed (${s3Res.status})`);
+
+  // Step 3: Complete transaction → get final CDN URL
+  const completeRes = await fetch(`${BASE}/v2/media/s3/upload-transactions?${qp}`, {
+    method: 'PATCH',
+    headers: { ...auth, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ simple: { fileUrl } }),
+  });
+  if (!completeRes.ok) throw new Error(`Complete tx failed (${completeRes.status}): ${(await completeRes.text()).slice(0, 200)}`);
+  const completeData = (await completeRes.json()).data;
+  return completeData.convertedFileUrl || completeData.fileUrl;
+}
+
+async function publishToMetricool(output, captionText) {
+  const TOKEN   = readEnvKey('METRICOOL_API_KEY');
+  const USER_ID = readEnvKey('METRICOOL_USER_ID');
+  const BLOG_ID = readEnvKey('METRICOOL_BLOG_ID');
+
+  if (!TOKEN) {
+    console.log('  ⚠ METRICOOL_API_KEY no encontrada, saltando publicación automática');
+    return null;
+  }
+
+  console.log('\n📲 PASO 6: Programando publicación en Metricool...');
+
+  const fmt = output.format;
+  const BASE = 'https://app.metricool.com/api';
+  const auth = { 'X-Mc-Auth': TOKEN };
+  const qp = `userId=${USER_ID}&blogId=${BLOG_ID}`;
+  const scheduleDate = getOptimalPublishTime(fmt);
+  console.log(`  📅 Horario objetivo: ${scheduleDate.toISOString()} (${fmt})`);
+
+  try {
+    // ── Upload media via S3 presigned URL flow ──
+    const mediaFiles = fmt === 'carousel'
+      ? output.files.map(f => join(output.outputDir, f))
+      : fmt === 'quote'
+        ? [join(output.outputDir, output.filename)]
+        : [output.outPath];
+
+    const mediaUrls = [];
+    for (const filePath of mediaFiles) {
+      const fileName = filePath.split('/').pop();
+      const url = await uploadFileToMetricool(filePath, TOKEN, USER_ID, BLOG_ID);
+      mediaUrls.push(url);
+      console.log(`  ✓ Subido: ${fileName} → ${url}`);
+    }
+
+    // Upload cover/thumbnail for reels
+    let thumbnailUrl = null;
+    if ((fmt === 'reel' || fmt === 'reel-video') && output.coverPath) {
+      thumbnailUrl = await uploadFileToMetricool(output.coverPath, TOKEN, USER_ID, BLOG_ID);
+      console.log(`  ✓ Portada subida → ${thumbnailUrl}`);
+    }
+
+    // ── Schedule post ──
+    const igType = fmt === 'carousel' ? 'POST' : 'REEL';
+    const postBody = {
+      text: captionText,
+      publicationDate: {
+        dateTime: scheduleDate.toISOString().slice(0, 19),
+        timezone: 'America/Mexico_City',
+      },
+      providers: [{ network: 'instagram' }],
+      instagramData: { type: igType, autoPublish: true },
+      media: mediaUrls,
+      autoPublish: true,
+    };
+    if (thumbnailUrl) postBody.videoThumbnailUrl = thumbnailUrl;
+
+    const schedRes = await fetch(`${BASE}/v2/scheduler/posts?${qp}`, {
+      method: 'POST',
+      headers: { ...auth, 'Content-Type': 'application/json' },
+      body: JSON.stringify(postBody),
+    });
+
+    if (!schedRes.ok) {
+      const err = await schedRes.text();
+      throw new Error(`Schedule failed (${schedRes.status}): ${err.slice(0, 300)}`);
+    }
+
+    const schedData = await schedRes.json();
+    const postId = schedData?.data?.id;
+    console.log(`  ✅ Programado en Metricool → ID ${postId} para ${scheduleDate.toISOString()}`);
+    return schedData;
+
+  } catch (e) {
+    console.log(`  ⚠ Metricool error: ${e.message}`);
+    console.log('  ℹ Archivos listos para publicación manual en Contenido_IG/');
+    return null;
+  }
 }
 
 // ═══════════════════════════════════════════
@@ -1414,6 +1496,7 @@ async function main() {
   const script = await generateScript(topic);
   const output = await createContent(script);
   const caption = saveOutput(script, output, topic);
+  await publishToMetricool(output, script.caption);
 
   console.log('\n═══════════════════════════════════════');
   console.log('✅ LISTO PARA PUBLICAR');

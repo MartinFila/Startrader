@@ -8,6 +8,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "engine": "node engine/run.mjs",
+    "research:weekly": "node engine/research.mjs --weekly",
+    "research:monthly": "node engine/research.mjs --monthly",
     "remotion:preview": "remotion preview remotion/index.tsx",
     "remotion:render": "node remotion/render.mjs"
   },
@@ -26,7 +29,9 @@
   "dependencies": {
     "@remotion/bundler": "^4.0.441",
     "@remotion/cli": "^4.0.441",
+    "@remotion/google-fonts": "^4.0.443",
     "@remotion/renderer": "^4.0.441",
+    "@remotion/transitions": "^4.0.443",
     "@resvg/resvg-js": "^2.6.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

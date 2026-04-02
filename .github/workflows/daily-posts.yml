@@ -1,0 +1,37 @@
+name: finanzas.pop — 3 posts diarios
+
+on:
+  schedule:
+    # 9am, 1pm, 5pm hora México (UTC-6) = 15:03, 19:07, 23:11 UTC
+    - cron: '3 15 * * *'
+    - cron: '7 19 * * *'
+    - cron: '11 23 * * *'
+  workflow_dispatch: # permite correrlo manual desde GitHub
+
+jobs:
+  publish-post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - run: npm ci
+
+      # Chromium para Remotion
+      - run: npx playwright install --with-deps chromium
+
+      - name: Generar y publicar 1 post
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          METRICOOL_API_KEY: ${{ secrets.METRICOOL_API_KEY }}
+          METRICOOL_USER_ID: ${{ secrets.METRICOOL_USER_ID }}
+          METRICOOL_BLOG_ID: ${{ secrets.METRICOOL_BLOG_ID }}
+        run: node engine/run.mjs --count 1

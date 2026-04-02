@@ -1,12 +1,22 @@
 import React from "react";
 import {
   AbsoluteFill,
-  Sequence,
   useCurrentFrame,
   useVideoConfig,
   spring,
-  staticFile,
 } from "remotion";
+import { TransitionSeries, springTiming } from "@remotion/transitions";
+import { fade } from "@remotion/transitions/fade";
+import { loadFont } from "@remotion/google-fonts/Inter";
+
+// ---------------------------------------------------------------------------
+// Fonts
+// ---------------------------------------------------------------------------
+
+const { fontFamily } = loadFont("normal", {
+  weights: ["400", "500", "700"],
+  subsets: ["latin"],
+});
 
 // ---------------------------------------------------------------------------
 // Types
@@ -16,14 +26,14 @@ export interface Scene {
   text_line1: string;
   text_line2: string;
   text_line3: string;
-  /** Duración en frames (a 24 fps, 96 frames = 4 segundos) */
+  /** Duración en frames (a 24 fps) */
   duration: number;
 }
 
-export interface FinanzasReelProps {
+export type FinanzasReelProps = {
   scenes: Scene[];
   hook: string;
-}
+};
 
 // ---------------------------------------------------------------------------
 // Brand tokens
@@ -34,14 +44,54 @@ const BRAND = {
   dark: "#1c1917",
   red: "#dc2626",
   white: "#ffffff",
-  fontFamily: "Inter, sans-serif",
+};
+
+/** Frames de overlap entre escenas — 1 frame = corte duro, sin mezcla de textos */
+export const TRANSITION_FRAMES = 1;
+
+// ---------------------------------------------------------------------------
+// AnimatedLine
+// ---------------------------------------------------------------------------
+
+/**
+ * Línea de texto que entra con spring (fade + slide desde abajo).
+ * - delay: frames antes de que arranque la animación
+ * - finalOpacity: opacidad final una vez asentada (default 1.0)
+ *   IMPORTANTE: no pasar opacity en `style` o sobreescribirá la animación.
+ */
+const AnimatedLine: React.FC<{
+  text: string;
+  frame: number;
+  fps: number;
+  delay: number;
+  finalOpacity?: number;
+  style?: Omit<React.CSSProperties, "opacity" | "transform">;
+}> = ({ text, frame, fps, delay, finalOpacity = 1, style }) => {
+  if (!text) return null;
+
+  const progress = spring({
+    frame: frame - delay,
+    fps,
+    config: { damping: 200 },
+  });
+
+  return (
+    <div
+      style={{
+        opacity: progress * finalOpacity,
+        transform: `translateY(${(1 - progress) * 28}px)`,
+        ...style,
+      }}
+    >
+      {text}
+    </div>
+  );
 };
 
 // ---------------------------------------------------------------------------
-// Sub-components
+// Brand chrome — siempre visible en todas las escenas
 // ---------------------------------------------------------------------------
 
-/** Logo "fp" — círculo rojo con texto blanco, esquina superior izquierda */
 const Logo: React.FC = () => (
   <div
     style={{
@@ -63,7 +113,7 @@ const Logo: React.FC = () => (
         color: BRAND.white,
         fontSize: 36,
         fontWeight: 700,
-        fontFamily: BRAND.fontFamily,
+        fontFamily,
         lineHeight: 1,
       }}
     >
@@ -72,10 +122,7 @@ const Logo: React.FC = () => (
   </div>
 );
 
-/** Handle @finanzas.pop — esquina inferior derecha */
-const Handle: React.FC<{ color?: string }> = ({
-  color = BRAND.dark,
-}) => (
+const Handle: React.FC<{ color?: string }> = ({ color = BRAND.dark }) => (
   <div
     style={{
       position: "absolute",
@@ -89,7 +136,7 @@ const Handle: React.FC<{ color?: string }> = ({
         color,
         fontSize: 28,
         fontWeight: 500,
-        fontFamily: BRAND.fontFamily,
+        fontFamily,
         opacity: 0.7,
       }}
     >
@@ -98,7 +145,6 @@ const Handle: React.FC<{ color?: string }> = ({
   </div>
 );
 
-/** Barra roja de 8px en la parte inferior — hilo visual de marca */
 const BottomBar: React.FC = () => (
   <div
     style={{
@@ -114,64 +160,28 @@ const BottomBar: React.FC = () => (
 );
 
 // ---------------------------------------------------------------------------
-// Animated text line
-// ---------------------------------------------------------------------------
-
-/**
- * Una línea de texto que entra con spring animation.
- * delay = frames de retraso antes de que empiece la animación.
- */
-const AnimatedLine: React.FC<{
-  text: string;
-  frame: number;
-  fps: number;
-  delay: number;
-  style?: React.CSSProperties;
-}> = ({ text, frame, fps, delay, style }) => {
-  if (!text) return null;
-
-  const progress = spring({
-    frame: frame - delay,
-    fps,
-    config: {
-      damping: 18,
-      stiffness: 80,
-      mass: 0.6,
-    },
-  });
-
-  const opacity = progress;
-  const translateY = (1 - progress) * 40;
-
-  return (
-    <div
-      style={{
-        opacity,
-        transform: `translateY(${translateY}px)`,
-        ...style,
-      }}
-    >
-      {text}
-    </div>
-  );
-};
-
-// ---------------------------------------------------------------------------
-// Single scene
+// SceneView
 // ---------------------------------------------------------------------------
 
 const SceneView: React.FC<{
   scene: Scene;
   index: number;
-  hook: string;
-}> = ({ scene, index, hook }) => {
+  totalScenes: number;
+}> = ({ scene, index, totalScenes }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const isLastScene = index === 4;
+  const isLastScene = index === totalScenes - 1;
 
   const bg = isLastScene ? BRAND.dark : BRAND.cream;
   const textColor = isLastScene ? BRAND.white : BRAND.dark;
   const handleColor = isLastScene ? BRAND.white : BRAND.dark;
+
+  /**
+   * Para escenas 1+ los delays compensan TRANSITION_FRAMES para que
+   * las animaciones arranquen solo cuando la escena anterior ya desapareció.
+   * Escena 0 (hook): línea 1 visible de inmediato, sin transición previa.
+   */
+  const offset = index === 0 ? 0 : TRANSITION_FRAMES;
 
   return (
     <AbsoluteFill
@@ -181,7 +191,7 @@ const SceneView: React.FC<{
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        fontFamily: BRAND.fontFamily,
+        fontFamily,
         padding: 80,
       }}
     >
@@ -189,104 +199,136 @@ const SceneView: React.FC<{
       <Handle color={handleColor} />
       <BottomBar />
 
-      {/* Hook text — solo en la primera escena */}
-      {index === 0 && (
-        <AnimatedLine
-          text={hook}
-          frame={frame}
-          fps={fps}
-          delay={0}
-          style={{
-            color: BRAND.red,
-            fontSize: 42,
-            fontWeight: 700,
-            textAlign: "center",
-            marginBottom: 40,
-            textTransform: "uppercase",
-            letterSpacing: 2,
-          }}
-        />
+      {index === 0 ? (
+        // HOOK (escena 0): línea 1 estática desde frame 0,
+        // líneas 2 y 3 se animan una por una después.
+        <>
+          {scene.text_line1 ? (
+            <div
+              style={{
+                color: BRAND.red,
+                fontSize: 58,
+                fontWeight: 700,
+                textAlign: "center",
+                lineHeight: 1.2,
+                marginBottom: 20,
+                fontFamily,
+              }}
+            >
+              {scene.text_line1}
+            </div>
+          ) : null}
+          <AnimatedLine
+            text={scene.text_line2}
+            frame={frame}
+            fps={fps}
+            delay={12}
+            style={{
+              color: textColor,
+              fontSize: 46,
+              fontWeight: 500,
+              textAlign: "center",
+              lineHeight: 1.3,
+              marginBottom: 14,
+              fontFamily,
+            }}
+          />
+          <AnimatedLine
+            text={scene.text_line3}
+            frame={frame}
+            fps={fps}
+            delay={24}
+            finalOpacity={0.8}
+            style={{
+              color: textColor,
+              fontSize: 38,
+              fontWeight: 400,
+              textAlign: "center",
+              lineHeight: 1.3,
+              fontFamily,
+            }}
+          />
+        </>
+      ) : (
+        // ESCENAS 1–N: las 3 líneas entran una por una,
+        // pero solo después de que la transición previa terminó (offset).
+        <>
+          <AnimatedLine
+            text={scene.text_line1}
+            frame={frame}
+            fps={fps}
+            delay={offset + 0}
+            style={{
+              color: textColor,
+              fontSize: 52,
+              fontWeight: 700,
+              textAlign: "center",
+              lineHeight: 1.2,
+              marginBottom: 20,
+              fontFamily,
+            }}
+          />
+          <AnimatedLine
+            text={scene.text_line2}
+            frame={frame}
+            fps={fps}
+            delay={offset + 10}
+            style={{
+              color: textColor,
+              fontSize: 40,
+              fontWeight: 500,
+              textAlign: "center",
+              lineHeight: 1.3,
+              marginBottom: 14,
+              fontFamily,
+            }}
+          />
+          <AnimatedLine
+            text={scene.text_line3}
+            frame={frame}
+            fps={fps}
+            delay={offset + 20}
+            finalOpacity={0.75}
+            style={{
+              color: textColor,
+              fontSize: 36,
+              fontWeight: 400,
+              textAlign: "center",
+              lineHeight: 1.3,
+              fontFamily,
+            }}
+          />
+        </>
       )}
-
-      {/* Línea principal */}
-      <AnimatedLine
-        text={scene.text_line1}
-        frame={frame}
-        fps={fps}
-        delay={index === 0 ? 6 : 0}
-        style={{
-          color: textColor,
-          fontSize: 64,
-          fontWeight: 700,
-          textAlign: "center",
-          lineHeight: 1.2,
-          marginBottom: 24,
-        }}
-      />
-
-      {/* Línea secundaria */}
-      <AnimatedLine
-        text={scene.text_line2}
-        frame={frame}
-        fps={fps}
-        delay={index === 0 ? 12 : 6}
-        style={{
-          color: textColor,
-          fontSize: 48,
-          fontWeight: 500,
-          textAlign: "center",
-          lineHeight: 1.3,
-          opacity: 0.85,
-          marginBottom: 16,
-        }}
-      />
-
-      {/* Línea terciaria */}
-      <AnimatedLine
-        text={scene.text_line3}
-        frame={frame}
-        fps={fps}
-        delay={index === 0 ? 18 : 12}
-        style={{
-          color: textColor,
-          fontSize: 40,
-          fontWeight: 400,
-          textAlign: "center",
-          lineHeight: 1.3,
-          opacity: 0.7,
-        }}
-      />
     </AbsoluteFill>
   );
 };
 
 // ---------------------------------------------------------------------------
-// Main composition
+// Composition principal
 // ---------------------------------------------------------------------------
 
-export const FinanzasReel: React.FC<FinanzasReelProps> = ({
-  scenes,
-  hook,
-}) => {
-  // Calcula el frame de inicio de cada escena sumando duraciones
-  let frameOffset = 0;
-
+export const FinanzasReel: React.FC<FinanzasReelProps> = ({ scenes, hook }) => {
   return (
     <AbsoluteFill>
-      {scenes.map((scene, i) => {
-        const from = frameOffset;
-        frameOffset += scene.duration;
-
-        return (
-          <Sequence
-            key={i}
-            from={from}
-            durationInFrames={scene.duration}
-          >
-            <SceneView scene={scene} index={i} hook={hook} />
-          </Sequence>
-        );
-      })}
+      <TransitionSeries>
+        {scenes.map((scene, i) => (
+          <React.Fragment key={i}>
+            <TransitionSeries.Sequence durationInFrames={scene.duration}>
+              <SceneView scene={scene} index={i} totalScenes={scenes.length} hook={hook} />
+            </TransitionSeries.Sequence>
+            {i < scenes.length - 1 && (
+              <TransitionSeries.Transition
+                presentation={fade()}
+                timing={springTiming({
+                  config: { damping: 200 },
+                  durationInFrames: TRANSITION_FRAMES,
+                })}
+              />
+            )}
+          </React.Fragment>
+        ))}
+      </TransitionSeries>
     </AbsoluteFill>
   );
 };

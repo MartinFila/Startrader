@@ -17,7 +17,7 @@
  */
 
 import { bundle } from "@remotion/bundler";
-import { renderMedia, selectComposition } from "@remotion/renderer";
+import { renderMedia, renderStill, selectComposition } from "@remotion/renderer";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
@@ -56,9 +56,6 @@ if (!scenes || !Array.isArray(scenes)) {
   process.exit(1);
 }
 
-// Total frames = suma de durations de cada escena
-const totalFrames = scenes.reduce((sum, s) => sum + (s.duration || 96), 0);
-
 // Output path
 const outputDir = path.join(ROOT, "Contenido_IG", "reels");
 if (!fs.existsSync(outputDir)) {
@@ -90,11 +87,11 @@ async function main() {
     inputProps: { hook, scenes },
   });
 
-  // Override duration con el total real de frames del script
-  composition.durationInFrames = totalFrames;
+  // durationInFrames viene calculado por calculateMetadata en index.tsx
+  const actualFrames = composition.durationInFrames;
 
   console.log(
-    `Rendering ${totalFrames} frames (${(totalFrames / 24).toFixed(1)}s) to ${outputPath}...`
+    `Rendering ${actualFrames} frames (${(actualFrames / 24).toFixed(1)}s) to ${outputPath}...`
   );
 
   await renderMedia({
@@ -105,7 +102,19 @@ async function main() {
     inputProps: { hook, scenes },
   });
 
+  // Render portada at frame 24 (1s in) — animations have fully settled by then
+  const coverPath = outputPath.replace(".mp4", "-portada.png");
+  await renderStill({
+    composition,
+    serveUrl: bundleLocation,
+    output: coverPath,
+    inputProps: { hook, scenes },
+    frame: 24,
+    imageFormat: "png",
+  });
+
   console.log(`Listo: ${outputPath}`);
+  console.log(`Portada: ${coverPath}`);
 }
 
 main().catch((err) => {
