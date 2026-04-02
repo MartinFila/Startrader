@@ -898,17 +898,18 @@ ESTRUCTURA:
 
 REGLAS ADICIONALES:
 - Cada text_line máximo 8 palabras (es texto en pantalla, no párrafo)
+- Cada escena lleva "video_keywords": 2-3 palabras EN INGLÉS para buscar un clip de video de fondo en Pexels. Debe ser RELEVANTE al contenido de esa escena. Ej: si hablas de ahorro → "piggy bank savings", si hablas de inflación → "grocery store prices", si hablas de inversión → "stock market trading screen".
 
 Responde en JSON estricto:
 {
   "hook": "texto completo del hook (escena 1)",
   "format": "reel",
   "scenes": [
-    {"id": 1, "text_line1": "...", "text_line2": "...", "text_line3": "...", "duration": 3.5},
-    {"id": 2, "text_line1": "...", "text_line2": "...", "text_line3": "...", "duration": 4},
-    {"id": 3, "text_line1": "...", "text_line2": "...", "text_line3": "...", "duration": 4.5},
-    {"id": 4, "text_line1": "...", "text_line2": "...", "text_line3": "...", "duration": 4.5},
-    {"id": 5, "text_line1": "Sígueme para entender", "text_line2": "tu dinero cada día.", "text_line3": "@finanzas.pop", "duration": 3.5}
+    {"id": 1, "text_line1": "...", "text_line2": "...", "text_line3": "...", "duration": 3.5, "video_keywords": "relevant english keywords"},
+    {"id": 2, "text_line1": "...", "text_line2": "...", "text_line3": "...", "duration": 4, "video_keywords": "relevant english keywords"},
+    {"id": 3, "text_line1": "...", "text_line2": "...", "text_line3": "...", "duration": 4.5, "video_keywords": "relevant english keywords"},
+    {"id": 4, "text_line1": "...", "text_line2": "...", "text_line3": "...", "duration": 4.5, "video_keywords": "relevant english keywords"},
+    {"id": 5, "text_line1": "Sígueme para entender", "text_line2": "tu dinero cada día.", "text_line3": "@finanzas.pop", "duration": 3.5, "video_keywords": "smartphone social media"}
   ],
   "caption": "caption para Instagram: hook → explicación corta → dato con fuente → CTA (guarda/comparte) → 8 hashtags",
   "source": "${topic.fuente}"
@@ -1044,56 +1045,31 @@ async function addVideoBackgrounds(scenes) {
   if (!PEXELS_KEY) return scenes;
   console.log('  🎥 Buscando videos de fondo en Pexels...');
 
-  // Scene 1 (portada) — aspirational visuals connected to money/business/success
-  const portadaQueries = [
-    'mexico city skyline night', 'luxury penthouse view', 'business suit walking',
-    'skyscraper glass building', 'sports car driving city', 'first class airplane',
-    'modern office workspace', 'rooftop city view night', 'wall street trading floor',
-    'private jet interior', 'expensive watch closeup', 'city downtown aerial',
-    'conference business meeting', 'startup office team', 'hotel lobby luxury',
-  ];
-  // Scenes 2+ get finance-related clips
-  const contentQueries = [
-    'dollar bills cash', 'stock market screen trading', 'counting money',
-    'coins savings jar', 'laptop finance charts', 'credit card payment',
-    'gold bars investment', 'smartphone banking app', 'office desk work',
-    'shopping grocery store', 'calculator budget', 'piggy bank savings',
-  ];
-
-  // Pick 1 random portada query + 2 random content queries
-  const pQuery = portadaQueries[Math.floor(Math.random() * portadaQueries.length)];
-  const cShuffled = contentQueries.sort(() => Math.random() - 0.5);
-  const cQueries = cShuffled.slice(0, 2);
-
-  // Fetch portada clip (1 unique clip for scene 1)
-  const pPage = Math.floor(Math.random() * 5) + 1;
-  const portadaClips = await searchPexelsVideos(pQuery, 3, pPage);
-
-  // Fetch content clips for remaining scenes
-  const contentPool = [];
-  for (const q of cQueries) {
+  // Search Pexels PER SCENE using video_keywords from the script
+  const results = [];
+  for (let i = 0; i < scenes.length; i++) {
+    if (i >= scenes.length - 1) { results.push(null); continue; } // last scene: no video
+    const kw = scenes[i].video_keywords || '';
+    if (!kw) { results.push(null); continue; }
     const page = Math.floor(Math.random() * 3) + 1;
-    const urls = await searchPexelsVideos(q, 4, page);
-    contentPool.push(...urls);
+    const urls = await searchPexelsVideos(kw, 3, page);
+    // Pick a random clip from results
+    const pick = urls.length > 0 ? urls[Math.floor(Math.random() * urls.length)] : null;
+    results.push(pick);
+    if (pick) console.log(`    Escena ${i + 1}: "${kw}" ✓`);
+    else console.log(`    Escena ${i + 1}: "${kw}" — sin resultados`);
   }
-  contentPool.sort(() => Math.random() - 0.5);
 
-  if (portadaClips.length === 0 && contentPool.length === 0) {
+  const found = results.filter(Boolean).length;
+  if (found === 0) {
     console.log('  ⚠ No se encontraron videos en Pexels');
     return scenes;
   }
+  console.log(`  ✓ ${found} escenas con video de fondo`);
 
-  console.log(`  ✓ Portada: "${pQuery}" | Contenido: ${cQueries.join(', ')} (${contentPool.length} clips)`);
-
-  // Assign videos: scene 0 = portada clip, scenes 1-N = content clips, last = no video
   return scenes.map((scene, i) => {
-    if (i >= scenes.length - 1) return scene; // last scene (CTA): no video
-    if (i === 0) {
-      // Portada scene gets a unique visual clip
-      return { ...scene, videoUrl: portadaClips[0] || contentPool[0] };
-    }
-    // Content scenes get finance clips
-    return { ...scene, videoUrl: contentPool[(i - 1) % Math.max(contentPool.length, 1)] };
+    if (!results[i]) return scene;
+    return { ...scene, videoUrl: results[i] };
   });
 }
 
