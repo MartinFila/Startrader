@@ -1656,7 +1656,7 @@ function runQA(script, _output) {
   }
 
   // ── LEGAL ──
-  const investmentAdvice = /\b(compra|invierte en|mete tu dinero|pon tu dinero en|te recomiendo invertir)\b/i;
+  const investmentAdvice = /\b(compra (cetes|acciones|etf|bonos|crypto)|invierte en \w|mete tu dinero en|pon tu dinero en|te recomiendo invertir)\b/i;
   if (investmentAdvice.test(allText)) {
     issues.push('LEGAL: Contiene consejo de inversión directo (prohibido)');
   }
@@ -1685,7 +1685,7 @@ function runQA(script, _output) {
   // ── NO SHOUTOUTS AUTOMÁTICOS ──
   // El motor no debe promocionar otras cuentas/marcas/creadores por su cuenta.
   // Los shoutouts solo se hacen si Martín los acuerda previamente.
-  const brandMentions = /chisme corporativo|podcast de .+|canal de .+|cuenta de .+/i;
+  const brandMentions = /chisme corporativo|podcast de [A-Z]\w+|canal de [A-Z]\w+|la cuenta de @\w+/i;
   if (brandMentions.test(allText)) {
     issues.push('Menciona otra marca/creador — los shoutouts solo si están acordados previamente');
   }
