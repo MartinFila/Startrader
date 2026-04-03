@@ -742,8 +742,11 @@ Responde SOLO con el número del tema elegido (1, 2, 3...) y en la siguiente lí
 
 /**
  * Choose content format based on recent publishing history.
- * Mix target: 70% Reel, 20% Carousel, 10% Quote.
- * If last 2 posts were Reels → force Carousel or Quote.
+ * Mix target (research-based, Social Insider 2026):
+ *   40% Reel, 40% Carousel, 20% Quote
+ * Carousels get 1.7x more views for <50K accounts.
+ * Quotes minimum 15-20% for variety.
+ * If last 2 posts were same format → force different.
  */
 function chooseFormat() {
   let recentFormats = [];
@@ -762,19 +765,19 @@ function chooseFormat() {
 
   console.log(`  📋 Últimos formatos: [${recentFormats.join(', ') || 'sin historial'}]`);
 
-  // If last 2 were Reels, force variety
+  // If last 2 were same format, force different
   const lastTwo = recentFormats.slice(-2);
-  if (lastTwo.length >= 2 && lastTwo.every(f => f === 'reel')) {
-    const pick = Math.random() < 0.67 ? 'carousel' : 'quote';
-    console.log(`  🔄 Últimos 2 fueron Reels → forzando variedad: ${pick}`);
+  if (lastTwo.length >= 2 && lastTwo[0] === lastTwo[1]) {
+    const formats = ['reel', 'carousel', 'quote'].filter(f => f !== lastTwo[0]);
+    const pick = formats[Math.floor(Math.random() * formats.length)];
+    console.log(`  🔄 Últimos 2 fueron ${lastTwo[0]} → forzando variedad: ${pick}`);
     return pick;
   }
 
-  // Mix target: 55% reel estático, 15% reel-video, 20% carousel, 10% quote
+  // Mix target (research-based): 40% reel, 40% carousel, 20% quote
   const r = Math.random();
-  if (r < 0.55) return 'reel';
-  if (r < 0.70) return 'reel-video';
-  if (r < 0.90) return 'carousel';
+  if (r < 0.40) return 'reel';
+  if (r < 0.80) return 'carousel';
   return 'quote';
 }
 
