@@ -98,12 +98,12 @@ const AnimatedLine: React.FC<{
 // Brand chrome — siempre visible en todas las escenas
 // ---------------------------------------------------------------------------
 
-const Logo: React.FC = () => (
+const Logo: React.FC<{ centered?: boolean }> = ({ centered }) => (
   <div
     style={{
-      position: "absolute",
-      top: 60,
-      left: 60,
+      position: centered ? "relative" : "absolute",
+      top: centered ? undefined : 60,
+      left: centered ? undefined : 60,
       width: 80,
       height: 80,
       borderRadius: "50%",
@@ -112,6 +112,7 @@ const Logo: React.FC = () => (
       alignItems: "center",
       justifyContent: "center",
       zIndex: 10,
+      marginBottom: centered ? 32 : undefined,
     }}
   >
     <span
@@ -225,14 +226,14 @@ const SceneView: React.FC<{
           padding: 80,
         }}
       >
-        <Logo />
+        {index !== 0 && <Logo />}
         <Handle color={handleColor} />
         <BottomBar />
 
       {index === 0 ? (
-        // HOOK (escena 0): texto grande estilo portada (similar a carousel).
-        // Línea 1 estática desde frame 0, líneas 2 y 3 se animan después.
+        // HOOK (escena 0): logo centrado arriba del texto, estilo carousel portada.
         <>
+          <Logo centered />
           {scene.text_line1 ? (
             <div
               style={{
@@ -290,7 +291,7 @@ const SceneView: React.FC<{
             delay={offset + 0}
             style={{
               color: textColor,
-              fontSize: 52,
+              fontSize: 62,
               fontWeight: 700,
               textAlign: "center",
               lineHeight: 1.2,
@@ -305,7 +306,7 @@ const SceneView: React.FC<{
             delay={offset + 10}
             style={{
               color: textColor,
-              fontSize: 40,
+              fontSize: 48,
               fontWeight: 500,
               textAlign: "center",
               lineHeight: 1.3,
@@ -321,7 +322,7 @@ const SceneView: React.FC<{
             finalOpacity={0.75}
             style={{
               color: textColor,
-              fontSize: 36,
+              fontSize: 42,
               fontWeight: 400,
               textAlign: "center",
               lineHeight: 1.3,
