@@ -1118,9 +1118,14 @@ async function addVideoBackgrounds(scenes) {
     if (i >= scenes.length - 1) { results.push(null); continue; } // last scene: no video
     let kw = scenes[i].video_keywords || '';
     if (!kw) { results.push(null); continue; }
-    // Force USD/Mexico context — avoid random currency clips
-    if (/money|cash|bills|dinero|pesos/i.test(kw) && !/dollar|usd|mexico/i.test(kw)) {
-      kw = kw.replace(/money|cash|bills|dinero|pesos/i, 'dollar bills USD');
+    // Choose currency based on scene context:
+    // - Everyday/savings topics → Mexican pesos (more relatable)
+    // - Investment/growth/business → USD dollars (aspirational)
+    if (/money|cash|bills|dinero|pesos/i.test(kw) && !/dollar|usd|mexico|mexican/i.test(kw)) {
+      const sceneText = `${scenes[i].text_line1} ${scenes[i].text_line2} ${scenes[i].text_line3}`.toLowerCase();
+      const isEveryday = /ahorro|quincena|super|gasto|presupuesto|tanda|emergencia|sueldo|renta/i.test(sceneText);
+      const replacement = isEveryday ? 'mexican pesos money' : 'dollar bills USD';
+      kw = kw.replace(/money|cash|bills|dinero|pesos/i, replacement);
     }
     const page = Math.floor(Math.random() * 3) + 1;
     const urls = await searchPexelsVideos(kw, 3, page);
