@@ -841,7 +841,21 @@ ${antiPatterns}` : ''}`;
 - SIEMPRE incluye la fuente del dato
 - El hook debe ser algo que alguien ENVIARÍA por DM a un amigo
 - ÁNGULO SIEMPRE DE INVERSIÓN/FINANZAS PERSONALES: el mensaje es "cómo hacer que tu dinero trabaje para ti" — NUNCA "cómo vender tus habilidades/tiempo/contenido". Emprendimiento NO es el tema de esta cuenta.
-- Si el tema es pop-culture (OnlyFans, Netflix, Apple), la lección debe ser sobre el MODELO FINANCIERO que puede aplicar el usuario con su dinero (CETES, inversión, diversificación) — no sobre cómo imitar el negocio o crear contenido.`;
+- Si el tema es pop-culture (OnlyFans, Netflix, Apple), la lección debe ser sobre el MODELO FINANCIERO que puede aplicar el usuario con su dinero — no sobre cómo imitar el negocio o crear contenido.
+
+REGLAS LEGALES (OBLIGATORIAS — somos educación financiera, NO asesores de inversión):
+- NUNCA des instrucciones directas de inversión: NO "compra CETES", NO "invierte en X", NO "mete tu dinero en..."
+- NUNCA prometas rendimientos: NO "vas a ganar 10%", NO "rendimiento asegurado", NO "garantizado"
+- NUNCA digas que algo es "sin riesgo" o "inversión segura"
+- NUNCA des recomendaciones personalizadas: NO "si tienes $50,000, ponlos en X"
+- SÍ puedes INFORMAR sobre instrumentos: "Los CETES son instrumentos de deuda del gobierno mexicano. Históricamente han rendido alrededor del 10% anual."
+- SÍ puedes COMPARAR opciones sin recomendar: "Tu cuenta de débito rinde 0.01%. CETES históricamente rinde ~10%. La diferencia es tuya."
+- SÍ puedes EMPODERAR: "Antes de invertir, considera tu tolerancia al riesgo y horizonte de tiempo"
+- SÍ puedes compartir DATOS HISTÓRICOS: "Históricamente, los mercados han tendido a subir en el largo plazo"
+- USA frases como: "existen opciones como...", "una alternativa es...", "puedes explorar...", "infórmate sobre..."
+- NUNCA uses frases imperativas sobre dinero: reemplaza "mete tu dinero en CETES" → "CETES es una opción que puedes explorar"
+- El caption SIEMPRE debe incluir al final: "Contenido educativo, no asesoría financiera."
+`;
 
   let formatInstructions;
   if (topic.format === 'carousel') {
@@ -865,7 +879,7 @@ Responde en JSON estricto:
     {"id": 6, "title": "título del punto", "body": "explicación corta"},
     {"id": 7, "title": "Sígueme @finanzas.pop", "body": "Guarda este post para consultarlo después."}
   ],
-  "caption": "caption para Instagram: hook → explicación corta → dato con fuente → CTA (guarda/comparte) → 8 hashtags",
+  "caption": "caption para Instagram: hook → explicación corta → dato con fuente → CTA (guarda/comparte) → 8 hashtags → SIEMPRE termina con: 📌 Contenido educativo, no asesoría financiera.",
   "source": "${topic.fuente}"
 }`;
   } else if (topic.format === 'quote') {
@@ -883,7 +897,7 @@ Responde en JSON estricto:
   "quote_text": "la frase poderosa (máximo 25 palabras)",
   "quote_context": "línea de contexto con dato (máximo 15 palabras)",
   "quote_attribution": "— @finanzas.pop",
-  "caption": "caption para Instagram: la frase → explicación → dato con fuente → CTA (guarda/comparte) → 8 hashtags",
+  "caption": "caption para Instagram: la frase → explicación → dato con fuente → CTA (guarda/comparte) → 8 hashtags → SIEMPRE termina con: 📌 Contenido educativo, no asesoría financiera.",
   "source": "${topic.fuente}"
 }`;
   } else {
@@ -911,7 +925,7 @@ Responde en JSON estricto:
     {"id": 4, "text_line1": "...", "text_line2": "...", "text_line3": "...", "duration": 4.5, "video_keywords": "relevant english keywords"},
     {"id": 5, "text_line1": "Sígueme para entender", "text_line2": "tu dinero cada día.", "text_line3": "@finanzas.pop", "duration": 3.5, "video_keywords": "smartphone social media"}
   ],
-  "caption": "caption para Instagram: hook → explicación corta → dato con fuente → CTA (guarda/comparte) → 8 hashtags",
+  "caption": "caption para Instagram: hook → explicación corta → dato con fuente → CTA (guarda/comparte) → 8 hashtags → SIEMPRE termina con: 📌 Contenido educativo, no asesoría financiera.",
   "source": "${topic.fuente}"
 }`;
   }
