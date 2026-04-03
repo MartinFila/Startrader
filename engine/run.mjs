@@ -258,12 +258,16 @@ async function scrapeCompetitorPosts() {
       .sort((a, b) => b.engagement - a.engagement)
       .slice(0, 5);
 
-    // 5. Filter out vague/useless competitor posts (e.g. "Thoughts on this?")
+    // 5. Filter out vague/useless competitor posts
     const filtered = sorted.filter(p => {
       const cap = (p.caption || '').toLowerCase();
-      // Must have at least 50 chars of real content (not just emojis/hashtags/follow me)
-      const cleanCap = cap.replace(/#\w+/g, '').replace(/follow|sígueme|@\w+/gi, '').trim();
-      return cleanCap.length > 50;
+      // Remove hashtags, follow CTAs, @mentions
+      const cleanCap = cap.replace(/#\w+/g, '').replace(/follow|sígueme|@\w+|🤔|👉/gi, '').trim();
+      // Must have at least 80 chars of real financial content
+      if (cleanCap.length < 80) return false;
+      // Must contain at least one finance-related keyword
+      const hasFinanceContent = /dinero|peso|dólar|inflación|tasa|banco|crédito|deuda|ahorro|inversión|cetes|afore|sueldo|salario|finanz|economía|presupuesto|negocio|empresa|factur/i.test(cleanCap);
+      return hasFinanceContent;
     });
 
     // 6. Map to the format expected by the rest of the pipeline
