@@ -1682,11 +1682,12 @@ function runQA(script, _output) {
     }
   }
 
-  // ── NO SHOUTOUTS ──
-  // No promover otras cuentas, marcas, o creadores específicos
-  const shoutoutPattern = /chisme corporativo|@\w+|podcast de|canal de|cuenta de|soymacariva|pequenocerdocapitalista|finanzas\.conproposito|morisdieck/i;
-  if (shoutoutPattern.test(allText) && !/finanzas\.pop/i.test(allText.match(shoutoutPattern)?.[0] || '')) {
-    issues.push('Parece un shoutout/promoción de otra cuenta o marca — no publicar');
+  // ── NO SHOUTOUTS AUTOMÁTICOS ──
+  // El motor no debe promocionar otras cuentas/marcas/creadores por su cuenta.
+  // Los shoutouts solo se hacen si Martín los acuerda previamente.
+  const brandMentions = /chisme corporativo|podcast de .+|canal de .+|cuenta de .+/i;
+  if (brandMentions.test(allText)) {
+    issues.push('Menciona otra marca/creador — los shoutouts solo si están acordados previamente');
   }
 
   // ── LEARNINGS-BASED (dynamic from learnings.md) ──
