@@ -1677,6 +1677,16 @@ function runQA(script, _output) {
   if (vagueHooks.test(hookText)) {
     issues.push('Hook demasiado vago/genérico — necesita dato concreto y sorpresa');
   }
+
+  // Check if CETES is the main topic (over-used) — only allow if no other CETES post in last 3 days
+  if (/cetes/i.test(hookText)) {
+    try {
+      const log = readFileSync(CONTENT_LOG, 'utf-8').toLowerCase();
+      const d0 = TODAY, d1 = new Date(Date.now()-86400000).toISOString().slice(0,10), d2 = new Date(Date.now()-2*86400000).toISOString().slice(0,10);
+      const recentCetes = log.split('\n').filter(l => (l.includes(d0)||l.includes(d1)||l.includes(d2)) && l.includes('cetes')).length;
+      if (recentCetes > 0) issues.push('CETES ya aparece en posts recientes — variar tema');
+    } catch {}
+  }
   // Debe hablar de México o conectar con mexicanos
   const mexicoKeywords = /m[eé]xico|mexican[oa]s?|peso[s]?|cetes|afore|banxico|sat |infonavit|oxxo|bimbo|femsa|quincena|tanda/i;
   if (!mexicoKeywords.test(allText)) {
