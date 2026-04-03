@@ -142,9 +142,14 @@ async function scrapeCompetitorPosts() {
 
   // Rotate: pick 3 random accounts each day
   const allAccounts = [
-    'finanzas.conproposito', 'el.inversor.eficiente', 'invierteconpepe_',
-    'pequenocerdocapitalista', 'mispropiasfinanzasmex', 'soymacariva',
-    'thewealthdad', 'wealth.ceo'
+    // México finanzas
+    'finanzas.conproposito', 'pequenocerdocapitalista', 'invierteconpepe_',
+    'mispropiasfinanzasmex', 'soymacariva', 'el.inversor.eficiente',
+    'ahorrobonito', 'finanzasquevalen', 'morisdieck',
+    // Internacional (aspiracional)
+    'thewealthdad', 'wealth.ceo', 'dtechincome_',
+    // Economía/noticias México
+    'bloomberglinea', 'elfinanciero_mx', 'expansion_mx',
   ];
   const today = new Date().getDate();
   const shuffled = allAccounts.sort(() => Math.sin(today * allAccounts.indexOf(allAccounts[0])) - 0.5);
@@ -321,12 +326,22 @@ function extractDato(title) {
  */
 async function fetchRSSNewsWithSource() {
   const feeds = [
+    // Google News — temas variados de finanzas México
     { url: 'https://news.google.com/rss/search?q=finanzas+personales+Mexico&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
-    { url: 'https://news.google.com/rss/search?q=inflacion+Mexico+INEGI&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
+    { url: 'https://news.google.com/rss/search?q=inflacion+Mexico+precios&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
     { url: 'https://news.google.com/rss/search?q=CETES+Banxico+tasa+interes&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
-    { url: 'https://news.google.com/rss/search?q=Nu+Mexico+GBM+fintech&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
-    { url: 'https://news.google.com/rss/search?q=Afore+pension+retiro+Mexico&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
-    { url: 'https://news.google.com/rss/search?q=deuda+tarjeta+credito+Mexico&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
+    { url: 'https://news.google.com/rss/search?q=economia+Mexico+empleo+salario&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
+    { url: 'https://news.google.com/rss/search?q=tarjeta+credito+debito+Mexico+bancos&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
+    { url: 'https://news.google.com/rss/search?q=hipoteca+vivienda+casa+Mexico+Infonavit&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
+    { url: 'https://news.google.com/rss/search?q=SAT+impuestos+declaracion+Mexico&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
+    { url: 'https://news.google.com/rss/search?q=empresas+mexicanas+BMV+bolsa&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
+    { url: 'https://news.google.com/rss/search?q=fintech+Mexico+Nu+Mercadopago+Rappi&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
+    { url: 'https://news.google.com/rss/search?q=gasolina+luz+servicios+precio+Mexico&hl=es-419&gl=MX&ceid=MX:es-419', source: 'Google News' },
+    // Medios directos — RSS feeds de finanzas México
+    { url: 'https://www.elfinanciero.com.mx/rss/finanzas-personales/', source: 'El Financiero' },
+    { url: 'https://www.eleconomista.com.mx/rss/finanzas-personales', source: 'El Economista' },
+    { url: 'https://expansion.mx/rss/dinero', source: 'Expansión' },
+    { url: 'https://www.forbes.com.mx/feed/', source: 'Forbes México' },
   ];
 
   const headlines = [];
@@ -360,23 +375,49 @@ async function scrapeNews() {
     console.log('  ⚠ No se pudieron obtener titulares de RSS');
   }
 
-  // Reddit
-  console.log('  📡 Buscando en r/MexicoFinanciero...');
+  // Reddit — múltiples subreddits de finanzas México/LATAM
+  const subreddits = [
+    'MexicoFinanciero',
+    'mexico',
+    'personalfinance',
+    'economia',
+  ];
+  console.log('  📡 Buscando en Reddit...');
+  for (const sub of subreddits) {
+    try {
+      const redditRes = await fetch(`https://www.reddit.com/r/${sub}/hot.json?limit=10`, {
+        headers: { 'User-Agent': 'finanzas-pop-engine/1.0' },
+        signal: AbortSignal.timeout(5000)
+      });
+      const redditData = await redditRes.json();
+      const redditPosts = redditData.data.children
+        .map(c => c.data)
+        .filter(p => p.score > 5)
+        .map(p => ({ title: p.title, source: `r/${sub}`, score: p.score }));
+      realHeadlines.push(...redditPosts.slice(0, 3));
+    } catch {}
+  }
+  const redditCount = realHeadlines.filter(h => h.source?.startsWith('r/')).length;
+  console.log(`  ✓ ${redditCount} posts de Reddit encontrados`);
+
+  // Twitter/X trending — búsqueda de temas financieros trending en México via Google News
+  console.log('  📡 Buscando trending...');
   try {
-    const redditRes = await fetch('https://www.reddit.com/r/MexicoFinanciero/hot.json?limit=10', {
-      headers: { 'User-Agent': 'finanzas-pop-engine/1.0' },
+    const trendingQueries = [
+      'trending+finanzas+Mexico+hoy',
+      'viral+dinero+Mexico',
+      'polémica+económica+Mexico',
+    ];
+    const trendQ = trendingQueries[Math.floor(Math.random() * trendingQueries.length)];
+    const tRes = await fetch(`https://news.google.com/rss/search?q=${trendQ}&hl=es-419&gl=MX&ceid=MX:es-419&when=1d`, {
       signal: AbortSignal.timeout(5000)
     });
-    const redditData = await redditRes.json();
-    const redditPosts = redditData.data.children
-      .map(c => c.data)
-      .filter(p => p.score > 5)
-      .map(p => ({ title: p.title, source: 'r/MexicoFinanciero', score: p.score }));
-    // Add to headlines
-    realHeadlines.push(...redditPosts.slice(0, 5));
-    console.log(`  ✓ ${redditPosts.length} posts de Reddit encontrados`);
-  } catch (e) {
-    console.log('  ⚠ Reddit no disponible');
+    const tXml = await tRes.text();
+    const tTitles = [...tXml.matchAll(/<title><!\[CDATA\[(.*?)\]\]><\/title>/g)].map(m => m[1]).slice(1, 4);
+    realHeadlines.push(...tTitles.map(t => ({ title: t, source: 'Trending' })));
+    console.log(`  ✓ ${tTitles.length} temas trending`);
+  } catch {
+    console.log('  ⚠ Trending no disponible');
   }
 
   // If RSS failed entirely, use fallback
@@ -523,29 +564,26 @@ Responde SOLO con los insights nuevos, uno por línea con "- " al inicio. Si no 
 }
 
 function getFallbackNews() {
-  return [
-    {
-      titulo: "La inflación en México sigue subiendo y golpea los alimentos",
-      dato: "4.63% general, 8.34% frutas y verduras",
-      fuente: "INEGI, marzo 2026",
-      relevancia: "Tu canasta del super cuesta más cada mes y tu sueldo no sube",
-      viralidad: 8
-    },
-    {
-      titulo: "Nu México sigue pagando más que CETES",
-      dato: "Nu 14.5% vs CETES 6.81%",
-      fuente: "Sitios oficiales, marzo 2026",
-      relevancia: "Si tu dinero está en un banco que paga 1%, estás perdiendo",
-      viralidad: 7
-    },
-    {
-      titulo: "Solo el 8.8% de los mexicanos invierte",
-      dato: "8.8% en acciones o crypto, 91.2% no",
-      fuente: "ENIF 2024, INEGI",
-      relevancia: "La mayoría deja su dinero perder valor sin saberlo",
-      viralidad: 9
-    }
+  // Evergreen topics — temas que siempre son relevantes para finanzas México
+  const all = [
+    { titulo: "La inflación en México sigue subiendo y golpea los alimentos", dato: "4.63% general, 8.34% frutas y verduras", fuente: "INEGI, marzo 2026", relevancia: "Tu canasta del super cuesta más cada mes y tu sueldo no sube", viralidad: 8 },
+    { titulo: "Solo el 8.8% de los mexicanos invierte en algo", dato: "91.2% no invierte ni en CETES", fuente: "ENIF 2024, INEGI", relevancia: "La mayoría deja su dinero perder valor sin saberlo", viralidad: 9 },
+    { titulo: "El mexicano promedio gasta el 35% de su sueldo en comida", dato: "35% del ingreso va a alimentos", fuente: "ENIGH, INEGI", relevancia: "Más de un tercio de tu quincena se va en comer", viralidad: 7 },
+    { titulo: "7 de cada 10 mexicanos con tarjeta de crédito pagan solo el mínimo", dato: "70% paga mínimo, acumula intereses de 40-60% anual", fuente: "CONDUSEF 2025", relevancia: "Pagar el mínimo multiplica tu deuda sin que te des cuenta", viralidad: 8 },
+    { titulo: "El aguinaldo promedio en México se gasta en menos de 2 semanas", dato: "62% lo gasta en deudas y regalos", fuente: "CONDUSEF", relevancia: "El dinero extra desaparece sin plan", viralidad: 7 },
+    { titulo: "México tiene más de 70 millones de tarjetas de débito pero solo 35 millones de crédito", dato: "Débito 2:1 vs crédito", fuente: "CNBV", relevancia: "La mayoría no usa crédito, ¿es bueno o malo?", viralidad: 6 },
+    { titulo: "El costo de vivir solo en CDMX supera los $15,000 al mes", dato: "$15,000+ renta, servicios, comida", fuente: "Inmuebles24, INEGI", relevancia: "Independizarte en la ciudad más cara de México", viralidad: 8 },
+    { titulo: "Las tandas mueven $30,000 millones de pesos al año en México", dato: "$30,000 MDP en economía informal de ahorro", fuente: "El Financiero", relevancia: "México ahorra, pero fuera del sistema financiero", viralidad: 8 },
+    { titulo: "El SAT devolvió más de $40,000 MDP en declaraciones anuales", dato: "$40,000 MDP devueltos", fuente: "SAT, 2025", relevancia: "Si no declaras, estás dejando dinero en la mesa", viralidad: 7 },
+    { titulo: "El 68% de mexicanos no tiene fondo de emergencia", dato: "Solo 32% podría cubrir 3 meses sin ingreso", fuente: "ENIF, INEGI", relevancia: "Un imprevisto te puede endeudar de por vida", viralidad: 8 },
+    { titulo: "Comprar casa en CDMX requiere ahorrar 10 años de sueldo promedio", dato: "Precio promedio: $3.2 MDP, sueldo promedio: $15K/mes", fuente: "Sociedad Hipotecaria Federal", relevancia: "El sueño de la casa propia cada vez más lejos", viralidad: 9 },
+    { titulo: "Netflix, Spotify y apps: el mexicano gasta $1,200 al mes en suscripciones", dato: "$1,200/mes promedio en suscripciones digitales", fuente: "Deloitte México", relevancia: "Gastos hormiga que suman $14,400 al año", viralidad: 7 },
+    { titulo: "El peso mexicano es la moneda más operada de Latinoamérica", dato: "MXN es la 16ª moneda más operada del mundo", fuente: "BIS, Banco de Pagos Internacionales", relevancia: "Tu moneda es más importante de lo que crees", viralidad: 6 },
+    { titulo: "América Móvil de Carlos Slim vale más que el PIB de varios países", dato: "Capitalización: $60,000 MDD", fuente: "BMV", relevancia: "Una empresa mexicana que compite a nivel global", viralidad: 8 },
+    { titulo: "El interés compuesto: $1,000 al mes durante 20 años a 10% = $760,000", dato: "Invertiste $240K, ganaste $520K extra", fuente: "Cálculo financiero estándar", relevancia: "El tiempo es tu mejor aliado financiero", viralidad: 9 },
   ];
+  // Shuffle and return 3 random
+  return all.sort(() => Math.random() - 0.5).slice(0, 5);
 }
 
 // ═══════════════════════════════════════════
