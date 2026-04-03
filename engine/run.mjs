@@ -1682,6 +1682,13 @@ function runQA(script, _output) {
     }
   }
 
+  // ── NO SHOUTOUTS ──
+  // No promover otras cuentas, marcas, o creadores específicos
+  const shoutoutPattern = /chisme corporativo|@\w+|podcast de|canal de|cuenta de|soymacariva|pequenocerdocapitalista|finanzas\.conproposito|morisdieck/i;
+  if (shoutoutPattern.test(allText) && !/finanzas\.pop/i.test(allText.match(shoutoutPattern)?.[0] || '')) {
+    issues.push('Parece un shoutout/promoción de otra cuenta o marca — no publicar');
+  }
+
   // ── LEARNINGS-BASED (dynamic from learnings.md) ──
   // Load anti-patterns from learnings
   try {
