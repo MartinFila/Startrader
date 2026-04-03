@@ -907,6 +907,8 @@ REGLAS LEGALES (OBLIGATORIAS — somos educación financiera, NO asesores de inv
 - SÍ puedes compartir DATOS HISTÓRICOS: "Históricamente, los mercados han tendido a subir en el largo plazo"
 - USA frases como: "existen opciones como...", "una alternativa es...", "puedes explorar...", "infórmate sobre..."
 - NUNCA uses frases imperativas sobre dinero: reemplaza "mete tu dinero en CETES" → "CETES es una opción que puedes explorar"
+- NUNCA compares dos instrumentos sugiriendo que uno es mejor que otro: NO "en vez de tanda, usa CETES", NO "en lugar del banco, prueba Nu". Eso es consejo de inversión disfrazado.
+- SÍ puedes explicar cómo funciona CADA UNO por separado, con datos. Que el lector saque su propia conclusión.
 - El caption SIEMPRE debe incluir al final: "Contenido educativo, no asesoría financiera."
 `;
 
@@ -1694,7 +1696,7 @@ function runQA(script, _output) {
   }
 
   // ── LEGAL ──
-  const investmentAdvice = /\b(compra (cetes|acciones|etf|bonos|crypto)|invierte en \w|mete tu dinero en|pon tu dinero en|te recomiendo invertir)\b/i;
+  const investmentAdvice = /\b(compra (cetes|acciones|etf|bonos|crypto)|invierte en \w|mete tu dinero en|pon tu dinero en|te recomiendo invertir|en (vez|lugar) de.*(tanda|banco|débito).*(cetes|invertir|gbm|nu )|tu dinero trabaj[ae] para ti)\b/i;
   if (investmentAdvice.test(allText)) {
     issues.push('LEGAL: Contiene consejo de inversión directo (prohibido)');
   }
