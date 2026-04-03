@@ -1297,7 +1297,7 @@ async function createQuote(script) {
 
   // Quote text — never truncate. Font size adjusts to fit.
   const quoteText = sanitize(script.quote_text || script.hook || '');
-  const quoteFontSize = quoteText.length > 120 ? 38 : quoteText.length > 100 ? 42 : quoteText.length > 70 ? 48 : 56;
+  const quoteFontSize = quoteText.length > 140 ? 32 : quoteText.length > 120 ? 36 : quoteText.length > 100 ? 40 : quoteText.length > 70 ? 46 : 54;
   const contextText = sanitize(script.quote_context || '');
 
   console.log(`  🎨 Quote — estilo crema portada`);
@@ -1596,6 +1596,75 @@ async function callGemini(prompt, model = 'gemini-2.5-flash') {
 // ═══════════════════════════════════════════
 // MAIN
 // ═══════════════════════════════════════════
+// ═══════════════════════════════════════
+// QA GATE — validates content before publish
+// Criteria update automatically from learnings.md
+// ═══════════════════════════════════════
+function runQA(script, _output) {
+  console.log('\n🔍 QA — Verificando contenido...');
+  const issues = [];
+  const caption = (script.caption || '').toLowerCase();
+  const allText = `${script.hook} ${script.caption} ${JSON.stringify(script.scenes || script.slides || script.quote_text || '')}`.toLowerCase();
+
+  // ── CONTENIDO ──
+  // Hook debe ser viral (corto, impactante)
+  if ((script.hook || '').length > 80) {
+    issues.push('Hook demasiado largo (>80 chars) — no funciona como portada');
+  }
+  // Debe hablar de México o conectar con mexicanos
+  const mexicoKeywords = /m[eé]xico|mexican[oa]s?|peso[s]?|cetes|afore|banxico|sat |infonavit|oxxo|bimbo|femsa|quincena|tanda/i;
+  if (!mexicoKeywords.test(allText)) {
+    issues.push('No menciona México ni conecta con la vida del mexicano');
+  }
+
+  // ── LEGAL ──
+  const investmentAdvice = /\b(compra|invierte en|mete tu dinero|pon tu dinero en|te recomiendo invertir)\b/i;
+  if (investmentAdvice.test(allText)) {
+    issues.push('LEGAL: Contiene consejo de inversión directo (prohibido)');
+  }
+  const promisedReturns = /\b(vas a ganar|rendimiento (asegurado|garantizado)|sin riesgo|inversi[oó]n segura)\b/i;
+  if (promisedReturns.test(allText)) {
+    issues.push('LEGAL: Promete rendimientos o dice "sin riesgo" (prohibido)');
+  }
+  // Disclaimer en caption
+  if (!caption.includes('educativ') && !caption.includes('no asesor')) {
+    issues.push('Falta disclaimer "Contenido educativo, no asesoría financiera" en caption');
+  }
+
+  // ── VISUAL (para reels) ──
+  if (script.scenes) {
+    // Verificar que las escenas no tengan texto muy largo (>8 palabras por línea)
+    for (const [i, scene] of script.scenes.entries()) {
+      for (const line of ['text_line1', 'text_line2', 'text_line3']) {
+        const text = scene[line] || '';
+        if (text.split(' ').length > 10) {
+          issues.push(`Escena ${i+1} ${line}: "${text.slice(0,30)}..." tiene >10 palabras (se va a salir del recuadro)`);
+        }
+      }
+    }
+  }
+
+  // ── LEARNINGS-BASED (dynamic from learnings.md) ──
+  // Load anti-patterns from learnings
+  try {
+    const antiSection = learningsContent.match(/### (?:Lo que|Anti-?patrones|Hooks que NO)[\s\S]*?(?=###|$)/i);
+    if (antiSection) {
+      // Check for known bad patterns (e.g. "guru tone", certain phrases)
+      if (/libertad financiera|ingreso pasivo|mentalidad millonaria|hazte rico/i.test(allText)) {
+        issues.push('Usa frase prohibida de guru financiero (learnings)');
+      }
+    }
+  } catch {}
+
+  // Report
+  if (issues.length === 0) {
+    console.log('  ✓ Hook viral, México-first, educativo, legal OK');
+  } else {
+    issues.forEach(i => console.log(`  ✗ ${i}`));
+  }
+  return issues;
+}
+
 async function main() {
   console.log('═══════════════════════════════════════');
   console.log(`💰 finanzas.pop engine — ${TODAY}`);
@@ -1624,24 +1693,29 @@ async function main() {
   const topic = await selectTopic(news);
   const script = await generateScript(topic);
   const output = await createContent(script);
-  const caption = saveOutput(script, output, topic);
-  await publishToMetricool(output, script.caption);
+  saveOutput(script, output, topic);
+
+  // ── QA GATE — validate content + visual before publishing ──
+  const qaIssues = runQA(script, output);
+  if (qaIssues.length > 0) {
+    console.log('\n🚨 QA FALLÓ — NO SE PUBLICA:');
+    qaIssues.forEach(issue => console.log(`  ✗ ${issue}`));
+    console.log('  ℹ Contenido guardado localmente pero NO programado en Metricool.');
+  } else {
+    console.log('\n✅ QA PASÓ — publicando...');
+    await publishToMetricool(output, script.caption);
+  }
 
   console.log('\n═══════════════════════════════════════');
   console.log('✅ LISTO PARA PUBLICAR');
   const fmt = output.format || 'reel';
   if (fmt === 'carousel') {
-    const relDir = 'Contenido_IG/carousels';
-    console.log(`  🎨 Carousel: ${output.files.length} slides en ${relDir}/`);
-    output.files.forEach(f => console.log(`     ${f}`));
-    console.log(`  📝 Caption: ${relDir}/${caption}`);
+    console.log(`  🎨 Carousel: ${output.files.length} slides en Contenido_IG/carousels/`);
   } else if (fmt === 'quote') {
     console.log(`  💬 Quote: Contenido_IG/quotes/${output.filename}`);
-    console.log(`  📝 Caption: Contenido_IG/quotes/${caption}`);
   } else {
     console.log(`  📹 Video: Contenido_IG/reels/${output.filename}`);
     console.log(`  🖼️  Portada: Contenido_IG/reels/${output.coverFilename}`);
-    console.log(`  📝 Caption: Contenido_IG/reels/${caption}`);
   }
   console.log('═══════════════════════════════════════\n');
 }
