@@ -230,18 +230,18 @@ const SceneView: React.FC<{
         <BottomBar />
 
       {index === 0 ? (
-        // HOOK (escena 0): línea 1 estática desde frame 0,
-        // líneas 2 y 3 se animan una por una después.
+        // HOOK (escena 0): texto grande estilo portada (similar a carousel).
+        // Línea 1 estática desde frame 0, líneas 2 y 3 se animan después.
         <>
           {scene.text_line1 ? (
             <div
               style={{
                 color: hasVideo ? BRAND.white : BRAND.red,
-                fontSize: 58,
+                fontSize: 72,
                 fontWeight: 700,
                 textAlign: "center",
-                lineHeight: 1.2,
-                marginBottom: 20,
+                lineHeight: 1.15,
+                marginBottom: 24,
                 fontFamily,
               }}
             >
@@ -255,7 +255,7 @@ const SceneView: React.FC<{
             delay={12}
             style={{
               color: textColor,
-              fontSize: 46,
+              fontSize: 54,
               fontWeight: 500,
               textAlign: "center",
               lineHeight: 1.3,
@@ -271,7 +271,7 @@ const SceneView: React.FC<{
             finalOpacity={0.8}
             style={{
               color: textColor,
-              fontSize: 38,
+              fontSize: 44,
               fontWeight: 400,
               textAlign: "center",
               lineHeight: 1.3,
