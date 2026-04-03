@@ -258,8 +258,16 @@ async function scrapeCompetitorPosts() {
       .sort((a, b) => b.engagement - a.engagement)
       .slice(0, 5);
 
-    // 5. Map to the format expected by the rest of the pipeline
-    const results = sorted.map(p => ({
+    // 5. Filter out vague/useless competitor posts (e.g. "Thoughts on this?")
+    const filtered = sorted.filter(p => {
+      const cap = (p.caption || '').toLowerCase();
+      // Must have at least 50 chars of real content (not just emojis/hashtags/follow me)
+      const cleanCap = cap.replace(/#\w+/g, '').replace(/follow|sígueme|@\w+/gi, '').trim();
+      return cleanCap.length > 50;
+    });
+
+    // 6. Map to the format expected by the rest of the pipeline
+    const results = filtered.map(p => ({
       titulo: p.caption.slice(0, 100) || 'Post sin caption',
       hook: p.caption.slice(0, 100) || 'Post sin caption',
       cuenta: `@${p.ownerUsername}`,
