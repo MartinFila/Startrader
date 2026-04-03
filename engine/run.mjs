@@ -880,9 +880,21 @@ ${antiPatterns}` : ''}`;
   const rulesBlock = `REGLAS:
 - NUNCA uses: "libertad financiera", "ingreso pasivo", "mentalidad millonaria", "hazte rico"
 - SIEMPRE incluye la fuente del dato
-- El hook debe ser algo que alguien ENVIARÍA por DM a un amigo
-- ÁNGULO SIEMPRE DE INVERSIÓN/FINANZAS PERSONALES: el mensaje es "cómo hacer que tu dinero trabaje para ti" — NUNCA "cómo vender tus habilidades/tiempo/contenido". Emprendimiento NO es el tema de esta cuenta.
-- Si el tema es pop-culture (OnlyFans, Netflix, Apple), la lección debe ser sobre el MODELO FINANCIERO que puede aplicar el usuario con su dinero — no sobre cómo imitar el negocio o crear contenido.
+- ÁNGULO SIEMPRE DE INVERSIÓN/FINANZAS PERSONALES — NUNCA emprendimiento.
+
+REGLAS DEL HOOK (CRÍTICO — el hook determina si el contenido funciona o no):
+- El hook SIEMPRE debe tener un NÚMERO o DATO CONCRETO. Ej: "$4,877", "el 80%", "8.4 millones", "$0 de rendimiento"
+- NUNCA hooks vagos o genéricos: NO "Cuida tus finanzas", NO "Piensa diferente sobre el dinero", NO "Las cuentas de finanzas te mienten"
+- El hook debe hacer que alguien lo ENVÍE POR DM a un amigo — si no provocaría esa reacción, descártalo
+- Máximo 8 palabras — debe caber en una portada sin cortarse
+- Debe ser SORPRENDENTE o CONTRAINTUITIVO — algo que el lector NO esperaba
+- Test mental: ¿Lo lees y dices "no mames, en serio"? Si no, es muy débil.
+
+REGLAS DEL CONTENIDO (CRÍTICO — el contenido debe aportar valor real):
+- Cada escena/slide debe enseñar algo CONCRETO que el lector no sabía
+- NUNCA contenido genérico tipo "ahorra más", "diversifica", "piensa a largo plazo" — eso no aporta nada
+- Incluye DATOS ESPECÍFICOS de México: cantidades en pesos, porcentajes reales, nombres de instituciones
+- El contenido debe hacer que alguien GUARDE el post para después — si no vale guardarlo, no vale publicarlo
 
 REGLAS LEGALES (OBLIGATORIAS — somos educación financiera, NO asesores de inversión):
 - NUNCA des instrucciones directas de inversión: NO "compra CETES", NO "invierte en X", NO "mete tu dinero en..."
@@ -1104,8 +1116,12 @@ async function addVideoBackgrounds(scenes) {
   const results = [];
   for (let i = 0; i < scenes.length; i++) {
     if (i >= scenes.length - 1) { results.push(null); continue; } // last scene: no video
-    const kw = scenes[i].video_keywords || '';
+    let kw = scenes[i].video_keywords || '';
     if (!kw) { results.push(null); continue; }
+    // Force USD/Mexico context — avoid random currency clips
+    if (/money|cash|bills|dinero|pesos/i.test(kw) && !/dollar|usd|mexico/i.test(kw)) {
+      kw = kw.replace(/money|cash|bills|dinero|pesos/i, 'dollar bills USD');
+    }
     const page = Math.floor(Math.random() * 3) + 1;
     const urls = await searchPexelsVideos(kw, 3, page);
     // Pick a random clip from results
@@ -1644,10 +1660,17 @@ function runQA(script, _output) {
   const caption = (script.caption || '').toLowerCase();
   const allText = `${script.hook} ${script.caption} ${JSON.stringify(script.scenes || script.slides || script.quote_text || '')}`.toLowerCase();
 
-  // ── CONTENIDO ──
-  // Hook debe ser viral (corto, impactante)
-  if ((script.hook || '').length > 80) {
-    issues.push('Hook demasiado largo (>80 chars) — no funciona como portada');
+  // ── HOOK ──
+  const hookText = script.hook || '';
+  if (hookText.length > 60) {
+    issues.push(`Hook demasiado largo (${hookText.length} chars, máx 60) — se va a cortar en la portada`);
+  }
+  if (!/\d/.test(hookText) && !/\$|%|millones|mil|trillones/i.test(hookText)) {
+    issues.push('Hook sin dato concreto (número, $, %) — no engancha');
+  }
+  const vagueHooks = /cuida tus|piensa (en|diferente)|te mienten|no te dicen|la verdad sobre|secreto de|solo te dicen/i;
+  if (vagueHooks.test(hookText)) {
+    issues.push('Hook demasiado vago/genérico — necesita dato concreto y sorpresa');
   }
   // Debe hablar de México o conectar con mexicanos
   const mexicoKeywords = /m[eé]xico|mexican[oa]s?|peso[s]?|cetes|afore|banxico|sat |infonavit|oxxo|bimbo|femsa|quincena|tanda/i;
