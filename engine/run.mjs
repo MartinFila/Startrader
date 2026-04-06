@@ -1249,7 +1249,7 @@ async function createCarousel(script) {
     // Logo top-left
     children.push({ type:'div', props:{ style:{ position:'absolute', top:60, left:70, display:'flex', alignItems:'center', gap:12 }, children:[
       
-      { type:'div', props:{ style:{ fontSize:18, fontWeight:500, color: isLast ? 'rgba(250,246,241,0.4)' : C.light }, children:'finanzas.pop' }},
+      { type:'div', props:{ style:{ fontSize:22, fontWeight:500, color: isLast ? 'rgba(250,246,241,0.4)' : C.light }, children:'finanzas.pop' }},
     ]}});
 
     // Slide number (except last)
@@ -1269,18 +1269,18 @@ async function createCarousel(script) {
       alignItems: isLast ? 'center' : 'flex-start',
     }, children:[
       { type:'div', props:{ style:{
-        fontSize: 48,
+        fontSize: 64,
         fontWeight:700,
         color: textColor,
-        lineHeight:1.2,
+        lineHeight:1.15,
         textAlign: isLast ? 'center' : 'left',
       }, children: sanitize(slide.title) }},
       { type:'div', props:{ style:{
-        fontSize: 32,
+        fontSize: 40,
         fontWeight:400,
         color: mutedColor,
-        lineHeight:1.4,
-        marginTop:24,
+        lineHeight:1.35,
+        marginTop:28,
         textAlign: isLast ? 'center' : 'left',
       }, children: sanitize(slide.body) }},
     ] }});
@@ -1370,7 +1370,7 @@ async function createQuote(script) {
 
   // Quote text — never truncate. Font size adjusts to fit.
   const quoteText = sanitize(script.quote_text || script.hook || '');
-  const quoteFontSize = quoteText.length > 140 ? 32 : quoteText.length > 120 ? 36 : quoteText.length > 100 ? 40 : quoteText.length > 70 ? 46 : 54;
+  const quoteFontSize = quoteText.length > 140 ? 28 : quoteText.length > 120 ? 32 : quoteText.length > 100 ? 36 : quoteText.length > 70 ? 40 : 48;
   const contextText = sanitize(script.quote_context || '');
 
   console.log(`  🎨 Quote — estilo crema portada`);
@@ -1382,7 +1382,7 @@ async function createQuote(script) {
       display: 'flex', flexDirection: 'column',
       alignItems: 'center', justifyContent: 'center',
       fontFamily: 'Inter', textAlign: 'center',
-      padding: '100px 80px',
+      padding: '80px 120px',
       position: 'relative',
     }, children: [
       // fp circle logo centered at top
