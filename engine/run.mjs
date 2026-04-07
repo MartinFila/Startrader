@@ -1709,9 +1709,13 @@ function runQA(script, _output) {
     for (const post of recentPosts) {
       const postWords = post.replace(/[^a-záéíóúñü0-9\s]/g, '').split(/\s+/).filter(w => w.length > 3);
       // Count overlapping significant words
-      const overlap = hookWords.filter(w => postWords.includes(w)).length;
-      const similarity = hookWords.length > 0 ? overlap / hookWords.length : 0;
-      if (similarity > 0.5) {
+      // Only compare with significant words (exclude common Spanish words)
+      const stopWords = new Set(['para','como','este','esta','esto','pero','cada','tiene','puede','solo','todo','todos','mexicanos','mexico','dinero','pesos','más','menos','cuando','donde','desde','entre','hasta','sobre','porque','también','ningún','ninguna','estás','ganas','hacer','años','sabe','dice','cómo','qué','quién','cuál','dónde','cuánto','sueldo','peso','banco','cuenta','mucho','poco','nada','algo','mejor','peor','otro','otra','otros','siempre','nunca','nadie','gente','manera','forma','parte','sido','hecho','están','están','siendo','hacer','haces','hace','hacen','hizo','puedes','pueden','podría','debería','tendría']);
+      const hookSig = hookWords.filter(w => !stopWords.has(w));
+      const postSig = postWords.filter(w => !stopWords.has(w));
+      const overlap = hookSig.filter(w => postSig.includes(w)).length;
+      const similarity = hookSig.length > 0 ? overlap / hookSig.length : 0;
+      if (similarity > 0.6) {
         issues.push(`Hook muy similar a un post reciente (${Math.round(similarity*100)}% overlap) — cambiar tema`);
         break;
       }
@@ -1732,6 +1736,8 @@ function runQA(script, _output) {
       empresas: /bmv|bolsa|femsa|bimbo|am[eé]rica m[oó]vil/i,
       fintech: /fintech|nu m[eé]xico|rappi|mercadopago/i,
       ahorro: /ahorr|presupuest|gasto hormiga/i,
+      seguros: /seguro[s]?\b|p[oó]liza|cobertura/i,
+      pagos_digitales: /pagos? digital|transacci[oó]n|tarjeta.*r[eé]cord/i,
     };
 
     function detectTheme(text) {
@@ -1840,16 +1846,15 @@ async function main() {
   const topic = await selectTopic(news);
   const script = await generateScript(topic);
   const output = await createContent(script);
-  saveOutput(script, output, topic);
-
   // ── QA GATE — validate content + visual before publishing ──
   const qaIssues = runQA(script, output);
   if (qaIssues.length > 0) {
     console.log('\n🚨 QA FALLÓ — NO SE PUBLICA:');
     qaIssues.forEach(issue => console.log(`  ✗ ${issue}`));
-    console.log('  ℹ Contenido guardado localmente pero NO programado en Metricool.');
+    console.log('  ℹ Contenido NO guardado en log, NO programado en Metricool.');
   } else {
     console.log('\n✅ QA PASÓ — publicando...');
+    saveOutput(script, output, topic);
     await publishToMetricool(output, script.caption);
   }
 

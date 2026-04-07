@@ -1,80 +1,37 @@
-
-
-| 2026-03-31 | “La inflación creció hasta 4.02%”: una persona necesita alrededor de 4,877 pesos al mes para cubrir lo básico en la ciudad, según el INEGI - El Imparcial | Quote | Necesitas $4,877 al mes solo para sobrevivir en la ciudad. ¿Cuánto te queda después de eso? | Google News | - | - | - |
-| 2026-03-31 | Inflación: Jitomate, limón y los productos que más subieron de precio en México este marzo del 2026 - El Informador | Reel | El jitomate y el limón se dispararon. Tu carrito de la compra lo sintió. | Google News | - | - | - |
-| 2026-03-31 | "CETES Banxico tasa interes" - Google Noticias | Reel | Banxico bajó la tasa. Tu dinero en CETES ya no rinde igual. | Google News | - | - | - |
-| 2026-04-01 | Finanzas para niños: Arma un plan de ahorro con ellos - El Economista | Carousel | Tu hijo de 6 años puede aprender más de dinero que tú en la prepa. DESLIZA → | Google News | - | - | - |
-| 2026-04-01 | "CETES Banxico tasa interes" - Google Noticias | Reel | Banxico bajó la tasa y tus CETES ya pagan menos | Google News | - | - | daily-briefing |
-| 2026-04-01 | Hablemos de Noruega y de su petróleo 👀
-
-#petróleo #noruega #contexto #viralvideos #storytime | Reel | Noruega ahorró $1.7 TRILLONES de su petróleo. México: $0. | Instagram | - | - | pop-context |
-| 2026-04-01 | Cinco consejos para cuidar las finanzas personales en Semana Santa - BBVA | Carousel | Semana Santa te puede dejar en ceros. 5 tips para que no pase 🏖️ | Google News | - | - | daily-briefing |
-| 2026-04-01 | ¿Quieres aprender de finanzas personales? El MIDE tiene actividades gratuitas - SinEmbargo | Reel | Aprender de finanzas en México puede ser GRATIS | Google News | - | - | daily-briefing |
-| 2026-04-01 | Cambia la Ley de Vivienda: los créditos hipotecarios ya no serán lo mismo y los ahorros privados podrán usarse para otras operaciones - El Cronista | Reel | Cambiaron las reglas del crédito hipotecario en México 🏠 | Google News | - | - | daily-briefing |
-| 2026-04-01 | “La inflación creció hasta 4.02%”: una persona necesita alrededor de 4,877 pesos al mes para cubrir lo básico en la ciudad, según el INEGI - El Imparcial | Carousel | Necesitas $4,877 al mes solo para NO morirte de hambre en la ciudad. | Google News | - | - | bold-data |
-| 2026-04-01 | Agroproductos disparan la inflación a 4.63%: Inegi - La Jornada | Reel | Tu super subió 4.63% y tu sueldo… igual 🫠 | Google News | - | - | bold-data |
-| 2026-04-01 | Sube Otra Vez la Inflación en México: INEGI Reporta Aumento en Primera Quincena de Marzo 2026 - N+ | Quote | La inflación volvió a subir y tu sueldo sigue igualito desde enero | Google News | - | - | daily-briefing |
-| 2026-04-01 | ERROR ES 1997 - Vayan a stalkear a @invisalignmexico 😬🪥
-
-#publicidad #negocios #sᴛᴏʀʏᴛɪᴍᴇ | Reel | En 1997 México perdió 50% del poder de tu salario | Instagram | - | - | daily-briefing |
-| 2026-04-01 | Banxico recorta la tasa de interés y pega a los rendimientos de los Cetes - expansion.mx | Quote | Banxico bajó la tasa y tus CETES ya no pagan lo mismo 👀 | Google News | - | - | daily-briefing |
-| 2026-04-01 | "finanzas personales Mexico" - Google Noticias | Reel | El 68% de mexicanos no ahorra ni un peso al mes | Google News | - | - | daily-briefing |
-| 2026-04-01 | Hablemos de Onlyfans 😲
-
-#of #noticias #news #chismecorporativo | Reel | OnlyFans factura más que Bimbo. Sí, leíste bien. 🤯 | Instagram | - | - | pop-context |
-| 2026-04-01 | Inflación: Jitomate, limón y los productos que más subieron de precio en México este marzo del 2026 - El Informador | Quote | El jitomate subió tanto que tu salsa ya cuenta como gasto hormiga | Google News | - | - | daily-briefing |
-| 2026-04-01 | Hablemos de Onlyfans 😲
-
-#of #noticias #news #chismecorporativo | Reel | OnlyFans factura más que FEMSA y Bimbo juntas 😲 | Instagram | - | - | pop-context |
-| 2026-04-01 | Cómo podría afectar tus finanzas personales la guerra en Irán • Dinero - Forbes México | Reel | Guerra en Irán: tu gasolina y tu súper van a subir | Google News | - | - | step-by-step |
-
-#petróleo #noruega #contexto #viralvideos #storytime | Quote | Noruega convirtió su petróleo en $1.7 trillones de dólares para su gente. México… paga gasolina cara. | Instagram | - | - | pop-context |
-
-#publicidad #negocios #sᴛᴏʀʏᴛɪᴍᴇ | Carousel | En 1997 México perdió 50% del poder de compra. Hoy hay señales parecidas. | Instagram | - | - | daily-briefing |
-
-Follow 👉 @wealth.ceo
-Follow 👉 @wealth.ceo
-
-For the best business, wealth a | Reel-Video | Tu tanda genera $0 de rendimiento. Cero. | Instagram | - | - | daily-briefing |
-
-#of #noticias #news #chismecorporativo | Quote | OnlyFans facturó más que Bimbo en 2023. Y no cotiza en bolsa. | Instagram | - | - | pop-context |
-
-#of #noticias #news #chismecorporativo | Carousel | OnlyFans factura más que FEMSA Digital y nadie habla de las finanzas detrás 😲 DESLIZA → | Instagram | - | - | pop-context |
-
-Follow 👉 @wealth.ceo
-Follow 👉 @wealth.ceo
-
-For the best business, wealth a | Reel-Video | Tu tanda te genera $0 de rendimiento 🤡 | Instagram | - | - | daily-briefing |
-
-Follow 👉 @wealth.ceo
-Follow 👉 @wealth.ceo
-
-For the best business, wealth a | Reel-Video | Tu tanda te genera $0 de rendimiento 💀 | Instagram | - | - | daily-briefing |
-
-#of #noticias #news #chismecorporativo | Reel-Video | OnlyFans factura más que FEMSA y Bimbo juntas 😲 | Instagram | - | - | pop-context |
-
-Follow 👉 @wealth.ceo
-Follow 👉 @wealth.ceo
-
-For the best business, wealth a | Reel-Video | Tu tanda te genera $0 de rendimiento 💀 | Instagram | - | - | daily-briefing |
-
-#of #noticias #news #chismecorporativo | Carousel | OnlyFans factura más que FEMSA digital | Instagram | - | - | pop-context |
-
-#of #noticias #news #chismecorporativo | Reel-Video | OnlyFans factura más que FEMSA y Bimbo juntas 😲 | Instagram | - | - | pop-context |
-
-#of #noticias #news #chismecorporativo | Reel-Video | OnlyFans genera $6,600 MDD al año. Tú puedes copiar su modelo. | Instagram | - | - | pop-context |
-
-#of #noticias #news #chismecorporativo | Reel-Video | OnlyFans generó $6,600 MDD el año pasado. Más que Bimbo. | Instagram | - | - | pop-context |
-
-#of #noticias #news #chismecorporativo | Reel-Video | OnlyFans genera $6,600 MDD al año. Tú puedes copiar su modelo. | Instagram | - | - | pop-context |
-
-
-#petróleo #noruega #contexto #viralvideos #storytime | Quote | Noruega ahorró su petróleo. México se lo gastó. Adivina quién tiene fondo para su retiro. | Instagram | - | - | pop-context |
-
-#of #noticias #news #chismecorporativo | Reel-Video | OnlyFans generó $6,600 MDD el año pasado. Más que Liverpool. | Instagram | - | - | pop-context |
-
-| 2026-04-02 | Hablemos de Noruega y de su petróleo 👀
-
-#petróleo #noruega #contexto #viralvideos #storytime | Carousel | Noruega ahorró $1.7 TRILLONES de su petróleo | Instagram | - | - | pop-context |
-| 2026-04-02 | "CETES Banxico tasa interes" - Google Noticias | Quote | Banxico baja la tasa y tú ni enterado mientras tus CETES te dan menos cada mes | Google News | - | - | daily-briefing |
-| 2026-04-02 | Hablemos de Finanzas: Consar se une a la Global Money Week México 2026 - Gob MX | Carousel | Tu Afore puede crecer y no lo sabes | Google News | - | - | daily-briefing |
+| 2026-04-07 | El SAT castigará y multará con una sanción de 122,440 pesos a contribuyentes que soliciten obligatoriamente este documento - El Cronista | Reel-Video | Multa de $122,440 por pedir este documento al SAT | Google News | - | - | daily-briefing |
+| 2026-04-07 | Banxico abre 2026 ‘congelando’ su tasa de interés en 7%, en línea con la Fed - Alto Nivel | Reel-Video | Banxico congeló la tasa en 7% y esto te toca | Google News | - | - | bold-data |
+| 2026-04-07 | Cinco años de inflación: los precios en México subieron 31% acumulado entre 2021 y 2025 - NNC.MX | Quote | Tu sueldo perdió 31% en 5 años | Google News | - | - | bold-data |
+| 2026-04-07 | Bank of America proyecta un impulso en la acción de Apple a partir de un nuevo catalizador ligado a  | Quote | Apple subió 7% y tú sigues en cuenta de débito | Instagram | - | - | daily-briefing || 2026-04-07 | Banxico arrancó 2026 manteniendo su tasa en 7%. Suena a noticia lejana, pero te toca directo.  Esa t | Quote | Banxico arrancó 2026 manteniendo su tasa en 7%. Suena a noti | IG-Published | - | - | - |
+| 2026-04-07 | "Mientras tú solo miras a Wall Street, hay países vecinos creciendo en silencio que ya atraen el cap | Quote | "Mientras tú solo miras a Wall Street, hay países vecinos cr | IG-Published | - | - | - |
+| 2026-04-07 | Banxico arrancó 2026 sin mover su tasa: se queda en 7% 🧊  ¿Por qué? La Fed hizo lo mismo y México no | Reel-Video | Banxico arrancó 2026 sin mover su tasa: se queda en 7% 🧊  ¿P | IG-Published | - | - | - |
+| 2026-04-07 | 🚨 ¿Sabías que el SAT puede multarte con $122,440 pesos?  Esto aplica para contribuyentes que solicit | Reel-Video | 🚨 ¿Sabías que el SAT puede multarte con $122,440 pesos?  Est | IG-Published | - | - | - |
+| 2026-04-07 | 72 millones de cuentas de Afore en México y la mayoría de la gente ni sabe en cuál está. 😶  Este 202 | Carousel | 72 millones de cuentas de Afore en México y la mayoría de la | IG-Published | - | - | - |
+| 2026-04-07 | El 63% de los mexicanos no sabe cómo funciona su Afore. 😬  La CONSAR se sumó a la Global Money Week  | Reel-Video | El 63% de los mexicanos no sabe cómo funciona su Afore. 😬  L | IG-Published | - | - | - |
+| 2026-04-07 | "No te bajaron el sueldo. La inflación lo hizo por ellos."  Piénsalo así: lo que comprabas con $10,0 | Quote | "No te bajaron el sueldo. La inflación lo hizo por ellos."   | IG-Published | - | - | - |
+| 2026-04-07 | Banxico arrancó 2026 congelando su tasa en 7%. ¿Qué significa para tu bolsillo?  📌 Mientras la tasa  | Reel-Video | Banxico arrancó 2026 congelando su tasa en 7%. ¿Qué signific | IG-Published | - | - | - |
+| 2026-04-07 | Los primeros $100,000 MXN son los más difíciles de juntar — y no es motivación barata, es matemática | Carousel | Los primeros $100,000 MXN son los más difíciles de juntar —  | IG-Published | - | - | - |
+| 2026-04-07 | Banxico arranca 2026 sin mover la tasa: se queda en 7% 🧊  Esto significa que los créditos (hipotecas | Reel-Video | Banxico arranca 2026 sin mover la tasa: se queda en 7% 🧊  Es | IG-Published | - | - | - |
+| 2026-04-04 | "No es que ganes poco. Es que nadie te enseñó qué hacer con lo que ganas antes de que se lo coma la  | Quote | "No es que ganes poco. Es que nadie te enseñó qué hacer con  | IG-Published | - | - | - |
+| 2026-04-03 | Cuentas gringas de "wealth" con Lamborghinis y frases motivacionales… ¿y tu dinero qué? 🤔  Mientras  | Reel-Video | Cuentas gringas de "wealth" con Lamborghinis y frases motiva | IG-Published | - | - | - |
+| 2026-04-03 | México consume 8.4 millones de toneladas de carne al año… y tú solo la pagas. 🥩  El negocio de la pr | Reel-Video | México consume 8.4 millones de toneladas de carne al año… y  | IG-Published | - | - | - |
+| 2026-04-03 | Cuentas que te dicen "piensa en grande" pero nunca te explican QUÉ hacer con tu dinero 🚩  El problem | Reel-Video | Cuentas que te dicen "piensa en grande" pero nunca te explic | IG-Published | - | - | - |
+| 2026-04-03 | Semana Santa te puede costar un mes entero de ahorro si no pones un tope. 🏖️💸  Según BBVA, los preci | Reel-Video | Semana Santa te puede costar un mes entero de ahorro si no p | IG-Published | - | - | - |
+| 2026-04-03 | El 67% de los mexicanos no tiene ningún tipo de ahorro. 😶  Y no es porque sean flojos — es porque na | Reel-Video | El 67% de los mexicanos no tiene ningún tipo de ahorro. 😶  Y | IG-Published | - | - | - |
+| 2026-04-03 | ¿Sabes cuánto dinero pierdes por no revisar tu Afore? 👀  La CONSAR se unió a la Global Money Week Mé | Reel-Video | ¿Sabes cuánto dinero pierdes por no revisar tu Afore? 👀  La  | IG-Published | - | - | - |
+| 2026-04-03 | Semana Santa te puede salir más cara que todo marzo 👀  Hospedaje, vuelos y comidas suben de precio j | Reel-Video | Semana Santa te puede salir más cara que todo marzo 👀  Hospe | IG-Published | - | - | - |
+| 2026-04-03 | Chisme Corporativo no empezó vendiendo nada. Empezó creando contenido gratis, construyendo audiencia | Reel-Video | Chisme Corporativo no empezó vendiendo nada. Empezó creando  | IG-Published | - | - | - |
+| 2026-04-03 | Cuentas gringas te ponen 'Thoughts on this?' con frases vacías… y tú dándoles engagement gratis 😅  M | Reel-Video | Cuentas gringas te ponen 'Thoughts on this?' con frases vací | IG-Published | - | - | - |
+| 2026-04-06 | Banxico arrancó 2026 sin mover la tasa: se queda en 7% 🧊  ¿Qué significa para ti? → Si tienes crédit | Reel-Video | Banxico arrancó 2026 sin mover la tasa: se queda en 7% 🧊  ¿Q | IG-Published | - | - | - |
+| 2026-04-03 | El 68% de los mexicanos no tiene ningún tipo de ahorro formal. 🫠  Y no es porque seamos irresponsabl | Reel-Video | El 68% de los mexicanos no tiene ningún tipo de ahorro forma | IG-Published | - | - | - |
+| 2026-04-03 | Tu tanda te genera exactamente $0 de rendimiento. 🫠  Metes $1,000 mensuales durante 10 meses. Recibe | Carousel | Tu tanda te genera exactamente $0 de rendimiento. 🫠  Metes $ | IG-Published | - | - | - |
+| 2026-04-03 | El Tec de Monterrey publicó 7 consejos de finanzas personales y el primero es el más importante: PÁG | Reel-Video | El Tec de Monterrey publicó 7 consejos de finanzas personale | IG-Published | - | - | - |
+| 2026-04-07 | ⚠️ $122,440 pesos de multa. Eso es lo que el SAT puede cobrarte si solicitas tu Constancia de Situac | Carousel | ⚠️ $122,440 pesos de multa. Eso es lo que el SAT puede cobra | IG-Published | - | - | - |
+| 2026-04-07 | Semana Santa te puede costar $4,800 más de lo que planeabas 💸  En temporada alta, hoteles y vuelos s | Reel-Video | Semana Santa te puede costar $4,800 más de lo que planeabas  | IG-Published | - | - | - |
+| 2026-04-06 | El 63% de mexicanos no sabe ni en qué Afore está. 😬  CONSAR se sumó a la Global Money Week México 20 | Reel-Video | El 63% de mexicanos no sabe ni en qué Afore está. 😬  CONSAR  | IG-Published | - | - | - |
+| 2026-04-07 | Precios de alimentos y fertilizantes escalan a nivel mundial - El Financiero | Quote | Tu despensa subió 12% y nadie te avisó | Google News | - | - | daily-briefing |
+| 2026-04-07 | Cinco consejos para cuidar las finanzas personales en Semana Santa - BBVA | Quote | El 65% gasta más en Semana Santa que en Navidad | Google News | - | - | daily-briefing |
+| 2026-04-07 | Estos son los riesgos de deuda y falta de ahorro entre los jóvenes en México - El Economista | Carousel | 67% de jóvenes mexicanos ya tienen deudas | Google News | - | - | daily-briefing |
+| 2026-04-07 | Seguros: ¿un gasto o una inversión? - El Economista | Reel-Video | El 73% de mexicanos NO tiene ningún seguro | Google News | - | - | daily-briefing |
+| 2026-04-07 | Sobreendeudamiento crece tras gastos de Semana Santa, advierte Bravo - Reporte Indigo | Carousel | Semana Santa te dejó deudas de $12,000 | Google News | - | - | daily-briefing |
+| 2026-04-07 | "finanzas personales Mexico" - Google Noticias | Quote | El 68% de mexicanos no ahorra ni $1 | Google News | - | - | daily-briefing |
+| 2026-04-07 | Billed $1440 for 20 min urgent care visit | Carousel | $24,000 por 20 minutos al doctor | r/personalfinance | - | - | daily-briefing |
