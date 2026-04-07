@@ -723,7 +723,7 @@ REGLAS CLAVE PARA ELEGIR (basadas en análisis real de competidores con millones
 3. ELIGE EL TEMA MÁS ACTUAL Y SORPRENDENTE — no el más "seguro":
    - Prioriza NOTICIAS FRESCAS sobre temas que están pasando AHORA (hoy, esta semana)
    - Prioriza datos que SORPRENDAN: records, cambios inesperados, comparaciones que nadie esperaba
-   - PROHIBIDO TERMINANTEMENTE hablar de CETES, Afore, tanda, pensión, retiro o CONSAR. Estos temas están BANEADOS. Si los mencionas, el QA rechaza el post. Busca OTROS temas.
+   - NO repitas temas que ya se publicaron en los últimos 7 días. Si ya hablamos de CETES, Afore, tanda, inflación — busca OTRO tema. Hay muchos: SAT, empresas mexicanas, fintechs, vivienda, empleo, gasolina, tarjetas, etc.
    - Busca ángulos de: empresas mexicanas (BMV, FEMSA, Bimbo), SAT/impuestos, fintechs, precios que suben, vivienda, empleo
    - Las historias de otros países funcionan si conectan con México ("Noruega y su petróleo")
    - Los temas de actualidad tipo "gasolina se disparó" o "pagos digitales rompen récord" son mejores que temas evergreen
@@ -1692,24 +1692,64 @@ function runQA(script, _output) {
   }
 
   // Check if CETES is the main topic (over-used) — only allow if no other CETES post in last 3 days
-  // BANNED topics — over-used, blocked until further notice
-  const bannedTopics = /cetes|tanda|afore|pensi[oó]n|retiro|consar/i;
-  if (bannedTopics.test(hookText)) {
-    issues.push(`Hook menciona tema baneado (CETES/Afore/tanda) — PROHIBIDO`);
-  }
-  if (bannedTopics.test(allText.slice(0, 500))) {
-    try {
-      const log = readFileSync(CONTENT_LOG, 'utf-8').toLowerCase();
-      const d0 = TODAY, d1 = new Date(Date.now()-86400000).toISOString().slice(0,10), d2 = new Date(Date.now()-2*86400000).toISOString().slice(0,10);
-      const recent = log.split('\n').filter(l => (l.includes(d0)||l.includes(d1)||l.includes(d2)));
-      const matches = overusedTopics.source.split('|');
-      for (const topic of matches) {
-        if (new RegExp(topic, 'i').test(allText) && recent.some(l => new RegExp(topic, 'i').test(l))) {
-          issues.push(`"${topic}" ya aparece en posts recientes — variar tema`);
-        }
+  // ── ANTI-REPETICIÓN DINÁMICA (basado en lo YA publicado) ──
+  try {
+    const log = readFileSync(CONTENT_LOG, 'utf-8').toLowerCase();
+    const lines = log.split('\n').filter(l => l.startsWith('|'));
+
+    // 1. Get posts from last 7 days
+    const recentDates = [];
+    for (let i = 0; i < 7; i++) {
+      recentDates.push(new Date(Date.now() - i * 86400000).toISOString().slice(0, 10));
+    }
+    const recentPosts = lines.filter(l => recentDates.some(d => l.includes(d)));
+
+    // 2. Check for near-duplicate hooks (same idea repackaged)
+    const hookWords = hookText.toLowerCase().replace(/[^a-záéíóúñü0-9\s]/g, '').split(/\s+/).filter(w => w.length > 3);
+    for (const post of recentPosts) {
+      const postWords = post.replace(/[^a-záéíóúñü0-9\s]/g, '').split(/\s+/).filter(w => w.length > 3);
+      // Count overlapping significant words
+      const overlap = hookWords.filter(w => postWords.includes(w)).length;
+      const similarity = hookWords.length > 0 ? overlap / hookWords.length : 0;
+      if (similarity > 0.5) {
+        issues.push(`Hook muy similar a un post reciente (${Math.round(similarity*100)}% overlap) — cambiar tema`);
+        break;
       }
-    } catch {}
-  }
+    }
+
+    // 3. Check topic categories used in last 7 days
+    const THEME_KEYWORDS = {
+      cetes: /cetes|cetesdirecto|tasa.*(inter[eé]s|referencia)/i,
+      banxico: /banxico.*(tasa|recort|congel)/i,
+      inflacion: /inflaci[oó]n|precios?.*(sub|baj|dispar)|31%/i,
+      afore: /afore|pensi[oó]n|retiro|consar/i,
+      tanda: /tanda/i,
+      sat: /sat |impuesto|declaraci[oó]n.*anual|multa.*sat/i,
+      tarjetas: /tarjeta.*(cr[eé]dito|d[eé]bito)/i,
+      vivienda: /hipoteca|vivienda|casa|infonavit/i,
+      empleo: /sueldo|salario|empleo|trabajo/i,
+      gasolina: /gasolina|combustible/i,
+      empresas: /bmv|bolsa|femsa|bimbo|am[eé]rica m[oó]vil/i,
+      fintech: /fintech|nu m[eé]xico|rappi|mercadopago/i,
+      ahorro: /ahorr|presupuest|gasto hormiga/i,
+    };
+
+    function detectTheme(text) {
+      for (const [theme, rx] of Object.entries(THEME_KEYWORDS)) {
+        if (rx.test(text)) return theme;
+      }
+      return null;
+    }
+
+    const hookTheme = detectTheme(allText.slice(0, 300));
+    if (hookTheme) {
+      // Count how many times this theme appeared in last 7 days
+      const themeCount = recentPosts.filter(p => detectTheme(p) === hookTheme).length;
+      if (themeCount >= 2) {
+        issues.push(`Tema "${hookTheme}" ya apareció ${themeCount}x en últimos 7 días — variar`);
+      }
+    }
+  } catch {}
   // Debe hablar de México o conectar con mexicanos
   const mexicoKeywords = /m[eé]xico|mexican[oa]s?|peso[s]?|cetes|afore|banxico|sat |infonavit|oxxo|bimbo|femsa|quincena|tanda/i;
   if (!mexicoKeywords.test(allText)) {
