@@ -723,7 +723,7 @@ REGLAS CLAVE PARA ELEGIR (basadas en análisis real de competidores con millones
 3. ELIGE EL TEMA MÁS ACTUAL Y SORPRENDENTE — no el más "seguro":
    - Prioriza NOTICIAS FRESCAS sobre temas que están pasando AHORA (hoy, esta semana)
    - Prioriza datos que SORPRENDAN: records, cambios inesperados, comparaciones que nadie esperaba
-   - NUNCA elijas Afore/CETES/tanda como tema principal — ya los hemos usado demasiado
+   - PROHIBIDO TERMINANTEMENTE hablar de CETES, Afore, tanda, pensión, retiro o CONSAR. Estos temas están BANEADOS. Si los mencionas, el QA rechaza el post. Busca OTROS temas.
    - Busca ángulos de: empresas mexicanas (BMV, FEMSA, Bimbo), SAT/impuestos, fintechs, precios que suben, vivienda, empleo
    - Las historias de otros países funcionan si conectan con México ("Noruega y su petróleo")
    - Los temas de actualidad tipo "gasolina se disparó" o "pagos digitales rompen récord" son mejores que temas evergreen
@@ -1692,9 +1692,12 @@ function runQA(script, _output) {
   }
 
   // Check if CETES is the main topic (over-used) — only allow if no other CETES post in last 3 days
-  // Block over-used topics (CETES, tanda) if already appeared in last 3 days
-  const overusedTopics = /cetes|tanda/i;
-  if (overusedTopics.test(hookText) || overusedTopics.test(allText.slice(0, 200))) {
+  // BANNED topics — over-used, blocked until further notice
+  const bannedTopics = /cetes|tanda|afore|pensi[oó]n|retiro|consar/i;
+  if (bannedTopics.test(hookText)) {
+    issues.push(`Hook menciona tema baneado (CETES/Afore/tanda) — PROHIBIDO`);
+  }
+  if (bannedTopics.test(allText.slice(0, 500))) {
     try {
       const log = readFileSync(CONTENT_LOG, 'utf-8').toLowerCase();
       const d0 = TODAY, d1 = new Date(Date.now()-86400000).toISOString().slice(0,10), d2 = new Date(Date.now()-2*86400000).toISOString().slice(0,10);
