@@ -720,14 +720,13 @@ REGLAS CLAVE PARA ELEGIR (basadas en análisis real de competidores con millones
 
 2. ASPIRACIONAL > DOLOR: Ratio 3:1. El post #1 de @finanzas.conproposito (1.6M seguidores) es "Inviertan para su retiro" con 265K likes. El contenido de deudas genera 160x MENOS engagement. Nuestro target quiere INVERTIR y CRECER, no llorar por el jitomate.
 
-3. TEMAS QUE EXPLOTAN en México (probado con datos reales):
-   - Retiro/pensión/Afore (265K likes — el tema nuclear)
-   - Comprar casa (10,708 avg engagement)
-   - Tarjetas de crédito (7,934 avg engagement)
-   - Empresas mexicanas para invertir (6,960 avg engagement)
-   - Comparativas: Nu vs CETES vs Hey Banco vs GBM+
-   - Empezar a invertir con poco ($100 en CETES)
-   - Historias de otros países como ejemplo ("Noruega y su petróleo" = 90K likes en @soymacariva)
+3. ELIGE EL TEMA MÁS ACTUAL Y SORPRENDENTE — no el más "seguro":
+   - Prioriza NOTICIAS FRESCAS sobre temas que están pasando AHORA (hoy, esta semana)
+   - Prioriza datos que SORPRENDAN: records, cambios inesperados, comparaciones que nadie esperaba
+   - NUNCA elijas Afore/CETES/tanda como tema principal — ya los hemos usado demasiado
+   - Busca ángulos de: empresas mexicanas (BMV, FEMSA, Bimbo), SAT/impuestos, fintechs, precios que suben, vivienda, empleo
+   - Las historias de otros países funcionan si conectan con México ("Noruega y su petróleo")
+   - Los temas de actualidad tipo "gasolina se disparó" o "pagos digitales rompen récord" son mejores que temas evergreen
 
 4. TEMAS QUE NO FUNCIONAN:
    - Inflación/precios del super sin solución (jitomate, limón = bajo engagement)
