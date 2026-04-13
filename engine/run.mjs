@@ -900,6 +900,8 @@ REGLAS DEL HOOK (CRÍTICO — el hook determina si el contenido funciona o no):
 - Máximo 8 palabras — debe caber en una portada sin cortarse
 - Debe ser SORPRENDENTE o CONTRAINTUITIVO — algo que el lector NO esperaba
 - Test mental: ¿Lo lees y dices "no mames, en serio"? Si no, es muy débil.
+- LOSS-FRAMING: "Estás PERDIENDO $X" funciona 2.5x mejor que "Podrías GANAR $X". Enmarca el hook como pérdida/dolor, no como ganancia.
+- CTA EN ESCENA FINAL del reel: "Comenta GUÍA para recibir los pasos" o "Guárdalo para después" — esto multiplica comentarios y saves.
 
 REGLAS DEL CONTENIDO (CRÍTICO — el contenido debe aportar valor real):
 - Cada escena/slide debe enseñar algo CONCRETO que el lector no sabía
@@ -945,7 +947,7 @@ Responde en JSON estricto:
     {"id": 6, "title": "título del punto", "body": "explicación corta"},
     {"id": 7, "title": "Sígueme @finanzas.pop", "body": "Guarda este post para consultarlo después."}
   ],
-  "caption": "caption para Instagram: hook → explicación corta → dato con fuente → CTA (guarda/comparte) → 8 hashtags → SIEMPRE termina con: 📌 Contenido educativo, no asesoría financiera.",
+  "caption": "caption para Instagram con esta estructura EXACTA: 1) Primera línea: keyword SEO natural (ej: 'Finanzas personales en México:', 'Cómo ahorrar dinero en México:') seguida del hook. 2) Explicación corta con dato y fuente. 3) CTA viral: 'Comenta GUÍA y te mando los pasos' o 'Guárdalo para cuando lo necesites 📌' o 'Mándaselo a alguien que necesita verlo 📩'. 4) Solo 3-5 hashtags MUY específicos del nicho (ej: #finanzaspop #finanzaspersonalesmx #dinero #mexico). NO más de 5. 5) SIEMPRE termina con: 📌 Contenido educativo, no asesoría financiera.",
   "source": "${topic.fuente}"
 }`;
   } else if (topic.format === 'quote') {
@@ -963,7 +965,7 @@ Responde en JSON estricto:
   "quote_text": "la frase poderosa (máximo 25 palabras)",
   "quote_context": "línea de contexto con dato (máximo 15 palabras)",
   "quote_attribution": "— @finanzas.pop",
-  "caption": "caption para Instagram: la frase → explicación → dato con fuente → CTA (guarda/comparte) → 8 hashtags → SIEMPRE termina con: 📌 Contenido educativo, no asesoría financiera.",
+  "caption": "caption para Instagram con esta estructura EXACTA: 1) Primera línea: keyword SEO natural seguida de la frase. 2) Explicación con dato y fuente. 3) CTA viral: 'Comenta GUÍA y te mando los pasos' o 'Guárdalo 📌' o 'Mándaselo a alguien 📩'. 4) Solo 3-5 hashtags MUY específicos (#finanzaspop #finanzaspersonalesmx #dinero #mexico). 5) SIEMPRE termina con: 📌 Contenido educativo, no asesoría financiera.",
   "source": "${topic.fuente}"
 }`;
   } else {
@@ -991,7 +993,7 @@ Responde en JSON estricto:
     {"id": 4, "text_line1": "...", "text_line2": "...", "text_line3": "...", "duration": 4.5, "video_keywords": "relevant english keywords"},
     {"id": 5, "text_line1": "Sígueme para entender", "text_line2": "tu dinero cada día.", "text_line3": "@finanzas.pop", "duration": 3.5, "video_keywords": "smartphone social media"}
   ],
-  "caption": "caption para Instagram: hook → explicación corta → dato con fuente → CTA (guarda/comparte) → 8 hashtags → SIEMPRE termina con: 📌 Contenido educativo, no asesoría financiera.",
+  "caption": "caption para Instagram con esta estructura EXACTA: 1) Primera línea: keyword SEO natural (ej: 'Finanzas personales en México:', 'Cómo ahorrar dinero en México:') seguida del hook. 2) Explicación corta con dato y fuente. 3) CTA viral: 'Comenta GUÍA y te mando los pasos' o 'Guárdalo para cuando lo necesites 📌' o 'Mándaselo a alguien que necesita verlo 📩'. 4) Solo 3-5 hashtags MUY específicos del nicho (ej: #finanzaspop #finanzaspersonalesmx #dinero #mexico). NO más de 5. 5) SIEMPRE termina con: 📌 Contenido educativo, no asesoría financiera.",
   "source": "${topic.fuente}"
 }`;
   }
@@ -1465,7 +1467,10 @@ function getOptimalPublishTime(fmt) {
     mxNow.setMinutes(mxNow.getMinutes() + 3);
     return mxNow; // toISOString() will output Mexico time as if it were UTC
   }
-  const targetHour = (fmt === 'carousel' || fmt === 'quote') ? 16 : 12;
+  // Optimal times for Mexico (research-backed, 2026):
+  // Reels: 12pm CST (lunch break = peak browsing)
+  // Carousels/Quotes: 7pm CST (evening = higher save rate)
+  const targetHour = (fmt === 'carousel' || fmt === 'quote') ? 19 : 12;
   const now = new Date();
   // Convert to Mexico City time (UTC-6)
   const mxOffset = -6 * 60;

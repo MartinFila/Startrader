@@ -2,16 +2,20 @@ name: finanzas.pop — 3 posts diarios
 
 on:
   schedule:
-    # 9am, 1pm, 5pm hora México (UTC-6) = 15:03, 19:07, 23:11 UTC
-    - cron: '3 15 * * *'
-    - cron: '7 19 * * *'
-    - cron: '11 23 * * *'
+    # Optimal times for Mexico audience (research-backed):
+    # 11am CST = lunch browsing peak (Reels discovery)
+    # 2pm CST = afternoon engagement
+    # 7pm CST = evening peak (highest save rate)
+    # CST = UTC-6, so: 17:00, 20:00, 01:00 UTC
+    - cron: '3 17 * * *'
+    - cron: '7 20 * * *'
+    - cron: '11 1 * * *'
   workflow_dispatch: # permite correrlo manual desde GitHub
 
 jobs:
   publish-post:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - uses: actions/checkout@v4
@@ -31,6 +35,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           METRICOOL_API_KEY: ${{ secrets.METRICOOL_API_KEY }}
           METRICOOL_USER_ID: ${{ secrets.METRICOOL_USER_ID }}
           METRICOOL_BLOG_ID: ${{ secrets.METRICOOL_BLOG_ID }}
