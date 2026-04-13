@@ -1843,19 +1843,27 @@ async function main() {
   await updateLearningsFromCompetitors(competitorPosts);
   // RELOAD learnings after auto-update so steps 2 and 3 use fresh data
   try { learningsContent = readFileSync(LEARNINGS_PATH, 'utf-8'); } catch {}
-  const topic = await selectTopic(news);
-  const script = await generateScript(topic);
-  const output = await createContent(script);
-  // ── QA GATE — validate content + visual before publishing ──
-  const qaIssues = runQA(script, output);
-  if (qaIssues.length > 0) {
-    console.log('\n🚨 QA FALLÓ — NO SE PUBLICA:');
-    qaIssues.forEach(issue => console.log(`  ✗ ${issue}`));
-    console.log('  ℹ Contenido NO guardado en log, NO programado en Metricool.');
-  } else {
-    console.log('\n✅ QA PASÓ — publicando...');
-    saveOutput(script, output, topic);
-    await publishToMetricool(output, script.caption);
+  // Retry loop: if QA fails, try again with a different topic (up to 3 attempts)
+  let published = false;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    if (attempt > 1) console.log(`\n🔄 Reintento ${attempt}/3 — buscando otro tema...`);
+    const topic = await selectTopic(news);
+    const script = await generateScript(topic);
+    const output = await createContent(script);
+
+    const qaIssues = runQA(script, output);
+    if (qaIssues.length > 0) {
+      console.log('\n🚨 QA FALLÓ:');
+      qaIssues.forEach(issue => console.log(`  ✗ ${issue}`));
+      if (attempt < 3) continue; // retry
+      console.log('  ℹ 3 intentos fallidos — no se publica nada esta ronda.');
+    } else {
+      console.log('\n✅ QA PASÓ — publicando...');
+      saveOutput(script, output, topic);
+      await publishToMetricool(output, script.caption);
+      published = true;
+      break;
+    }
   }
 
   console.log('\n═══════════════════════════════════════');
