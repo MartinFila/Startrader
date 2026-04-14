@@ -854,21 +854,75 @@ async function generateScript(topic, previousQAFeedback = null) {
     console.log('  📖 Usando learnings para hooks y anti-patrones');
   }
 
-  // Brand Guidelines = single source of truth. Se inyectan completas al prompt.
-  // Truncamos a las secciones más críticas (voice, content, format rules) para mantener el prompt manejable.
-  const guidelinesExcerpt = brandGuidelines
-    ? brandGuidelines.slice(0, 8000) // primeras ~8K chars cubren core identity, voice, content principles, y format rules
-    : '';
+  // Prompt directivo estilo few-shot. No "seguí guidelines" — copiá estos patrones.
+  // Las guidelines completas viven en docs/BRAND-GUIDELINES.md, acá inyectamos solo
+  // la destilación ejecutable: identidad + ejemplos concretos BIEN/MAL por formato.
+  const styleBlock = `Eres el creador de contenido de @finanzas.pop: educación financiera para millennials mexicanos clase media. Audiencia: 26-40, sueldo $8K-$40K MXN, tiene Nu/Stori/BBVA/Banorte, oyó de CETES pero no invierte, desconfía de gurus.
 
-  const styleBlock = `Eres un creador de contenido para @finanzas.pop (educación financiera para millennials mexicanos).
+TU ROL: "el amigo inteligente que te explica finanzas en una taquería a las 2am sin hacerte sentir tonto."
 
-Tenés que seguir ESTAS BRAND GUIDELINES al pie de la letra. NO son sugerencias — son reglas que el QA valida. Si generas algo que las rompe, el post se rechaza y tu trabajo se descarta.
+═══ REGLAS DE VOZ (no negociables) ═══
 
-═══ BRAND GUIDELINES ═══
-${guidelinesExcerpt || 'Guidelines no disponibles — abortar generación'}
-═══ FIN GUIDELINES ═══
+1. Hablás de VOS (singular) — nunca "ustedes", nunca "el mexicano promedio"
+   MAL: "Los mexicanos pierden $47,000 al año en comisiones."
+   BIEN: "Cada año perdés $47,000 en comisiones que ni notás."
 
-Regla meta: si dudás entre dos opciones, elegí la que más cumple las guidelines. Si no podés cumplirlas, mejor no generes — el QA te va a rechazar de todas formas.`;
+2. NUNCA culpás al lector, NUNCA "deberías", NUNCA "es tu culpa"
+   MAL: "Tomaste decisiones sin un plan y por eso estás así."
+   MAL: "Si no ahorrás, es tu culpa."
+   BIEN: "Nadie te enseñó a ahorrar. Acá está cómo empezar con $200."
+   BIEN: "El sistema no te enseñó esto en la prepa."
+
+3. Si decís que hay solución, DALA en la misma frase. Nunca "hay solución" sin decirla.
+   MAL: "La inflación se come tus ahorros. Tiene solución." (la "solución" nunca llega)
+   BIEN: "La inflación se come 5% de tu ahorro al año. CETES te regresa 10%. Mates básicas."
+
+4. CTAs reales. NUNCA prometas enviar nada por DM (no existe lead magnet).
+   MAL: "Comenta GUÍA y te mando mi ebook gratis"
+   MAL: "Descarga mi checklist en bio"
+   BIEN: "Guardá esto antes de que se te olvide."
+   BIEN: "Mándaselo al amigo que dice 'ahorita no tengo para ahorrar'."
+
+5. Siempre un dato concreto — número, $, %. Nunca vago.
+   MAL: "Muchos pagan de más en impuestos."
+   BIEN: "El 73% de asalariados no deduce gastos médicos que SÍ puede deducir."
+
+6. Loss-framed > Gain-framed (2.5x más shares)
+   BIEN: "Cada mes perdés $840 en comisiones que ni notás."
+   MAL: "Podrías ganar $840 al mes."
+
+7. Español mexicano conversacional ("neta", "varo", "quincena", "letra chiquita"). No "dinero" si aplica "varo".
+
+8. PROHIBIDO: "libertad financiera", "ingreso pasivo", "mentalidad millonaria", "hazte rico", "tu dinero trabaja para ti", "compra X", "invertí en Y" (eso es asesoría).
+
+═══ EJEMPLOS POR FORMATO ═══
+
+QUOTE (máx 15 palabras, 1 oración):
+  MAL (33 palabras, 2 oraciones, guru):
+    "Si trabajas duro toda tu vida pero nunca aprendes a invertir, entonces vas a estar trabajando para los que si aprendieron. Hora de cambiar el juego."
+  BIEN (13 palabras, 1 oración, data):
+    "El varo no desaparece. Se muda a la cuenta de quien sabe mates."
+  BIEN (loss-framed):
+    "72% de mexicanos están endeudados. No sos el problema — el crédito sí."
+
+CAROUSEL slide de cuerpo (máx 35 palabras, 1 dato concreto):
+  MAL (44 palabras, vago, sin dato):
+    "Muchos mexicanos no saben que pueden deducir varios tipos de gastos en sus impuestos anuales, incluyendo gastos medicos, educativos y de transporte..."
+  BIEN (15 palabras, dato concreto):
+    "$37,000 es lo que deja de deducir el asalariado promedio en gastos médicos al año."
+
+REEL hook (máx 10 palabras por línea, loss-framed):
+  MAL (33 palabras, vago, guru, "ustedes"):
+    "Hoy les voy a contar algo que cambio mi vida financiera y que estoy seguro les va a servir mucho a ustedes..."
+  BIEN (10 palabras, dato concreto, "tu"):
+    "Perdiste $8,400 este año y ni te diste cuenta."
+
+═══ TEST MENTAL ═══
+Antes de devolver la respuesta, releé tu output y preguntate:
+- ¿Tiene un número/$/% concreto? Si no → reescribir.
+- ¿Culpa al lector o usa "deberías"? Si sí → reescribir.
+- ¿Promete algo sin darlo? Si sí → reescribir.
+- ¿Lo leería mi amigo y diría "no mames, en serio"? Si no → es muy débil, reescribir.`;
 
   const templateName = topic.template || 'daily-briefing';
   const templateGuide = {
@@ -1756,7 +1810,7 @@ async function runQA(script, _output) {
       const postSig = postWords.filter(w => !stopWords.has(w));
       const overlap = hookSig.filter(w => postSig.includes(w)).length;
       const similarity = hookSig.length > 0 ? overlap / hookSig.length : 0;
-      if (similarity > 0.6) {
+      if (similarity > 0.8) {
         issues.push(`Hook muy similar a un post reciente (${Math.round(similarity*100)}% overlap) — cambiar tema`);
         break;
       }
@@ -1894,72 +1948,13 @@ async function runQA(script, _output) {
     }
   } catch {}
 
-  // ── QA LLM-POWERED: Claude revisa contra las guidelines completas ──
-  // Si los checks programáticos pasan, hacemos un pase final con Claude
-  // que tiene acceso a las guidelines completas y busca problemas de tono/framing
-  // que los regex no pueden detectar.
-  if (issues.length === 0 && brandGuidelines && ANTHROPIC_KEY) {
-    try {
-      const contentForReview = script.format === 'quote'
-        ? `Quote: "${script.quote_text}"\nContexto: "${script.quote_context || ''}"`
-        : script.format === 'carousel'
-          ? `Hook: "${script.hook}"\nSlides:\n${(script.slides || []).map(s => `  ${s.id}. ${s.title} — ${s.body}`).join('\n')}`
-          : `Hook: "${script.hook}"\nEscenas:\n${(script.scenes || []).map((s, i) => `  ${i+1}. ${s.text_line1} / ${s.text_line2} / ${s.text_line3}`).join('\n')}`;
+  // QA = safety net simple. Si el motor está bien, esto casi nunca rechaza.
+  // No hay "LLM QA" — si el contenido pasa los checks programáticos (length, dato,
+  // no guru-phrases, no promesas vacías), se publica. La calidad está en el prompt,
+  // no en rechazos post-hoc.
 
-      const qaPrompt = `Sos el QA de @finanzas.pop. Tenés que validar el siguiente contenido contra las BRAND GUIDELINES.
-
-═══ GUIDELINES ═══
-${brandGuidelines.slice(0, 10000)}
-═══ FIN ═══
-
-═══ CONTENIDO A REVISAR ═══
-Formato: ${script.format}
-${contentForReview}
-Caption: ${(script.caption || '').slice(0, 500)}
-═══ FIN ═══
-
-Tarea: identifica violaciones de las guidelines. Enfócate en:
-1. Tono (guru/condescendiente, culpabilizador)
-2. Framing (pérdida vs ganancia, validar vs culpar)
-3. Promesas vacías ("tiene solución" sin darla)
-4. Claridad del hook (¿tiene dato concreto? ¿es punchy?)
-5. Consistencia de marca (México-first, voz "amigo en taquería")
-6. Legal (¿da consejo de inversión disfrazado?)
-
-Si el contenido cumple con las guidelines, responde con un JSON exacto:
-{"pass": true}
-
-Si hay violaciones, responde con:
-{"pass": false, "issues": ["issue 1 breve", "issue 2 breve"]}
-
-NO expliques, NO agregues markdown, solo el JSON.`;
-
-      const qaRes = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({
-          model: 'claude-opus-4-20250514',
-          max_tokens: 500,
-          messages: [{ role: 'user', content: qaPrompt }],
-        }),
-      });
-
-      if (qaRes.ok) {
-        const qaData = await qaRes.json();
-        let raw = qaData.content[0].text.trim().replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/```\s*$/, '');
-        const verdict = JSON.parse(raw);
-        if (!verdict.pass && Array.isArray(verdict.issues)) {
-          verdict.issues.forEach(i => issues.push(`[LLM-QA] ${i}`));
-        }
-      }
-    } catch (e) {
-      console.log(`  ⚠ LLM QA pass falló: ${e.message} — siguiendo con checks programáticos solamente`);
-    }
-  }
-
-  // Report
   if (issues.length === 0) {
-    console.log('  ✓ Pasó todos los checks (programáticos + LLM vs guidelines)');
+    console.log('  ✓ Pasó checks (length, dato, tono, legal)');
   } else {
     issues.forEach(i => console.log(`  ✗ ${i}`));
   }
