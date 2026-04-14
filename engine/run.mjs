@@ -954,15 +954,30 @@ Responde en JSON estricto:
     formatInstructions = `GENERA un script para una QUOTE de Instagram (1 sola imagen).
 
 ESTRUCTURA:
-- Una frase poderosa relacionada con el tema (máximo 20 palabras). No es cita de famoso — es un insight propio de @finanzas.pop. DEBE ser una frase COMPLETA que golpee emocionalmente: algo que el lector quiera mandar al grupo de WhatsApp porque le describe exactamente. NO trivia corporativa — verdad personal sobre su dinero.
-- Una línea de contexto/dato que sustenta la frase (máximo 15 palabras).
+- UNA frase poderosa, corta y punchy (máximo 15 palabras, idealmente 10-12). UNA sola oración. Si necesitas dos oraciones, el quote no está listo — reescribilo más corto.
+- NO uses dos oraciones conectadas con "Y eso...", "Y...", "Pero...". Es UNA idea, UNA oración.
+- NO es cita de famoso — es un insight propio de @finanzas.pop.
+- Tono AMIGO INTELIGENTE, no guru/pastor. VALIDA al lector, no lo culpa. Los mexicanos están jodidos por inflación/sueldos/sistema, no por "tomar malas decisiones".
+- PROHIBIDO decir "tiene solución" / "hay una salida" / "hay forma" sin dar el dato concreto en la misma frase. Eso es clickbait.
+- Debe golpear emocionalmente — que el lector diga "es exactamente lo que siento" y lo mande por WhatsApp.
+- Una línea de contexto/dato que sustenta la frase (máximo 12 palabras, con dato numérico).
 - Atribución: "— @finanzas.pop"
+
+EJEMPLOS que SÍ funcionan:
+- "72% de mexicanos están endeudados. Tú no eres el problema — el crédito sí."
+- "Tu sueldo no creció. La inflación lo encogió por vos."
+- "Nadie te enseñó finanzas en la escuela. Eso no es casualidad."
+
+EJEMPLOS que NO funcionan (NO LOS HAGAS):
+- "No estás quebrado, estás pagando decisiones que tomaste sin un plan. Y eso tiene solución." → culpa al lector + promesa vacía + 2 oraciones
+- "El error más caro es no aprender." → genérico, sin dato
+- "Invertí temprano y cambió mi vida." → personal de guru
 
 Responde en JSON estricto:
 {
   "hook": "la frase principal de la quote",
   "format": "quote",
-  "quote_text": "la frase poderosa (máximo 25 palabras)",
+  "quote_text": "UNA frase punchy de máximo 15 palabras — una sola oración, sin culpar al lector, sin prometer solución sin darla",
   "quote_context": "línea de contexto con dato (máximo 15 palabras)",
   "quote_attribution": "— @finanzas.pop",
   "caption": "caption para Instagram con esta estructura EXACTA: 1) Primera línea: keyword SEO natural seguida de la frase. 2) Explicación con dato y fuente. 3) CTA viral (solo estos dos — no prometas nada por DM): 'Guárdalo 📌' o 'Mándaselo a alguien 📩'. 4) Solo 3-5 hashtags MUY específicos (#finanzaspop #finanzaspersonalesmx #dinero #mexico). 5) SIEMPRE termina con: 📌 Contenido educativo, no asesoría financiera.",
@@ -1809,11 +1824,32 @@ function runQA(script, _output) {
       }
     }
   }
-  // Quote: máx 140 chars, sino el texto se sale
+  // Quote: tiene que ser UNA frase corta, punchy — no un mini-ensayo
   if (script.quote_text) {
-    const qLen = script.quote_text.length;
-    if (qLen > 160) {
-      issues.push(`Quote tiene ${qLen} chars (máx 160) — se va a cortar o ver muy chico`);
+    const q = script.quote_text.trim();
+    const qLen = q.length;
+    const qWords = q.split(/\s+/).filter(Boolean).length;
+    // Count sentences (por . ! ?). Ignoramos abreviaturas comunes.
+    const sentences = q.replace(/([$0-9]+\.[0-9]+)/g, '$1X').split(/[.!?]+/).filter(s => s.trim().length > 0);
+
+    if (qLen > 110) {
+      issues.push(`Quote tiene ${qLen} chars (máx 110) — texto largo se va a ver denso/cortado`);
+    }
+    if (qWords > 18) {
+      issues.push(`Quote tiene ${qWords} palabras (máx 18) — una quote debe ser UNA frase punchy`);
+    }
+    if (sentences.length > 2) {
+      issues.push(`Quote tiene ${sentences.length} oraciones — máx 2, idealmente 1 sola frase`);
+    }
+
+    // Anti-guru / culpabilizador
+    const guruTone = /tomaste (sin|malas|tus) decisiones|es tu culpa|no planificaste|no ahorraste|no sabes|deberías haber|por no (ahorrar|invertir|planear)|tiene soluci[oó]n\.?$/i;
+    if (guruTone.test(q)) {
+      issues.push('Quote culpabiliza al lector o usa tono guru — reescribir');
+    }
+    // Promesas vacías ("hay solución" sin decirla)
+    if (/tiene soluci[oó]n|hay forma|existe un m[eé]todo|hay una salida/i.test(q) && !/\d/.test(q.split(/[.!?]/)[1] || '')) {
+      issues.push('Quote promete solución sin darla — tipo clickbait, reescribir');
     }
   }
 
