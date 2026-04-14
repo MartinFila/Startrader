@@ -1538,9 +1538,9 @@ async function uploadFileToMetricool(filePath, TOKEN, USER_ID, BLOG_ID) {
 }
 
 async function publishToMetricool(output, captionText) {
-  const TOKEN   = readEnvKey('METRICOOL_API_KEY');
-  const USER_ID = readEnvKey('METRICOOL_USER_ID');
-  const BLOG_ID = readEnvKey('METRICOOL_BLOG_ID');
+  const TOKEN   = process.env.METRICOOL_API_KEY || readEnvKey('METRICOOL_API_KEY');
+  const USER_ID = process.env.METRICOOL_USER_ID || readEnvKey('METRICOOL_USER_ID');
+  const BLOG_ID = process.env.METRICOOL_BLOG_ID || readEnvKey('METRICOOL_BLOG_ID');
 
   if (!TOKEN) {
     console.log('  ⚠ METRICOOL_API_KEY no encontrada, saltando publicación automática');
@@ -1781,16 +1781,39 @@ function runQA(script, _output) {
     issues.push('Falta disclaimer "Contenido educativo, no asesoría financiera" en caption');
   }
 
-  // ── VISUAL (para reels) ──
+  // ── VISUAL QA — textos no pueden ser demasiado largos en ningún formato ──
+  // Reels: cada línea máx 10 palabras
   if (script.scenes) {
-    // Verificar que las escenas no tengan texto muy largo (>8 palabras por línea)
     for (const [i, scene] of script.scenes.entries()) {
       for (const line of ['text_line1', 'text_line2', 'text_line3']) {
         const text = scene[line] || '';
         if (text.split(' ').length > 10) {
-          issues.push(`Escena ${i+1} ${line}: "${text.slice(0,30)}..." tiene >10 palabras (se va a salir del recuadro)`);
+          issues.push(`Reel escena ${i+1} ${line}: "${text.slice(0,30)}..." tiene >10 palabras`);
         }
       }
+    }
+  }
+  // Carousels: title máx 8 palabras, body máx 30 palabras por slide
+  if (script.slides) {
+    for (const [i, slide] of script.slides.entries()) {
+      const title = (slide.title || '').trim();
+      const body = (slide.body || '').trim();
+      if (title.split(' ').length > 10) {
+        issues.push(`Slide ${i+1} title: "${title.slice(0,40)}..." tiene >10 palabras (no cabe)`);
+      }
+      if (body.split(' ').length > 35) {
+        issues.push(`Slide ${i+1} body tiene ${body.split(' ').length} palabras (máx 35)`);
+      }
+      if (body.length > 200) {
+        issues.push(`Slide ${i+1} body tiene ${body.length} chars (máx 200)`);
+      }
+    }
+  }
+  // Quote: máx 140 chars, sino el texto se sale
+  if (script.quote_text) {
+    const qLen = script.quote_text.length;
+    if (qLen > 160) {
+      issues.push(`Quote tiene ${qLen} chars (máx 160) — se va a cortar o ver muy chico`);
     }
   }
 
@@ -1849,12 +1872,13 @@ async function main() {
   // RELOAD learnings after auto-update so steps 2 and 3 use fresh data
   try { learningsContent = readFileSync(LEARNINGS_PATH, 'utf-8'); } catch {}
   // Retry loop: if QA fails, try again with a different topic (up to 3 attempts)
+  let output = null;
   let published = false;
   for (let attempt = 1; attempt <= 3; attempt++) {
     if (attempt > 1) console.log(`\n🔄 Reintento ${attempt}/3 — buscando otro tema...`);
     const topic = await selectTopic(news);
     const script = await generateScript(topic);
-    const output = await createContent(script);
+    output = await createContent(script);
 
     const qaIssues = runQA(script, output);
     if (qaIssues.length > 0) {
@@ -1872,15 +1896,18 @@ async function main() {
   }
 
   console.log('\n═══════════════════════════════════════');
-  console.log('✅ LISTO PARA PUBLICAR');
-  const fmt = output.format || 'reel';
-  if (fmt === 'carousel') {
-    console.log(`  🎨 Carousel: ${output.files.length} slides en Contenido_IG/carousels/`);
-  } else if (fmt === 'quote') {
-    console.log(`  💬 Quote: Contenido_IG/quotes/${output.filename}`);
-  } else {
-    console.log(`  📹 Video: Contenido_IG/reels/${output.filename}`);
-    console.log(`  🖼️  Portada: Contenido_IG/reels/${output.coverFilename}`);
+  if (!published) {
+    console.log('⚠ NO SE PUBLICÓ — QA rechazó los 3 intentos.');
+  } else if (output) {
+    console.log('✅ PUBLICADO');
+    const fmt = output.format || 'reel';
+    if (fmt === 'carousel') {
+      console.log(`  🎨 Carousel: ${output.files?.length || 0} slides`);
+    } else if (fmt === 'quote') {
+      console.log(`  💬 Quote: ${output.filename}`);
+    } else {
+      console.log(`  📹 Video: ${output.filename}`);
+    }
   }
   console.log('═══════════════════════════════════════\n');
 }
