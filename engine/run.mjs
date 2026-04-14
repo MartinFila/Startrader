@@ -608,6 +608,13 @@ try {
   learningsContent = readFileSync(LEARNINGS_PATH, 'utf-8');
 } catch {}
 
+// Load brand guidelines (single source of truth for content + QA)
+const BRAND_GUIDELINES_PATH = join(ROOT, 'docs', 'BRAND-GUIDELINES.md');
+let brandGuidelines = '';
+try {
+  brandGuidelines = readFileSync(BRAND_GUIDELINES_PATH, 'utf-8');
+} catch {}
+
 async function selectTopic(news) {
   console.log('\n🎯 PASO 2: Seleccionando tema (filtro MRV + learnings)...');
 
@@ -833,7 +840,7 @@ function chooseFormat() {
 // ═══════════════════════════════════════════
 // PASO 3: GENERAR HOOK + SCRIPT
 // ═══════════════════════════════════════════
-async function generateScript(topic) {
+async function generateScript(topic, previousQAFeedback = null) {
   console.log('\n✍️  PASO 3: Generando hook y script...');
 
   // Extract hook patterns and anti-patterns from learnings
@@ -847,18 +854,21 @@ async function generateScript(topic) {
     console.log('  📖 Usando learnings para hooks y anti-patrones');
   }
 
-  const styleBlock = `Eres un creador de contenido financiero para Instagram. Tu cuenta se llama @finanzas.pop.
+  // Brand Guidelines = single source of truth. Se inyectan completas al prompt.
+  // Truncamos a las secciones más críticas (voice, content, format rules) para mantener el prompt manejable.
+  const guidelinesExcerpt = brandGuidelines
+    ? brandGuidelines.slice(0, 8000) // primeras ~8K chars cubren core identity, voice, content principles, y format rules
+    : '';
 
-Tu estilo (IMPORTANTÍSIMO):
-- Directo, con datos, sin humo, accesible
-- Como un amigo inteligente que te explica las cosas
-- SIEMPRE conecta el dato con la VIDA REAL del mexicano promedio
-- No solo informes — haz que la persona SIENTA cómo le afecta
-- Ejemplo: NO "La inflación es 4.65%". SÍ "Lo que costaba $1,000 en el super ahora cuesta $1,046. Tu sueldo sigue igual."
-- TONO ASPIRACIONAL: habla a alguien que quiere CRECER su dinero, no a alguien que solo sufre
-- MÉXICO-FIRST: usa ejemplos mexicanos (CETES, Nu, GBM+, Afore, FEMSA, Bimbo), NO ejemplos gringos
-- Si mencionas otro país, es como ejemplo inspirador ("Noruega hizo esto con su petróleo, México podría...")
-- NUNCA suenes como guru. Suena como alguien que está aprendiendo CONTIGO.`;
+  const styleBlock = `Eres un creador de contenido para @finanzas.pop (educación financiera para millennials mexicanos).
+
+Tenés que seguir ESTAS BRAND GUIDELINES al pie de la letra. NO son sugerencias — son reglas que el QA valida. Si generas algo que las rompe, el post se rechaza y tu trabajo se descarta.
+
+═══ BRAND GUIDELINES ═══
+${guidelinesExcerpt || 'Guidelines no disponibles — abortar generación'}
+═══ FIN GUIDELINES ═══
+
+Regla meta: si dudás entre dos opciones, elegí la que más cumple las guidelines. Si no podés cumplirlas, mejor no generes — el QA te va a rechazar de todas formas.`;
 
   const templateName = topic.template || 'daily-briefing';
   const templateGuide = {
@@ -1013,6 +1023,15 @@ Responde en JSON estricto:
 }`;
   }
 
+  const qaFeedbackBlock = previousQAFeedback && previousQAFeedback.length > 0
+    ? `\n═══ FEEDBACK DEL QA DEL INTENTO ANTERIOR ═══
+Tu intento previo fue RECHAZADO por estas razones:
+${previousQAFeedback.map(f => `  - ${f}`).join('\n')}
+
+Corregí cada uno de esos problemas en este nuevo intento. NO repitas los mismos errores.
+═══════════════════════════════════════════\n`
+    : '';
+
   const prompt = `${styleBlock}
 
 ${topicBlock}
@@ -1022,6 +1041,8 @@ ${learningsBlock}
 ${formatInstructions}
 
 ${rulesBlock}
+
+${qaFeedbackBlock}
 
 Responde SOLO con el JSON.`;
 
@@ -1692,7 +1713,7 @@ async function callGemini(prompt, model = 'gemini-2.5-flash') {
 // QA GATE — validates content before publish
 // Criteria update automatically from learnings.md
 // ═══════════════════════════════════════
-function runQA(script, _output) {
+async function runQA(script, _output) {
   console.log('\n🔍 QA — Verificando contenido...');
   const issues = [];
   const caption = (script.caption || '').toLowerCase();
@@ -1873,9 +1894,72 @@ function runQA(script, _output) {
     }
   } catch {}
 
+  // ── QA LLM-POWERED: Claude revisa contra las guidelines completas ──
+  // Si los checks programáticos pasan, hacemos un pase final con Claude
+  // que tiene acceso a las guidelines completas y busca problemas de tono/framing
+  // que los regex no pueden detectar.
+  if (issues.length === 0 && brandGuidelines && ANTHROPIC_KEY) {
+    try {
+      const contentForReview = script.format === 'quote'
+        ? `Quote: "${script.quote_text}"\nContexto: "${script.quote_context || ''}"`
+        : script.format === 'carousel'
+          ? `Hook: "${script.hook}"\nSlides:\n${(script.slides || []).map(s => `  ${s.id}. ${s.title} — ${s.body}`).join('\n')}`
+          : `Hook: "${script.hook}"\nEscenas:\n${(script.scenes || []).map((s, i) => `  ${i+1}. ${s.text_line1} / ${s.text_line2} / ${s.text_line3}`).join('\n')}`;
+
+      const qaPrompt = `Sos el QA de @finanzas.pop. Tenés que validar el siguiente contenido contra las BRAND GUIDELINES.
+
+═══ GUIDELINES ═══
+${brandGuidelines.slice(0, 10000)}
+═══ FIN ═══
+
+═══ CONTENIDO A REVISAR ═══
+Formato: ${script.format}
+${contentForReview}
+Caption: ${(script.caption || '').slice(0, 500)}
+═══ FIN ═══
+
+Tarea: identifica violaciones de las guidelines. Enfócate en:
+1. Tono (guru/condescendiente, culpabilizador)
+2. Framing (pérdida vs ganancia, validar vs culpar)
+3. Promesas vacías ("tiene solución" sin darla)
+4. Claridad del hook (¿tiene dato concreto? ¿es punchy?)
+5. Consistencia de marca (México-first, voz "amigo en taquería")
+6. Legal (¿da consejo de inversión disfrazado?)
+
+Si el contenido cumple con las guidelines, responde con un JSON exacto:
+{"pass": true}
+
+Si hay violaciones, responde con:
+{"pass": false, "issues": ["issue 1 breve", "issue 2 breve"]}
+
+NO expliques, NO agregues markdown, solo el JSON.`;
+
+      const qaRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_KEY, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({
+          model: 'claude-opus-4-20250514',
+          max_tokens: 500,
+          messages: [{ role: 'user', content: qaPrompt }],
+        }),
+      });
+
+      if (qaRes.ok) {
+        const qaData = await qaRes.json();
+        let raw = qaData.content[0].text.trim().replace(/^```json\s*/i, '').replace(/^```\s*/, '').replace(/```\s*$/, '');
+        const verdict = JSON.parse(raw);
+        if (!verdict.pass && Array.isArray(verdict.issues)) {
+          verdict.issues.forEach(i => issues.push(`[LLM-QA] ${i}`));
+        }
+      }
+    } catch (e) {
+      console.log(`  ⚠ LLM QA pass falló: ${e.message} — siguiendo con checks programáticos solamente`);
+    }
+  }
+
   // Report
   if (issues.length === 0) {
-    console.log('  ✓ Hook viral, México-first, educativo, legal OK');
+    console.log('  ✓ Pasó todos los checks (programáticos + LLM vs guidelines)');
   } else {
     issues.forEach(i => console.log(`  ✗ ${i}`));
   }
@@ -1907,21 +1991,38 @@ async function main() {
   await updateLearningsFromCompetitors(competitorPosts);
   // RELOAD learnings after auto-update so steps 2 and 3 use fresh data
   try { learningsContent = readFileSync(LEARNINGS_PATH, 'utf-8'); } catch {}
-  // Retry loop: if QA fails, try again with a different topic (up to 3 attempts)
+  // Retry loop: hasta 4 intentos. Mezcla: si falla el mismo tema 2 veces con feedback, cambia tema.
   let output = null;
   let published = false;
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    if (attempt > 1) console.log(`\n🔄 Reintento ${attempt}/3 — buscando otro tema...`);
-    const topic = await selectTopic(news);
-    const script = await generateScript(topic);
+  let lastTopic = null;
+  let lastFeedback = null;
+  let sameTopicAttempts = 0;
+
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    if (attempt > 1) {
+      if (sameTopicAttempts >= 2) {
+        console.log(`\n🔄 Reintento ${attempt}/4 — cambiando TEMA (mismo tema falló 2x)...`);
+        lastTopic = null;
+        lastFeedback = null;
+        sameTopicAttempts = 0;
+      } else {
+        console.log(`\n🔄 Reintento ${attempt}/4 — mismo tema, aplicando feedback del QA...`);
+      }
+    }
+
+    const topic = lastTopic || await selectTopic(news);
+    if (!lastTopic) lastTopic = topic;
+    const script = await generateScript(topic, lastFeedback);
     output = await createContent(script);
 
-    const qaIssues = runQA(script, output);
+    const qaIssues = await runQA(script, output);
     if (qaIssues.length > 0) {
       console.log('\n🚨 QA FALLÓ:');
       qaIssues.forEach(issue => console.log(`  ✗ ${issue}`));
-      if (attempt < 3) continue; // retry
-      console.log('  ℹ 3 intentos fallidos — no se publica nada esta ronda.');
+      lastFeedback = qaIssues;
+      sameTopicAttempts++;
+      if (attempt < 4) continue;
+      console.log('  ℹ 4 intentos fallidos — no se publica nada esta ronda.');
     } else {
       console.log('\n✅ QA PASÓ — publicando...');
       saveOutput(script, output, topic);
